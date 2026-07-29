@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOW → WANT</title>
+<style>
+  :root {
+    --bg: #fbfaf8;
+    --panel: #ffffff;
+    --ink: #1a1a19;
+    --ink-soft: #5f5d58;
+    --ink-faint: #8f8c85;
+    --line: #e6e3dd;
+    --accent: #b4541f;
+    --accent-soft: #f6ece4;
+    --done: #4a7c4e;
+    --warn-bg: #fdf6e8;
+    --warn-line: #e8d5a8;
+    --radius: 12px;
+    --maxw: 660px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17171a;
+      --panel: #1f1f23;
+      --ink: #edeae4;
+      --ink-soft: #a5a19a;
+      --ink-faint: #77736c;
+      --line: #32323a;
+      --accent: #e8834a;
+      --accent-soft: #2b211b;
+      --done: #7fb185;
+      --warn-bg: #2a2318;
+      --warn-line: #4d4025;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 28px 20px 80px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; }
+
+  /* ---------- header ---------- */
+  header { margin-bottom: 26px; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 8px;
+  }
+  h1 {
+    font-size: clamp(30px, 8vw, 40px); line-height: 1.05; margin: 0 0 6px;
+    font-weight: 600; letter-spacing: -.02em;
+  }
+  h1 .arrow { color: var(--accent); }
+  .datebar {
+    display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline;
+    color: var(--ink-soft); font-size: 14px; margin-top: 10px;
+  }
+  .datebar b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- progress ---------- */
+  .progress { margin: 22px 0 6px; }
+  .track {
+    height: 6px; background: var(--line); border-radius: 99px; overflow: hidden;
+  }
+  .fill {
+    height: 100%; width: 0%; background: var(--accent); border-radius: 99px;
+    transition: width .35s cubic-bezier(.4,0,.2,1);
+  }
+  .fill.complete { background: var(--done); }
+  .progress-label {
+    font-size: 13px; color: var(--ink-soft); margin-top: 8px;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+
+  /* ---------- session banner ---------- */
+  .headline {
+    background: var(--accent-soft); border-radius: var(--radius);
+    padding: 14px 16px; margin: 22px 0 4px; font-size: 15px; color: var(--ink);
+  }
+  .headline .session {
+    display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px; font-weight: 600;
+  }
+
+  /* ---------- groups ---------- */
+  section.group { margin-top: 30px; }
+  .group h2 {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); margin: 0 0 4px; font-weight: 600;
+  }
+  .group .note {
+    font-size: 13.5px; color: var(--ink-soft); margin: 0 0 12px; max-width: 56ch;
+  }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li.item {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); margin-bottom: 8px;
+    transition: border-color .18s, opacity .18s;
+  }
+  li.item.emphasis { border-left: 3px solid var(--accent); }
+  li.item:has(input:checked) { opacity: .58; border-color: var(--line); }
+  li.item label {
+    display: flex; gap: 13px; align-items: flex-start;
+    padding: 13px 15px; cursor: pointer; user-select: none;
+  }
+  input[type=checkbox] {
+    appearance: none; flex: 0 0 auto; width: 20px; height: 20px; margin: 1px 0 0;
+    border: 1.5px solid var(--ink-faint); border-radius: 5px; cursor: pointer;
+    position: relative; transition: background .15s, border-color .15s;
+  }
+  input[type=checkbox]:checked { background: var(--done); border-color: var(--done); }
+  input[type=checkbox]:checked::after {
+    content: ""; position: absolute; left: 5.5px; top: 2px;
+    width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .text { flex: 1; min-width: 0; }
+  .text .main { font-size: 15.5px; }
+  li.item:has(input:checked) .text .main { text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+  .text .detail { font-size: 13px; color: var(--ink-soft); margin-top: 3px; }
+
+  /* ---------- buttons ---------- */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  button {
+    font: inherit; font-size: 14.5px; font-weight: 500; cursor: pointer;
+    padding: 11px 18px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink);
+    transition: border-color .15s, background .15s, transform .06s;
+  }
+  button:hover { border-color: var(--ink-faint); }
+  button:active { transform: translateY(1px); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { filter: brightness(1.07); }
+  button:disabled { opacity: .5; cursor: default; transform: none; }
+
+  /* ---------- handoff panel ---------- */
+  .handoff {
+    margin-top: 22px; background: var(--warn-bg); border: 1px solid var(--warn-line);
+    border-radius: var(--radius); padding: 16px 17px;
+  }
+  .handoff h3 { margin: 0 0 8px; font-size: 15.5px; font-weight: 600; }
+  .handoff p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); }
+  .handoff pre {
+    margin: 0 0 12px; padding: 12px 13px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 9px;
+    font: 12.5px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
+    white-space: pre-wrap; overflow-x: auto; max-height: 260px; overflow-y: auto;
+    color: var(--ink);
+  }
+  .status { font-size: 13.5px; color: var(--ink-soft); margin-top: 12px; min-height: 1.3em; }
+  .status.ok { color: var(--done); }
+
+  /* ---------- plan at a glance ---------- */
+  details.plan {
+    margin-top: 38px; border-top: 1px solid var(--line); padding-top: 18px;
+  }
+  details.plan summary {
+    cursor: pointer; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; list-style: none;
+  }
+  details.plan summary::-webkit-details-marker { display: none; }
+  details.plan summary::before { content: "▸ "; }
+  details.plan[open] summary::before { content: "▾ "; }
+  .plan-body { margin-top: 16px; font-size: 14.5px; color: var(--ink-soft); }
+  .plan-body h4 {
+    margin: 18px 0 6px; font-size: 13px; color: var(--ink); font-weight: 600;
+    letter-spacing: .01em;
+  }
+  .plan-body ul.dash { padding-left: 0; }
+  .plan-body ul.dash li { padding-left: 15px; position: relative; margin-bottom: 5px; }
+  .plan-body ul.dash li::before {
+    content: "—"; position: absolute; left: 0; color: var(--ink-faint);
+  }
+  .plan-body .goal { color: var(--ink); }
+  footer {
+    margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-faint); line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Life Interface · Fitness</div>
+    <h1>NOW <span class="arrow">→</span> WANT</h1>
+    <div class="datebar">
+      <span>Today is <b id="todayStr">—</b></span>
+      <span id="dayCount"></span>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="progress-label">
+      <span id="countLabel">Loading…</span>
+      <span id="phaseLabel"></span>
+    </div>
+  </div>
+
+  <div class="headline" id="headline" hidden>
+    <span class="session" id="sessionLabel"></span>
+    <span id="headlineText"></span>
+  </div>
+
+  <main id="list"></main>
+
+  <div class="actions">
+    <button class="primary" id="refreshBtn">Refresh for today</button>
+    <button id="copyBtn">Copy status for Claude Code</button>
+    <button id="resetBtn">Clear today's ticks</button>
+  </div>
+  <div class="status" id="status"></div>
+
+  <div class="handoff" id="handoff" hidden>
+    <h3 id="handoffTitle">This list is out of date</h3>
+    <p id="handoffBody"></p>
+    <pre id="handoffText"></pre>
+    <button class="primary" id="handoffCopy">Copy for Claude Code</button>
+  </div>
+
+  <details class="plan">
+    <summary>The plan, at a glance</summary>
+    <div class="plan-body">
+      <p class="goal"><strong>Goal:</strong> lean gain, not weight loss. Add roughly 3–5 kg of muscle — mostly lateral delts, upper chest and arms — while holding or slightly reducing body fat. Started 29 July 2026; realistic horizon 8–14 months.</p>
+
+      <h4>The four things that waste a year</h4>
+      <ul class="dash">
+        <li>Program hopping — twelve weeks minimum before changing anything</li>
+        <li>Under-eating protein — 1.8–2.2 g per kg per day, every day</li>
+        <li>Never adding weight to the bar — double progression, logged every set</li>
+        <li>Sleeping badly — 7–9 hours, consistent wake time</li>
+      </ul>
+
+      <h4>The weekly shape</h4>
+      <ul class="dash">
+        <li>Day 1 — Upper, push emphasis</li>
+        <li>Day 2 — Lower</li>
+        <li>Day 3 — Upper, pull emphasis</li>
+        <li>Day 4 — Weak-point: arms &amp; delts</li>
+      </ul>
+      <p>Four sessions a week, 50–60 min. Lateral raises appear on three of the four days — that is deliberate.</p>
+
+      <h4>What to measure, and how often</h4>
+      <ul class="dash">
+        <li>Every session — weight and reps for every set</li>
+        <li>Weekly, Sunday — bodyweight 7-day average, waist at navel, sessions hit, protein days hit</li>
+        <li>Monthly — same-pose photo, saved as <code>NOW - DD.MM.YYYY.jpeg</code></li>
+      </ul>
+      <p>At week 6, "working" looks like lifts up 15–25% and almost no visual change. If the lifts are climbing it is working — trust that over the mirror.</p>
+    </div>
+  </details>
+
+  <footer>
+    Ticks are stored in this browser only. The daily list is generated by Claude Code from
+    <code>Plan - NOW to WANT.md</code> and published here as <code>today.json</code>.<br>
+    Not medical advice — the plan carries its own disclaimer.
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* Embedded fallback: lets the page work when opened straight off disk (file://),
+   where fetch() of a sibling file is blocked. The served copy always wins. */
+const FALLBACK = {"date":"2026-07-30","dayOfPlan":2,"week":1,"sessionLabel":"Day 1 — Upper (push emphasis)","headline":"First real session. Conservative weights on purpose — today's job is to write down starting numbers, not to find your limit.","groups":[{"title":"Train","note":"Log weight and reps for every set.","items":[{"id":"t-incline-press","text":"Incline press — 4 × 6–8"},{"id":"t-shoulder-press","text":"Seated dumbbell shoulder press — 3 × 8–10"},{"id":"t-lateral-raise","text":"Lateral raise — 4 × 12–15","emphasis":true},{"id":"t-supported-row","text":"Chest-supported row — 3 × 8–10"},{"id":"t-tri-extension","text":"Overhead cable triceps extension — 3 × 10–12"},{"id":"t-logged","text":"Wrote down weight × reps for every set"}]},{"title":"Week 1 setup","items":[{"id":"s-measure","text":"Weigh yourself and measure waist at navel"},{"id":"s-supplements","text":"Buy creatine monohydrate and whey"},{"id":"s-calendar","text":"Put the four weekly sessions in your calendar"}]},{"title":"Eat","items":[{"id":"e-anchor-1","text":"Breakfast protein anchor"},{"id":"e-anchor-2","text":"Lunch protein anchor"},{"id":"e-anchor-3","text":"Post-training or afternoon anchor"},{"id":"e-anchor-4","text":"Dinner protein anchor"},{"id":"e-track","text":"Logged protein today"},{"id":"e-creatine","text":"Creatine, 5 g"}]},{"title":"Recover","items":[{"id":"r-sleep","text":"7–9 hours, consistent wake time"}]}]};
+
+const START_DATE = "2026-07-29";
+const LS_PREFIX  = "lifeinterface.fitness.v1.";
+const $ = id => document.getElementById(id);
+
+let plan = null;
+
+/* ---------- dates: always local, never UTC ---------- */
+function localISO(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function prettyDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+}
+function daysBetween(aISO, bISO) {
+  const [ay, am, ad] = aISO.split("-").map(Number);
+  const [by, bm, bd] = bISO.split("-").map(Number);
+  return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / 86400000);
+}
+
+/* ---------- tick storage ---------- */
+function loadTicks(date) {
+  try { return JSON.parse(localStorage.getItem(LS_PREFIX + date) || "{}"); }
+  catch { return {}; }
+}
+function saveTicks(date, ticks) {
+  try { localStorage.setItem(LS_PREFIX + date, JSON.stringify(ticks)); }
+  catch { /* private mode — ticks just won't survive a reload */ }
+}
+function storedDates() {
+  const out = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(LS_PREFIX)) out.push(k.slice(LS_PREFIX.length));
+  }
+  return out.sort();
+}
+
+/* ---------- render ---------- */
+function render() {
+  const today = localISO();
+  $("todayStr").textContent = prettyDate(today);
+
+  const n = daysBetween(START_DATE, today) + 1;
+  $("dayCount").textContent = n > 0 ? `· day ${n} of the plan` : "";
+  $("phaseLabel").textContent = n <= 60
+    ? "Month 1–2: expect almost no visual change"
+    : n <= 120 ? "Month 3–4: shoulders and arms filling out"
+    : n <= 180 ? "Month 6: visible in a same-pose photo" : "Month 9–12: reference territory";
+
+  const ticks = loadTicks(plan.date);
+  const list = $("list");
+  list.textContent = "";
+
+  if (plan.headline) {
+    $("headline").hidden = false;
+    $("sessionLabel").textContent = plan.sessionLabel || `Day ${plan.dayOfPlan || ""}`;
+    $("headlineText").textContent = plan.headline;
+  }
+
+  let total = 0, done = 0;
+
+  for (const g of plan.groups || []) {
+    const sec = document.createElement("section");
+    sec.className = "group";
+
+    const h = document.createElement("h2");
+    h.textContent = g.title;
+    sec.appendChild(h);
+
+    if (g.note) {
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = g.note;
+      sec.appendChild(p);
+    }
+
+    const ul = document.createElement("ul");
+    for (const it of g.items || []) {
+      total++;
+      const checked = !!ticks[it.id];
+      if (checked) done++;
+
+      const li = document.createElement("li");
+      li.className = "item" + (it.emphasis ? " emphasis" : "");
+
+      const label = document.createElement("label");
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = checked;
+      cb.addEventListener("change", () => {
+        const t = loadTicks(plan.date);
+        if (cb.checked) t[it.id] = true; else delete t[it.id];
+        saveTicks(plan.date, t);
+        recount();
+      });
+
+      const txt = document.createElement("div");
+      txt.className = "text";
+      const main = document.createElement("div");
+      main.className = "main";
+      main.textContent = it.text;
+      txt.appendChild(main);
+      if (it.detail) {
+        const det = document.createElement("div");
+        det.className = "detail";
+        det.textContent = it.detail;
+        txt.appendChild(det);
+      }
+
+      label.append(cb, txt);
+      li.appendChild(label);
+      ul.appendChild(li);
+    }
+    sec.appendChild(ul);
+    list.appendChild(sec);
+  }
+
+  window.__total = total;
+  recount();
+}
+
+function recount() {
+  const ticks = loadTicks(plan.date);
+  const total = window.__total || 0;
+  const done = (plan.groups || []).flatMap(g => g.items || []).filter(i => ticks[i.id]).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const fill = $("fill");
+  fill.style.width = pct + "%";
+  fill.classList.toggle("complete", total > 0 && done === total);
+  $("countLabel").textContent =
+    total === 0 ? "Nothing on the list"
+    : done === total ? `All ${total} done — that's the day.`
+    : `${done} of ${total} done`;
+}
+
+/* ---------- the handoff summary ---------- */
+function summaryFor(date) {
+  const ticks = loadTicks(date);
+  const isCurrent = date === plan.date;
+  const lines = [`Fitness tracker — results for ${date} (${prettyDate(date)})`, ""];
+
+  if (isCurrent) {
+    for (const g of plan.groups || []) {
+      lines.push(`${g.title}:`);
+      for (const it of g.items || []) {
+        lines.push(`  [${ticks[it.id] ? "x" : " "}] ${it.text}`);
+      }
+      lines.push("");
+    }
+    const total = (plan.groups || []).flatMap(g => g.items || []).length;
+    const done = (plan.groups || []).flatMap(g => g.items || []).filter(i => ticks[i.id]).length;
+    lines.push(`Completed ${done} of ${total}.`);
+  } else {
+    // The published list has already moved on; report raw ids we still hold.
+    const ids = Object.keys(ticks);
+    lines.push(ids.length ? `Ticked: ${ids.join(", ")}` : "Nothing was ticked.");
+  }
+  return lines.join("\n");
+}
+
+function handoffPayload(staleDate) {
+  const today = localISO();
+  const others = storedDates().filter(d => d !== staleDate && d !== today);
+  let out = summaryFor(staleDate);
+  out += `\n\nToday is ${today} (${prettyDate(today)}), day ${daysBetween(START_DATE, today) + 1} of the plan.`;
+  out += `\nPlease write the next today.json for ${today} and push it.`;
+  if (others.length) out += `\n\nOther days still held in this browser: ${others.join(", ")}`;
+  return out;
+}
+
+async function copy(text, okMsg) {
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus(okMsg, true);
+  } catch {
+    setStatus("Clipboard was blocked — select the text above and copy it manually.");
+  }
+}
+function setStatus(msg, ok = false) {
+  const el = $("status");
+  el.textContent = msg;
+  el.className = "status" + (ok ? " ok" : "");
+}
+
+/* ---------- load ---------- */
+async function loadPlan({ announce = false } = {}) {
+  let fetched = null;
+  try {
+    const res = await fetch(`today.json?t=${Date.now()}`, { cache: "no-store" });
+    if (res.ok) fetched = await res.json();
+  } catch { /* file:// or offline — fall back below */ }
+
+  plan = fetched || FALLBACK;
+  render();
+
+  const today = localISO();
+  const handoff = $("handoff");
+
+  if (plan.date === today) {
+    handoff.hidden = true;
+    if (announce) setStatus("Already up to date — this list is for today.", true);
+  } else if (plan.date < today) {
+    handoff.hidden = false;
+    const gap = daysBetween(plan.date, today);
+    $("handoffTitle").textContent =
+      `This list is from ${prettyDate(plan.date)} — ${gap} day${gap === 1 ? "" : "s"} behind`;
+    $("handoffBody").textContent =
+      "Copy the block below and paste it into Claude Code. It'll read your results, write a fresh list for today, and push it here — then hit Refresh again.";
+    $("handoffText").textContent = handoffPayload(plan.date);
+    if (announce) setStatus("Fetched — but the published list hasn't caught up to today yet.");
+  } else {
+    handoff.hidden = true;
+    if (announce) setStatus(`This list is dated ${prettyDate(plan.date)} — ahead of today.`);
+  }
+}
+
+$("refreshBtn").addEventListener("click", async e => {
+  const btn = e.currentTarget;
+  btn.disabled = true;
+  const was = btn.textContent;
+  btn.textContent = "Checking…";
+  setStatus("");
+  await loadPlan({ announce: true });
+  btn.textContent = was;
+  btn.disabled = false;
+});
+
+$("copyBtn").addEventListener("click", () =>
+  copy(summaryFor(plan.date), "Copied — paste it into Claude Code."));
+
+$("handoffCopy").addEventListener("click", () =>
+  copy(handoffPayload(plan.date), "Copied — paste it into Claude Code."));
+
+$("resetBtn").addEventListener("click", () => {
+  if (!confirm("Clear every tick for " + plan.date + "?")) return;
+  saveTicks(plan.date, {});
+  render();
+  setStatus("Cleared.");
+});
+
+loadPlan();
+</script>
+</body>
+</html>

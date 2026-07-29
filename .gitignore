@@ -1,0 +1,12 @@
+# This repo is public. Never let progress photos or body metrics in here.
+Photos/
+photos/
+*.jpeg
+*.jpg
+*.png
+metrics.json
+measurements.*
+
+.DS_Store
+Thumbs.db
+.claude/
