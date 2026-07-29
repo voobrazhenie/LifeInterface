@@ -75,7 +75,10 @@
   .fill.complete { background: var(--done); }
   .progress-label {
     font-size: 13px; color: var(--ink-soft); margin-top: 8px;
-    display: flex; justify-content: space-between; gap: 12px;
+    display: flex; justify-content: space-between; gap: 2px 16px; flex-wrap: wrap;
+  }
+  @media (max-width: 520px) {
+    .progress-label { flex-direction: column; }
   }
 
   /* ---------- session banner ---------- */
