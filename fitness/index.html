@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#17171a">
 <title>NOW → WANT</title>
+
+<!-- Add to Home Screen. iOS ignores the manifest's name/display, so the
+     apple-* tags below are what actually make it open without Safari chrome. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NOW→WANT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   /* Dark unconditionally, rather than following prefers-color-scheme — a phone set
      to light mode was rendering the light theme while the desktop stayed dark. */
@@ -27,7 +37,11 @@
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 28px 20px 80px;
+    /* The status bar is translucent when installed to the home screen, so the top
+       inset keeps the header out from under the notch. */
+    padding:
+      calc(28px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right))
+      calc(80px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
     background: var(--bg);
     color: var(--ink);
     font: 16px/1.55 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
@@ -530,6 +544,10 @@ const sync = {
       this.fb = { auth: authMod.getAuth(app), db, a: authMod, f: fsMod };
       this.mode = "signed-out";
 
+      // Completes a redirect sign-in started before the page reloaded. Errors here
+      // surface through onAuthStateChanged staying signed out, so they're not fatal.
+      authMod.getRedirectResult(this.fb.auth).catch(() => {});
+
       authMod.onAuthStateChanged(this.fb.auth, u => this.onAuth(u));
     } catch (e) {
       console.warn("Firebase unavailable, staying local:", e);
@@ -560,12 +578,23 @@ const sync = {
       await a.signInWithPopup(auth, new a.GoogleAuthProvider());
     } catch (e) {
       const code = e && e.code || "";
+
+      // Installed to the home screen, a popup often can't open at all. Fall back
+      // to a full-page redirect, which onAuthStateChanged picks up on return.
+      if (code === "auth/popup-blocked" ||
+          code === "auth/operation-not-supported-in-this-environment") {
+        try {
+          this.setUI("off", "Redirecting to Google…");
+          await a.signInWithRedirect(auth, new a.GoogleAuthProvider());
+          return;
+        } catch (e2) { e = e2; }
+      }
+
       const msg =
-        code === "auth/popup-blocked"      ? "Your browser blocked the popup — allow popups for this page and try again."
-      : code === "auth/unauthorized-domain" ? "This domain isn't authorised in Firebase Auth settings yet."
+        code === "auth/unauthorized-domain" ? "This domain isn't authorised in Firebase Auth settings yet."
       : code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request"
                                            ? "Sign-in was cancelled."
-      : `Sign-in failed (${code || e.message}).`;
+      : `Sign-in failed (${e.code || e.message}).`;
       this.setUI("err", msg, "Try again", () => this.signIn());
     }
   },
