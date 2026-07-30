@@ -433,7 +433,7 @@ function setTick(id, on) {
   if (on) t[id] = true; else delete t[id];
   saveTicks(plan.date, t);
   recount();
-  sync.push(plan.date, t);
+  sync.queueTick(plan.date, id, on);
 }
 
 /* ---------- the handoff summary ---------- */
@@ -492,7 +492,8 @@ const sync = {
   fb: null,           // { auth, db, api } once the SDK is loaded
   unsub: null,
   timer: null,
-  pending: null,
+  queue: new Map(),   // item id -> desired state, awaiting the debounced write
+  queueDate: null,
 
   setUI(state, msg, btnLabel, btnAction) {
     const row = $("sync"), btn = $("authBtn");
@@ -582,18 +583,32 @@ const sync = {
     return f.doc(db, "users", this.uid, "days", date);
   },
 
-  /* One-time upward merge so ticks made before signing in aren't lost, then the
-     remote document becomes the source of truth. */
+  /* Take the server's version wholesale. localStorage is only ever a mirror once
+     signed in — never a second opinion. */
+  adopt(ticks, date) {
+    saveTicks(date, ticks);
+    if (plan.date === date) render();
+  },
+
+  /* The document is the source of truth. It is seeded from local ticks only when
+     it does not exist yet, i.e. the first time this day is ever synced; after
+     that the server always wins. Merging local ticks upward on every attach is
+     what used to resurrect anything unticked on another device. */
   async attach() {
     const { f } = this.fb;
-    const ref = this.ref(plan.date);
+    const date = plan.date;
+    const ref = this.ref(date);
     try {
-      const snap = await f.getDoc(ref);
-      const remote = snap.exists() ? (snap.data().ticks || {}) : {};
-      const local = loadTicks(plan.date);
-      const unmerged = Object.keys(local).filter(k => !remote[k]);
-      if (unmerged.length) {
-        await f.setDoc(ref, { ticks: { ...remote, ...local }, updatedAt: f.serverTimestamp() });
+      let snap;
+      try { snap = await f.getDocFromServer(ref); }
+      catch { snap = await f.getDoc(ref); }   // offline: settle for the cache
+      if (snap.exists()) {
+        this.adopt(snap.data().ticks || {}, date);
+      } else {
+        const local = loadTicks(date);
+        if (Object.keys(local).length) {
+          await f.setDoc(ref, { ticks: local, updatedAt: f.serverTimestamp() });
+        }
       }
     } catch (e) {
       this.setUI("err", `Sync read failed (${e.code || e.message}). Ticks are still saved locally.`,
@@ -602,30 +617,91 @@ const sync = {
     }
     this.unsub = f.onSnapshot(ref,
       s => {
-        saveTicks(plan.date, s.exists() ? (s.data().ticks || {}) : {});
-        render();
+        // Our own edits are still queued locally; don't let an older server state
+        // flicker over them before they've been sent.
+        if (this.queue.size && this.queueDate === date) return;
+        this.adopt(s.exists() ? (s.data().ticks || {}) : {}, date);
       },
       e => this.setUI("err", `Live sync dropped (${e.code || e.message}). Ticks are still saved locally.`,
         "Reconnect", () => { this.onAuth(this.fb.auth.currentUser); })
     );
   },
 
-  /* Debounced whole-map write. setDoc without merge, so unticking propagates:
-     a merge would deep-merge the ticks map and resurrect deleted keys. */
-  push(date, ticks) {
+  /* Per-item field writes rather than replacing the whole map, so two devices
+     editing different items in the same day can't clobber each other. Item ids
+     contain hyphens, which are not legal in a dotted field-path string, so the
+     paths are built as FieldPath objects. */
+  queueTick(date, id, on) {
     if (this.mode !== "signed-in") return;
-    this.pending = { date, ticks: { ...ticks } };
+    if (this.queueDate !== date) { this.queue.clear(); this.queueDate = date; }
+    this.queue.set(id, on);
     clearTimeout(this.timer);
-    this.timer = setTimeout(async () => {
-      const { date, ticks } = this.pending;
-      const { f } = this.fb;
-      try {
-        await f.setDoc(this.ref(date), { ticks, updatedAt: f.serverTimestamp() });
-      } catch (e) {
-        this.setUI("err", `Couldn't save to sync (${e.code || e.message}). Saved locally.`,
-          "Retry", () => this.push(date, ticks));
+    this.timer = setTimeout(() => this.flush(), 500);
+  },
+
+  async flush() {
+    clearTimeout(this.timer);
+    if (this.mode !== "signed-in" || !this.queue.size) return;
+    const { f } = this.fb;
+    const date = this.queueDate;
+    const edits = new Map(this.queue);
+    this.queue.clear();
+
+    const args = [];
+    for (const [id, on] of edits) {
+      args.push(new f.FieldPath("ticks", id), on ? true : f.deleteField());
+    }
+    args.push("updatedAt", f.serverTimestamp());
+
+    try {
+      await f.updateDoc(this.ref(date), ...args);
+    } catch (e) {
+      if (e.code === "not-found") {
+        try {
+          await f.setDoc(this.ref(date), { ticks: loadTicks(date), updatedAt: f.serverTimestamp() });
+          return;
+        } catch (e2) { e = e2; }
       }
-    }, 600);
+      // Keep the edits so Retry isn't a no-op, without discarding newer ones.
+      for (const [id, on] of edits) if (!this.queue.has(id)) this.queue.set(id, on);
+      this.queueDate = date;
+      this.setUI("err", `Couldn't save to sync (${e.code || e.message}). Saved locally.`,
+        "Retry", () => this.flush());
+    }
+  },
+
+  /* Wholesale clear is deliberate, so it replaces the document outright. */
+  async clearDay(date) {
+    if (this.mode !== "signed-in") return;
+    this.queue.clear();
+    clearTimeout(this.timer);
+    const { f } = this.fb;
+    try { await f.setDoc(this.ref(date), { ticks: {}, updatedAt: f.serverTimestamp() }); }
+    catch (e) {
+      this.setUI("err", `Couldn't clear on sync (${e.code || e.message}). Cleared locally.`,
+        "Retry", () => this.clearDay(date));
+    }
+  },
+
+  /* Mobile browsers freeze background tabs, which kills the listener. Flush before
+     the tab is put away, and re-read from the server when it comes back. */
+  async resync() {
+    if (this.mode !== "signed-in") return;
+    await this.flush();
+    const { f } = this.fb;
+    try {
+      const snap = await f.getDocFromServer(this.ref(plan.date));
+      this.adopt(snap.exists() ? (snap.data().ticks || {}) : {}, plan.date);
+    } catch { /* offline; the listener will catch up on reconnect */ }
+  },
+
+  watchLifecycle() {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") this.flush();
+      else this.resync();
+    });
+    window.addEventListener("pagehide", () => this.flush());
+    window.addEventListener("online", () => this.resync());
   },
 
   /* The day rolled over, or a fresh list arrived — re-point at the new document. */
@@ -691,12 +767,12 @@ $("resetBtn").addEventListener("click", () => {
   if (!confirm("Clear every tick for " + plan.date + "?")) return;
   saveTicks(plan.date, {});
   render();
-  sync.push(plan.date, {});
+  sync.clearDay(plan.date);
   setStatus("Cleared.");
 });
 
 /* Plan first so sync has a date to attach to. */
-loadPlan().then(() => sync.init());
+loadPlan().then(() => sync.init()).then(() => sync.watchLifecycle());
 </script>
 </body>
 </html>
