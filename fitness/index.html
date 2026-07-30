@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#17171a">
+<meta name="theme-color" content="#141416">
 <title>NOW → WANT</title>
 
 <!-- Add to Home Screen. iOS ignores the manifest's name/display, so the
@@ -17,239 +17,249 @@
 <meta name="apple-mobile-web-app-title" content="NOW→WANT">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-  /* Dark unconditionally, rather than following prefers-color-scheme — a phone set
-     to light mode was rendering the light theme while the desktop stayed dark. */
   :root {
-    --bg: #17171a;
-    --panel: #1f1f23;
-    --ink: #edeae4;
-    --ink-soft: #a5a19a;
-    --ink-faint: #77736c;
-    --line: #32323a;
-    --accent: #e8834a;
-    --accent-soft: #2b211b;
-    --done: #7fb185;
-    --warn-bg: #2a2318;
-    --warn-line: #4d4025;
-    --radius: 12px;
-    --maxw: 660px;
+    --bg:#141416; --panel:#1e1e23; --raised:#26262d; --line:#33333c;
+    --ink:#efece6; --soft:#a8a49c; --faint:#726e68;
+    --accent:#e8834a; --flame:#ffb020; --xp:#8b7fe8; --done:#7fb185;
+    --maxw:430px;
   }
-  * { box-sizing: border-box; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body {
-    margin: 0;
-    /* The status bar is translucent when installed to the home screen, so the top
-       inset keeps the header out from under the notch. */
+    margin:0;
     padding:
-      calc(28px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right))
-      calc(80px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.55 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
+      calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+      calc(28px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    background:var(--bg); color:var(--ink);
+    font:15px/1.45 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
   }
-  .wrap { max-width: var(--maxw); margin: 0 auto; }
+  .wrap { max-width:var(--maxw); margin:0 auto; }
 
   /* ---------- header ---------- */
-  header { margin-bottom: 22px; }
+  .topbar { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
   .home {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
-    color: var(--ink-faint); text-decoration: none; font-weight: 600;
-    margin-bottom: 14px; padding: 6px 11px 6px 9px;
-    border: 1px solid var(--line); border-radius: 99px; background: var(--panel);
-    transition: color .15s, border-color .15s;
+    font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--faint); text-decoration:none;
   }
-  .home:hover { color: var(--ink); border-color: var(--ink-faint); }
-  .eyebrow {
-    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--ink-faint); margin-bottom: 8px;
+  .home:hover { color:var(--ink); }
+  .grow { flex:1; }
+  .streak {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 11px 5px 9px; border-radius:99px;
+    background:#2a2015; border:1px solid #4a3820;
+    font-size:11px; color:#8a7350;
   }
-  h1 {
-    font-size: clamp(30px, 8vw, 40px); line-height: 1.05; margin: 0 0 6px;
-    font-weight: 600; letter-spacing: -.02em;
-  }
-  h1 .arrow { color: var(--accent); }
-  .datebar {
-    display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline;
-    color: var(--ink-soft); font-size: 14px; margin-top: 10px;
-  }
-  .datebar b { color: var(--ink); font-weight: 600; }
+  .streak b { font-size:13px; color:var(--flame); }
+  .streak.cold { background:var(--panel); border-color:var(--line); color:var(--faint); }
+  .streak.cold b { color:var(--soft); }
 
-  /* ---------- sync row ---------- */
+  /* ---------- hero ---------- */
+  .hero {
+    background:var(--panel); border:1px solid var(--line); border-radius:20px;
+    padding:13px 16px 12px; margin-bottom:12px;
+  }
+  .hero-top { display:flex; align-items:center; gap:12px; }
+  .hero-txt { flex:1; min-width:0; }
+  .daychip {
+    display:inline-block; padding:3px 7px; border-radius:6px;
+    background:#2e1d12; color:var(--accent);
+    font-size:9px; font-weight:700; letter-spacing:.08em;
+  }
+  .week { font-size:11px; color:var(--faint); margin-left:7px; }
+  .hero h1 { margin:5px 0 3px; font-size:23px; font-weight:700; letter-spacing:-.02em; }
+  .hero .sub { font-size:11.5px; color:var(--soft); }
+
+  .ring { position:relative; width:76px; height:76px; flex:0 0 auto; }
+  .ring svg { transform:rotate(-90deg); display:block; }
+  .ring .val {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1px;
+  }
+  .ring .n { font-size:20px; font-weight:700; line-height:1; }
+  .ring .d { font-size:9.5px; color:var(--faint); }
+
+  .xpblock { margin-top:12px; }
+  .xprow { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+  .lvl { font-size:9.5px; font-weight:700; letter-spacing:.07em; color:var(--xp); }
+  .xpnum { font-size:9.5px; color:var(--faint); }
+  .xptrack { height:7px; border-radius:99px; background:#2c2c34; overflow:hidden; }
+  .xpfill {
+    height:100%; border-radius:99px;
+    background:linear-gradient(90deg, var(--xp), var(--accent));
+    transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ---------- quest chips ---------- */
+  .chips { display:flex; gap:7px; margin-bottom:12px; }
+  .chip {
+    flex:1; min-width:0; padding:8px 9px 7px; border-radius:13px;
+    background:var(--panel); border:1px solid var(--line);
+    cursor:pointer; text-align:left; font:inherit; color:inherit;
+    transition:border-color .15s, background .15s;
+  }
+  .chip.complete { background:#1b2a1d; border-color:#3a5c3f; }
+  .chip .lab {
+    display:flex; align-items:center; gap:4px; margin-bottom:5px;
+    font-size:10px; font-weight:700; color:var(--soft);
+    white-space:nowrap; overflow:hidden;
+  }
+  .chip.complete .lab { color:var(--done); }
+  .chip .cnt { font-size:15px; font-weight:700; margin-bottom:5px; }
+  .chip.complete .cnt { color:var(--done); }
+  .chip .mini { height:3px; border-radius:99px; background:#31313a; overflow:hidden; }
+  .chip .mini i { display:block; height:100%; border-radius:99px; background:var(--accent); transition:width .35s; }
+  .chip.complete .mini i { background:var(--done); }
+
+  /* ---------- list ---------- */
+  .sec {
+    display:flex; align-items:center; gap:6px;
+    padding:5px 3px 1px; font-size:9.5px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--faint);
+  }
+  .row {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 12px 8px 11px; margin-bottom:5px;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    cursor:pointer; transition:background .15s, border-color .15s, opacity .15s;
+  }
+  .row.hero-item { border-color:#5a3a22; border-width:1.5px; padding:7.5px 11.5px 7.5px 10.5px; }
+  .row.done { background:#191d19; border-color:#242f26; }
+  .row input { position:absolute; opacity:0; pointer-events:none; }
+  .box {
+    flex:0 0 auto; width:21px; height:21px; border-radius:7px;
+    border:1.5px solid #4a4a55; display:flex; align-items:center; justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  .row.done .box { background:var(--done); border-color:var(--done); }
+  .box svg { width:12px; height:12px; opacity:0; transition:opacity .12s; }
+  .row.done .box svg { opacity:1; }
+  .emoji { flex:0 0 auto; font-size:13px; line-height:1; }
+  .txt { flex:1; min-width:0; font-size:13.5px; }
+  .row.hero-item .txt { font-weight:600; }
+  .row.done .txt { color:var(--faint); text-decoration:line-through; }
+  .detail { display:none; font-size:11px; color:var(--faint); margin-top:2px; line-height:1.35; }
+  body.notes .detail { display:block; }
+  .pill {
+    flex:0 0 auto; padding:3px 7px; border-radius:99px;
+    background:#232330; color:var(--xp); font-size:10px; font-weight:700;
+  }
+  .row.done .pill { background:#1f2a20; color:var(--done); }
+
+  /* ---------- sync + actions ---------- */
   .sync {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    margin-top: 14px; padding: 9px 12px;
-    border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
-    font-size: 13px; color: var(--ink-soft);
+    display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+    margin:12px 0; padding:8px 11px; border-radius:11px;
+    background:var(--panel); border:1px solid var(--line);
+    font-size:12px; color:var(--soft);
   }
-  .sync .dot {
-    flex: 0 0 auto; width: 7px; height: 7px; border-radius: 99px;
-    background: var(--ink-faint);
-  }
-  .sync.on .dot { background: var(--done); }
-  .sync.err .dot { background: var(--accent); }
-  .sync .msg { flex: 1; min-width: 140px; }
-  .sync button { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+  .sync .dot { flex:0 0 auto; width:6px; height:6px; border-radius:99px; background:var(--faint); }
+  .sync.on .dot { background:var(--done); }
+  .sync.err .dot { background:var(--accent); }
+  .sync .msg { flex:1; min-width:120px; }
 
-  /* ---------- progress ---------- */
-  .progress { margin: 22px 0 6px; }
-  .track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
-  .fill {
-    height: 100%; width: 0%; background: var(--accent); border-radius: 99px;
-    transition: width .35s cubic-bezier(.4,0,.2,1);
-  }
-  .fill.complete { background: var(--done); }
-  .progress-label {
-    font-size: 13px; color: var(--ink-soft); margin-top: 8px;
-    display: flex; justify-content: space-between; gap: 2px 16px; flex-wrap: wrap;
-  }
-  @media (max-width: 520px) {
-    .progress-label { flex-direction: column; }
-  }
-
-  /* ---------- session banner ---------- */
-  .headline {
-    background: var(--accent-soft); border-radius: var(--radius);
-    padding: 14px 16px; margin: 22px 0 4px; font-size: 15px; color: var(--ink);
-  }
-  .headline .session {
-    display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 6px; font-weight: 600;
-  }
-
-  /* ---------- groups ---------- */
-  section.group { margin-top: 30px; }
-  .group h2 {
-    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--ink-faint); margin: 0 0 4px; font-weight: 600;
-  }
-  .group .note {
-    font-size: 13.5px; color: var(--ink-soft); margin: 0 0 12px; max-width: 56ch;
-  }
-  ul { list-style: none; margin: 0; padding: 0; }
-  li.item {
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: var(--radius); margin-bottom: 8px;
-    transition: border-color .18s, opacity .18s;
-  }
-  li.item.emphasis { border-left: 3px solid var(--accent); }
-  li.item:has(input:checked) { opacity: .58; }
-  li.item label {
-    display: flex; gap: 13px; align-items: flex-start;
-    padding: 13px 15px; cursor: pointer; user-select: none;
-  }
-  input[type=checkbox] {
-    appearance: none; flex: 0 0 auto; width: 20px; height: 20px; margin: 1px 0 0;
-    border: 1.5px solid var(--ink-faint); border-radius: 5px; cursor: pointer;
-    position: relative; transition: background .15s, border-color .15s;
-  }
-  input[type=checkbox]:checked { background: var(--done); border-color: var(--done); }
-  input[type=checkbox]:checked::after {
-    content: ""; position: absolute; left: 5.5px; top: 2px;
-    width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .text { flex: 1; min-width: 0; }
-  .text .main { font-size: 15.5px; }
-  li.item:has(input:checked) .text .main {
-    text-decoration: line-through; text-decoration-color: var(--ink-faint);
-  }
-  .text .detail { font-size: 13px; color: var(--ink-soft); margin-top: 3px; }
-
-  /* ---------- buttons ---------- */
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
   button {
-    font: inherit; font-size: 14.5px; font-weight: 500; cursor: pointer;
-    padding: 11px 18px; border-radius: 10px; border: 1px solid var(--line);
-    background: var(--panel); color: var(--ink);
-    transition: border-color .15s, background .15s, transform .06s;
+    font:inherit; font-size:12.5px; font-weight:600; cursor:pointer;
+    padding:8px 13px; border-radius:10px;
+    border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    transition:border-color .15s, background .15s;
   }
-  button:hover { border-color: var(--ink-faint); }
-  button:active { transform: translateY(1px); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.primary:hover { filter: brightness(1.07); }
-  button:disabled { opacity: .5; cursor: default; transform: none; }
+  button:hover { border-color:var(--faint); }
+  button:active { transform:translateY(1px); }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#17110c; }
+  button.on { border-color:var(--accent); color:var(--accent); }
+  button:disabled { opacity:.5; cursor:default; }
+  .status { font-size:12px; color:var(--soft); margin-top:9px; min-height:1.2em; }
+  .status.ok { color:var(--done); }
 
-  /* ---------- handoff panel ---------- */
+  /* ---------- handoff ---------- */
   .handoff {
-    margin-top: 22px; background: var(--warn-bg); border: 1px solid var(--warn-line);
-    border-radius: var(--radius); padding: 16px 17px;
+    margin-top:14px; padding:13px 14px; border-radius:14px;
+    background:#2a2318; border:1px solid #4d4025;
   }
-  .handoff h3 { margin: 0 0 8px; font-size: 15.5px; font-weight: 600; }
-  .handoff p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); }
+  .handoff h3 { margin:0 0 6px; font-size:14px; font-weight:700; }
+  .handoff p { margin:0 0 10px; font-size:12.5px; color:var(--soft); }
   .handoff pre {
-    margin: 0 0 12px; padding: 12px 13px; background: var(--panel);
-    border: 1px solid var(--line); border-radius: 9px;
-    font: 12.5px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
-    white-space: pre-wrap; overflow-x: auto; max-height: 260px; overflow-y: auto;
-    color: var(--ink);
+    margin:0 0 10px; padding:10px 11px; border-radius:9px;
+    background:var(--bg); border:1px solid var(--line);
+    font:11.5px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
+    white-space:pre-wrap; overflow:auto; max-height:220px; color:var(--ink);
   }
-  .status { font-size: 13.5px; color: var(--ink-soft); margin-top: 12px; min-height: 1.3em; }
-  .status.ok { color: var(--done); }
 
-  /* ---------- plan at a glance ---------- */
-  details.plan { margin-top: 38px; border-top: 1px solid var(--line); padding-top: 18px; }
+  details.plan { margin-top:20px; border-top:1px solid var(--line); padding-top:14px; }
   details.plan summary {
-    cursor: pointer; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--ink-faint); font-weight: 600; list-style: none;
+    cursor:pointer; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--faint); font-weight:700; list-style:none;
   }
-  details.plan summary::-webkit-details-marker { display: none; }
-  details.plan summary::before { content: "▸ "; }
-  details.plan[open] summary::before { content: "▾ "; }
-  .plan-body { margin-top: 16px; font-size: 14.5px; color: var(--ink-soft); }
-  .plan-body h4 {
-    margin: 18px 0 6px; font-size: 13px; color: var(--ink); font-weight: 600;
-  }
-  .plan-body ul.dash { padding-left: 0; }
-  .plan-body ul.dash li { padding-left: 15px; position: relative; margin-bottom: 5px; }
-  .plan-body ul.dash li::before {
-    content: "—"; position: absolute; left: 0; color: var(--ink-faint);
-  }
-  .plan-body .goal { color: var(--ink); }
+  details.plan summary::-webkit-details-marker { display:none; }
+  details.plan summary::before { content:"▸ "; }
+  details.plan[open] summary::before { content:"▾ "; }
+  .plan-body { margin-top:12px; font-size:13px; color:var(--soft); }
+  .plan-body h4 { margin:14px 0 5px; font-size:12px; color:var(--ink); font-weight:700; }
+  .plan-body ul { list-style:none; padding:0; margin:0; }
+  .plan-body li { padding-left:14px; position:relative; margin-bottom:4px; }
+  .plan-body li::before { content:"—"; position:absolute; left:0; color:var(--faint); }
   footer {
-    margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line);
-    font-size: 12px; color: var(--ink-faint); line-height: 1.6;
+    margin-top:22px; padding-top:12px; border-top:1px solid var(--line);
+    font-size:11px; color:var(--faint); line-height:1.55;
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <a class="home" href="../">← Life Interface</a>
-    <div class="eyebrow">Fitness</div>
-    <h1>NOW <span class="arrow">→</span> WANT</h1>
-    <div class="datebar">
-      <span>Today is <b id="todayStr">—</b></span>
-      <span id="dayCount"></span>
-    </div>
-    <div class="sync" id="sync">
-      <span class="dot"></span>
-      <span class="msg" id="syncMsg">Checking sync…</span>
-      <button id="authBtn" hidden></button>
-    </div>
-  </header>
+  <div class="topbar">
+    <a class="home" href="../">‹ Life Interface</a>
+    <span class="grow"></span>
+    <span class="streak" id="streak"><b id="streakN">0</b><span id="streakLbl">days</span></span>
+  </div>
 
-  <div class="progress">
-    <div class="track"><div class="fill" id="fill"></div></div>
-    <div class="progress-label">
-      <span id="countLabel">Loading…</span>
-      <span id="phaseLabel"></span>
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-txt">
+        <div>
+          <span class="daychip" id="dayChip">DAY —</span>
+          <span class="week" id="weekLbl"></span>
+        </div>
+        <h1 id="sessionLabel">Today</h1>
+        <div class="sub" id="headline"></div>
+      </div>
+      <div class="ring">
+        <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true">
+          <circle cx="38" cy="38" r="33" fill="none" stroke="#2c2c34" stroke-width="7"></circle>
+          <circle id="ringArc" cx="38" cy="38" r="33" fill="none" stroke="var(--accent)"
+                  stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="207.3" stroke-dashoffset="207.3"
+                  style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1)"></circle>
+        </svg>
+        <div class="val"><span class="n" id="ringN">0</span><span class="d" id="ringD">of 0</span></div>
+      </div>
+    </div>
+    <div class="xpblock">
+      <div class="xprow">
+        <span class="lvl" id="lvlLbl">LVL 1</span>
+        <span class="grow"></span>
+        <span class="xpnum" id="xpLbl">0 XP</span>
+      </div>
+      <div class="xptrack"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
     </div>
   </div>
 
-  <div class="headline" id="headline" hidden>
-    <span class="session" id="sessionLabel"></span>
-    <span id="headlineText"></span>
-  </div>
+  <div class="chips" id="chips"></div>
 
   <main id="list"></main>
 
+  <div class="sync" id="sync">
+    <span class="dot"></span>
+    <span class="msg" id="syncMsg">Checking sync…</span>
+    <button id="authBtn" hidden></button>
+  </div>
+
   <div class="actions">
     <button class="primary" id="refreshBtn">Refresh for today</button>
-    <button id="copyBtn">Copy status for Claude Code</button>
-    <button id="resetBtn">Clear today's ticks</button>
+    <button id="notesBtn">Notes</button>
+    <button id="copyBtn">Copy status</button>
+    <button id="resetBtn">Clear</button>
   </div>
   <div class="status" id="status"></div>
 
@@ -263,32 +273,27 @@
   <details class="plan">
     <summary>The plan, at a glance</summary>
     <div class="plan-body">
-      <p class="goal"><strong>Goal:</strong> lean gain, not weight loss. Add roughly 3–5 kg of muscle — mostly lateral delts, upper chest and arms — while holding or slightly reducing body fat. Started 29 July 2026; realistic horizon 8–14 months.</p>
-
+      <p><strong>Goal:</strong> lean gain, not weight loss. Add roughly 3–5 kg of muscle — mostly lateral delts, upper chest and arms — while holding or slightly reducing body fat. Started 29 July 2026; realistic horizon 8–14 months.</p>
       <h4>The four things that waste a year</h4>
-      <ul class="dash">
+      <ul>
         <li>Program hopping — twelve weeks minimum before changing anything</li>
-        <li>Under-eating protein — 1.8–2.2 g per kg per day, every day</li>
+        <li>Under-eating protein — 1.8–2.2 g per kg per day</li>
         <li>Never adding weight to the bar — double progression, logged every set</li>
         <li>Sleeping badly — 7–9 hours, consistent wake time</li>
       </ul>
-
       <h4>The weekly shape</h4>
-      <ul class="dash">
+      <ul>
         <li>Day 1 — Upper, push emphasis</li>
         <li>Day 2 — Lower</li>
         <li>Day 3 — Upper, pull emphasis</li>
         <li>Day 4 — Weak-point: arms &amp; delts</li>
       </ul>
-      <p>Four sessions a week, 50–60 min. Lateral raises appear on three of the four days — that is deliberate.</p>
-
-      <h4>What to measure, and how often</h4>
-      <ul class="dash">
-        <li>Every session — weight and reps for every set</li>
-        <li>Weekly, Sunday — bodyweight 7-day average, waist at navel, sessions hit, protein days hit</li>
-        <li>Monthly — same-pose photo, saved as <code>NOW - DD.MM.YYYY.jpeg</code></li>
+      <h4>What "working" looks like at week 6</h4>
+      <ul>
+        <li>Key lifts up 15–25%</li>
+        <li>Bodyweight up 0.3–0.8 kg total</li>
+        <li>Barely any visual change — trust the logbook over the mirror</li>
       </ul>
-      <p>At week 6, "working" looks like lifts up 15–25% and almost no visual change. If the lifts are climbing it is working — trust that over the mirror.</p>
     </div>
   </details>
 
@@ -303,43 +308,48 @@
 <script>
 "use strict";
 
-/* Embedded fallback: lets the page work when opened straight off disk (file://),
-   where fetch() of a sibling file is blocked. The served copy always wins. */
-const FALLBACK = {"date":"2026-07-30","dayOfPlan":2,"week":1,"sessionLabel":"Day 1 — Upper (push emphasis)","headline":"First real session. Conservative weights on purpose — today's job is to write down starting numbers, not to find your limit.","groups":[{"title":"Meds","items":[{"id":"m-stimulants","text":"Stimulants","detail":"As prescribed."},{"id":"m-antidepressants","text":"Antidepressants","detail":"As prescribed. Consistent time of day."}]},{"title":"Train","note":"Log weight and reps for every set.","items":[{"id":"t-incline-press","text":"Incline press — 4 × 6–8"},{"id":"t-shoulder-press","text":"Seated dumbbell shoulder press — 3 × 8–10"},{"id":"t-lateral-raise","text":"Lateral raise — 4 × 12–15","emphasis":true},{"id":"t-supported-row","text":"Chest-supported row — 3 × 8–10"},{"id":"t-tri-extension","text":"Overhead cable triceps extension — 3 × 10–12"},{"id":"t-logged","text":"Wrote down weight × reps for every set"}]},{"title":"Eat","items":[{"id":"e-anchor-1","text":"Breakfast protein anchor"},{"id":"e-anchor-2","text":"Lunch protein anchor"},{"id":"e-anchor-3","text":"Post-training or afternoon anchor"},{"id":"e-anchor-4","text":"Dinner protein anchor"},{"id":"e-water","text":"Water through the day"},{"id":"e-track","text":"Logged protein today"},{"id":"e-creatine","text":"Creatine, 5 g"}]},{"title":"Recover","items":[{"id":"r-sleep","text":"7–9 hours, consistent wake time"},{"id":"r-cold-shower","text":"Cold shower"},{"id":"r-meditation","text":"Meditation"}]},{"title":"Week 1 setup","items":[{"id":"s-measure","text":"Weigh yourself and measure waist at navel"},{"id":"s-supplements","text":"Buy creatine monohydrate and whey"},{"id":"s-calendar","text":"Put the four weekly sessions in your calendar"}]}]};
+const FALLBACK = {"date":"2026-07-30","dayOfPlan":2,"week":1,"sessionLabel":"Upper — Push","headline":"Lateral raises are the priority","groups":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","xp":10}]},{"title":"Train","emoji":"🏋️","items":[{"id":"t-incline-press","emoji":"🏋️","text":"Incline press · 4×6–8","xp":25},{"id":"t-shoulder-press","emoji":"🙌","text":"Shoulder press · 3×8–10","xp":25},{"id":"t-lateral-raise","emoji":"💪","text":"Lateral raise · 4×12–15","xp":40,"hero":true},{"id":"t-supported-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"t-tri-extension","emoji":"🔻","text":"Overhead triceps ext · 3×10–12","xp":20},{"id":"t-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"title":"Eat","emoji":"🍳","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]},{"title":"Setup","emoji":"🎯","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","xp":20},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","xp":20}]}]};
 
 const SDK        = "https://www.gstatic.com/firebasejs/12.16.0/";
 const START_DATE = "2026-07-29";
 const LS_PREFIX  = "lifeinterface.fitness.v1.";
+const LS_NOTES   = "lifeinterface.fitness.notes";
+const XP_PER_LVL = 500;
+const HISTORY_DAYS = 90;
+const RING_C     = 2 * Math.PI * 33;   // matches r=33 in the svg
 const $ = id => document.getElementById(id);
 
 let plan = null;
+/* date -> { xpEarned, ticked } for days other than today. Today is always
+   computed live from the current tick state instead. */
+const history = new Map();
 
 /* ---------- dates: always local, never UTC ---------- */
 function localISO(d = new Date()) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 function prettyDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
-    weekday: "long", day: "numeric", month: "long", year: "numeric"
-  });
+  const [y,m,d] = iso.split("-").map(Number);
+  return new Date(y, m-1, d).toLocaleDateString(undefined,
+    { weekday:"long", day:"numeric", month:"long", year:"numeric" });
 }
-function daysBetween(aISO, bISO) {
-  const [ay, am, ad] = aISO.split("-").map(Number);
-  const [by, bm, bd] = bISO.split("-").map(Number);
-  return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / 86400000);
+function daysBetween(a, b) {
+  const [ay,am,ad] = a.split("-").map(Number);
+  const [by,bm,bd] = b.split("-").map(Number);
+  return Math.round((Date.UTC(by,bm-1,bd) - Date.UTC(ay,am-1,ad)) / 86400000);
+}
+function shiftDate(iso, delta) {
+  const [y,m,d] = iso.split("-").map(Number);
+  return localISO(new Date(y, m-1, d + delta));
 }
 
-/* ---------- tick storage ----------
-   localStorage is always written. Signed out it is the only store; signed in it
-   is a local mirror of the Firestore document, which is authoritative. */
+/* ---------- tick storage ---------- */
 function loadTicks(date) {
   try { return JSON.parse(localStorage.getItem(LS_PREFIX + date) || "{}"); }
   catch { return {}; }
 }
 function saveTicks(date, ticks) {
-  try { localStorage.setItem(LS_PREFIX + date, JSON.stringify(ticks)); }
-  catch { /* private mode — ticks just won't survive a reload */ }
+  try { localStorage.setItem(LS_PREFIX + date, JSON.stringify(ticks)); } catch {}
 }
 function storedDates() {
   const out = [];
@@ -350,143 +360,204 @@ function storedDates() {
   return out.sort();
 }
 
+/* ---------- scoring ---------- */
+const allItems = () => (plan.groups || []).flatMap(g => g.items || []);
+
+function todayXp() {
+  const t = loadTicks(plan.date);
+  return allItems().reduce((s, i) => s + (t[i.id] ? (i.xp || 0) : 0), 0);
+}
+function todayTicked() {
+  const t = loadTicks(plan.date);
+  return allItems().filter(i => t[i.id]).length;
+}
+
+/* A day counts toward the streak if anything at all was ticked. Rest days still
+   count, because meds, food and sleep are on the list every day — so the streak
+   measures showing up, not training, and correctly resting never breaks it. */
+function activeDates() {
+  const s = new Set();
+  for (const [date, h] of history) if (h.ticked > 0) s.add(date);
+  for (const date of storedDates()) {
+    if (Object.keys(loadTicks(date)).length > 0) s.add(date);
+  }
+  if (todayTicked() > 0) s.add(plan.date); else s.delete(plan.date);
+  return s;
+}
+function computeStreak() {
+  const active = activeDates();
+  const today = localISO();
+  let cur = active.has(today) ? today : shiftDate(today, -1);
+  let n = 0;
+  while (active.has(cur)) { n++; cur = shiftDate(cur, -1); }
+  return n;
+}
+function totalXp() {
+  let sum = todayXp();
+  for (const [date, h] of history) if (date !== plan.date) sum += h.xpEarned || 0;
+  return sum;
+}
+
 /* ---------- render ---------- */
 function render() {
   const today = localISO();
-  $("todayStr").textContent = prettyDate(today);
-
   const n = daysBetween(START_DATE, today) + 1;
-  $("dayCount").textContent = n > 0 ? `· day ${n} of the plan` : "";
-  $("phaseLabel").textContent = n <= 60
-    ? "Month 1–2: expect almost no visual change"
-    : n <= 120 ? "Month 3–4: shoulders and arms filling out"
-    : n <= 180 ? "Month 6: visible in a same-pose photo" : "Month 9–12: reference territory";
+  $("dayChip").textContent = n > 0 ? `DAY ${n}` : "DAY —";
+  $("weekLbl").textContent = plan.week ? `Week ${plan.week}` : "";
+  $("sessionLabel").textContent = plan.sessionLabel || "Today";
+  $("headline").textContent = plan.headline || "";
 
   const ticks = loadTicks(plan.date);
   const list = $("list");
   list.textContent = "";
 
-  if (plan.headline) {
-    $("headline").hidden = false;
-    $("sessionLabel").textContent = plan.sessionLabel || `Day ${plan.dayOfPlan || ""}`;
-    $("headlineText").textContent = plan.headline;
-  }
-
   for (const g of plan.groups || []) {
-    const sec = document.createElement("section");
-    sec.className = "group";
+    const sec = document.createElement("div");
+    sec.className = "sec";
+    const name = document.createElement("span");
+    name.textContent = g.title;
+    const grow = document.createElement("span");
+    grow.className = "grow";
+    const cnt = document.createElement("span");
+    const gd = (g.items || []).filter(i => ticks[i.id]).length;
+    cnt.textContent = `${gd}/${(g.items || []).length}`;
+    sec.append(name, grow, cnt);
+    list.appendChild(sec);
 
-    const h = document.createElement("h2");
-    h.textContent = g.title;
-    sec.appendChild(h);
-
-    if (g.note) {
-      const p = document.createElement("p");
-      p.className = "note";
-      p.textContent = g.note;
-      sec.appendChild(p);
-    }
-
-    const ul = document.createElement("ul");
     for (const it of g.items || []) {
-      const li = document.createElement("li");
-      li.className = "item" + (it.emphasis ? " emphasis" : "");
-
-      const label = document.createElement("label");
+      const on = !!ticks[it.id];
+      const row = document.createElement("label");
+      row.className = "row" + (on ? " done" : "") + (it.hero ? " hero-item" : "");
 
       const cb = document.createElement("input");
       cb.type = "checkbox";
-      cb.checked = !!ticks[it.id];
+      cb.checked = on;
       cb.addEventListener("change", () => setTick(it.id, cb.checked));
 
-      const txt = document.createElement("div");
-      txt.className = "text";
-      const main = document.createElement("div");
-      main.className = "main";
-      main.textContent = it.text;
-      txt.appendChild(main);
+      const box = document.createElement("span");
+      box.className = "box";
+      box.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#141416" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
+
+      const em = document.createElement("span");
+      em.className = "emoji";
+      em.textContent = it.emoji || "•";
+
+      const txt = document.createElement("span");
+      txt.className = "txt";
+      txt.append(document.createTextNode(it.text));
       if (it.detail) {
-        const det = document.createElement("div");
-        det.className = "detail";
-        det.textContent = it.detail;
-        txt.appendChild(det);
+        const d = document.createElement("span");
+        d.className = "detail";
+        d.textContent = it.detail;
+        txt.appendChild(d);
       }
 
-      label.append(cb, txt);
-      li.appendChild(label);
-      ul.appendChild(li);
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = `+${it.xp || 0}`;
+
+      row.append(cb, box, em, txt, pill);
+      list.appendChild(row);
     }
-    sec.appendChild(ul);
-    list.appendChild(sec);
   }
 
-  recount();
+  renderChips(ticks);
+  renderStats(ticks);
 }
 
-function recount() {
-  const ticks = loadTicks(plan.date);
-  const items = (plan.groups || []).flatMap(g => g.items || []);
-  const total = items.length;
+function renderChips(ticks) {
+  const wrap = $("chips");
+  wrap.textContent = "";
+  for (const g of plan.groups || []) {
+    const items = g.items || [];
+    if (!items.length) continue;
+    const done = items.filter(i => ticks[i.id]).length;
+    const complete = done === items.length;
+
+    const chip = document.createElement("div");
+    chip.className = "chip" + (complete ? " complete" : "");
+
+    const lab = document.createElement("div");
+    lab.className = "lab";
+    lab.textContent = `${g.emoji || ""} ${g.title}`.trim();
+
+    const cnt = document.createElement("div");
+    cnt.className = "cnt";
+    cnt.textContent = `${done}/${items.length}`;
+
+    const mini = document.createElement("div");
+    mini.className = "mini";
+    const bar = document.createElement("i");
+    bar.style.width = `${Math.round((done / items.length) * 100)}%`;
+    mini.appendChild(bar);
+
+    chip.append(lab, cnt, mini);
+    wrap.appendChild(chip);
+  }
+}
+
+function renderStats(ticks) {
+  const items = allItems();
   const done = items.filter(i => ticks[i.id]).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  const fill = $("fill");
-  fill.style.width = pct + "%";
-  fill.classList.toggle("complete", total > 0 && done === total);
-  $("countLabel").textContent =
-    total === 0 ? "Nothing on the list"
-    : done === total ? `All ${total} done — that's the day.`
-    : `${done} of ${total} done`;
+  const pct = items.length ? done / items.length : 0;
+
+  $("ringN").textContent = done;
+  $("ringD").textContent = `of ${items.length}`;
+  $("ringArc").setAttribute("stroke-dashoffset", String(RING_C * (1 - pct)));
+  $("ringArc").setAttribute("stroke", pct === 1 ? "var(--done)" : "var(--accent)");
+
+  const total = totalXp();
+  const lvl = Math.floor(total / XP_PER_LVL) + 1;
+  const inLvl = total % XP_PER_LVL;
+  $("lvlLbl").textContent = `LVL ${lvl}`;
+  $("xpLbl").textContent = `${inLvl} / ${XP_PER_LVL} XP`;
+  $("xpFill").style.width = `${(inLvl / XP_PER_LVL) * 100}%`;
+
+  const s = computeStreak();
+  $("streakN").textContent = s;
+  $("streakLbl").textContent = s === 1 ? "day" : "days";
+  $("streak").className = "streak" + (s === 0 ? " cold" : "");
 }
 
-/* Single place a tick changes: write locally, then push upstream if signed in. */
 function setTick(id, on) {
   const t = loadTicks(plan.date);
   if (on) t[id] = true; else delete t[id];
   saveTicks(plan.date, t);
-  recount();
+  render();
   sync.queueTick(plan.date, id, on);
 }
 
-/* ---------- the handoff summary ---------- */
+/* ---------- handoff ---------- */
 function summaryFor(date) {
   const ticks = loadTicks(date);
   const lines = [`Fitness tracker — results for ${date} (${prettyDate(date)})`, ""];
-
   if (date === plan.date) {
     for (const g of plan.groups || []) {
       lines.push(`${g.title}:`);
-      for (const it of g.items || []) {
-        lines.push(`  [${ticks[it.id] ? "x" : " "}] ${it.text}`);
-      }
+      for (const it of g.items || []) lines.push(`  [${ticks[it.id] ? "x" : " "}] ${it.text}`);
       lines.push("");
     }
-    const items = (plan.groups || []).flatMap(g => g.items || []);
-    lines.push(`Completed ${items.filter(i => ticks[i.id]).length} of ${items.length}.`);
+    const items = allItems();
+    lines.push(`Completed ${items.filter(i => ticks[i.id]).length} of ${items.length} — ${todayXp()} XP.`);
   } else {
     const ids = Object.keys(ticks);
     lines.push(ids.length ? `Ticked: ${ids.join(", ")}` : "Nothing was ticked.");
   }
   return lines.join("\n");
 }
-
 function handoffPayload(staleDate) {
   const today = localISO();
   const others = storedDates().filter(d => d !== staleDate && d !== today);
   let out = summaryFor(staleDate);
   out += `\n\nToday is ${today} (${prettyDate(today)}), day ${daysBetween(START_DATE, today) + 1} of the plan.`;
-  out += `\nPlease write the next today.json for ${today} and push it.`;
+  out += `\nStreak: ${computeStreak()} days. Please write the next today.json for ${today} and push it.`;
   if (sync.uid) out += `\n(Ticks also live in Firestore under users/${sync.uid}/days/.)`;
   if (others.length) out += `\n\nOther days still held in this browser: ${others.join(", ")}`;
   return out;
 }
-
 async function copy(text, okMsg) {
-  try {
-    await navigator.clipboard.writeText(text);
-    setStatus(okMsg, true);
-  } catch {
-    setStatus("Clipboard was blocked — select the text above and copy it manually.");
-  }
+  try { await navigator.clipboard.writeText(text); setStatus(okMsg, true); }
+  catch { setStatus("Clipboard was blocked — select the text above and copy it manually."); }
 }
 function setStatus(msg, ok = false) {
   const el = $("status");
@@ -498,35 +569,26 @@ function setStatus(msg, ok = false) {
    Degrades all the way down: no config, blocked SDK, or offline all leave the
    page working against localStorage alone. Nothing here may throw upward. */
 const sync = {
-  mode: "local",      // local | signed-out | signed-in
+  mode: "local",
   uid: null,
-  fb: null,           // { auth, db, api } once the SDK is loaded
+  fb: null,
   unsub: null,
   timer: null,
-  queue: new Map(),   // item id -> desired state, awaiting the debounced write
+  queue: new Map(),
   queueDate: null,
 
   setUI(state, msg, btnLabel, btnAction) {
     const row = $("sync"), btn = $("authBtn");
     row.className = "sync" + (state === "on" ? " on" : state === "err" ? " err" : "");
     $("syncMsg").textContent = msg;
-    if (btnLabel) {
-      btn.hidden = false;
-      btn.textContent = btnLabel;
-      btn.onclick = btnAction;
-    } else {
-      btn.hidden = true;
-      btn.onclick = null;
-    }
+    if (btnLabel) { btn.hidden = false; btn.textContent = btnLabel; btn.onclick = btnAction; }
+    else { btn.hidden = true; btn.onclick = null; }
   },
 
   async init() {
     let config = null;
-    try {
-      ({ firebaseConfig: config } = await import("./firebase-config.js"));
-    } catch {
-      // file:// origin, or the file is missing — stay local.
-    }
+    try { ({ firebaseConfig: config } = await import("./firebase-config.js")); }
+    catch { /* file:// origin, or the file is missing — stay local */ }
     if (!config || !config.projectId) {
       this.setUI("off", "Not syncing — ticks stay in this browser.");
       return;
@@ -543,11 +605,7 @@ const sync = {
       });
       this.fb = { auth: authMod.getAuth(app), db, a: authMod, f: fsMod };
       this.mode = "signed-out";
-
-      // Completes a redirect sign-in started before the page reloaded. Errors here
-      // surface through onAuthStateChanged staying signed out, so they're not fatal.
       authMod.getRedirectResult(this.fb.auth).catch(() => {});
-
       authMod.onAuthStateChanged(this.fb.auth, u => this.onAuth(u));
     } catch (e) {
       console.warn("Firebase unavailable, staying local:", e);
@@ -558,17 +616,16 @@ const sync = {
   onAuth(user) {
     if (this.unsub) { this.unsub(); this.unsub = null; }
     if (!user) {
-      this.uid = null;
-      this.mode = "signed-out";
+      this.uid = null; this.mode = "signed-out";
+      history.clear(); render();
       this.setUI("off", "Not syncing — ticks stay in this browser.",
         "Sign in with Google", () => this.signIn());
       return;
     }
-    this.uid = user.uid;
-    this.mode = "signed-in";
-    this.setUI("on", `Syncing as ${user.email || "your account"}`,
-      "Sign out", () => this.signOut());
+    this.uid = user.uid; this.mode = "signed-in";
+    this.setUI("on", `Syncing as ${user.email || "your account"}`, "Sign out", () => this.signOut());
     this.attach();
+    this.loadHistory();
   },
 
   async signIn() {
@@ -578,22 +635,16 @@ const sync = {
       await a.signInWithPopup(auth, new a.GoogleAuthProvider());
     } catch (e) {
       const code = e && e.code || "";
-
-      // Installed to the home screen, a popup often can't open at all. Fall back
-      // to a full-page redirect, which onAuthStateChanged picks up on return.
-      if (code === "auth/popup-blocked" ||
-          code === "auth/operation-not-supported-in-this-environment") {
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
         try {
           this.setUI("off", "Redirecting to Google…");
           await a.signInWithRedirect(auth, new a.GoogleAuthProvider());
           return;
         } catch (e2) { e = e2; }
       }
-
       const msg =
         code === "auth/unauthorized-domain" ? "This domain isn't authorised in Firebase Auth settings yet."
-      : code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request"
-                                           ? "Sign-in was cancelled."
+      : code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" ? "Sign-in was cancelled."
       : `Sign-in failed (${e.code || e.message}).`;
       this.setUI("err", msg, "Try again", () => this.signIn());
     }
@@ -609,45 +660,37 @@ const sync = {
     return f.doc(db, "users", this.uid, "days", date);
   },
 
-  /* Stored alongside the ticks so the history stands on its own later. The date is
-     also the document id, but ids are awkward to query and are lost in exports.
-     `items` is the important one: without the list that was on offer that day, a
-     count of ticks has no denominator and "3 done" can't be read as good or bad. */
+  /* Stored alongside the ticks so the history stands on its own later. `items`
+     is the denominator — without the list that was on offer that day, a count of
+     ticks can't be read as good or bad. `xpEarned` is stored because past days'
+     XP can't be recomputed once their plan is gone. */
   meta() {
     return {
       date: plan.date,
       dayOfPlan: plan.dayOfPlan ?? null,
       week: plan.week ?? null,
       sessionLabel: plan.sessionLabel ?? null,
-      items: (plan.groups || []).flatMap(g => (g.items || []).map(i => i.id))
+      items: allItems().map(i => i.id),
+      xpEarned: todayXp(),
+      ticked: todayTicked()
     };
   },
 
-  /* Only writes when something actually changed, so opening the page doesn't cost
-     a write or bump updatedAt (which should mean "last ticked", not "last opened"). */
   async ensureMeta(data, date) {
     const m = this.meta();
     const unchanged =
-      data.date === m.date &&
-      data.dayOfPlan === m.dayOfPlan &&
-      data.sessionLabel === m.sessionLabel &&
+      data.date === m.date && data.dayOfPlan === m.dayOfPlan &&
+      data.sessionLabel === m.sessionLabel && data.xpEarned === m.xpEarned &&
       JSON.stringify(data.items || []) === JSON.stringify(m.items);
     if (unchanged) return;
-    try { await this.fb.f.updateDoc(this.ref(date), m); }
-    catch { /* cosmetic; ticks are what matter */ }
+    try { await this.fb.f.updateDoc(this.ref(date), m); } catch {}
   },
 
-  /* Take the server's version wholesale. localStorage is only ever a mirror once
-     signed in — never a second opinion. */
   adopt(ticks, date) {
     saveTicks(date, ticks);
     if (plan.date === date) render();
   },
 
-  /* The document is the source of truth. It is seeded from local ticks only when
-     it does not exist yet, i.e. the first time this day is ever synced; after
-     that the server always wins. Merging local ticks upward on every attach is
-     what used to resurrect anything unticked on another device. */
   async attach() {
     const { f } = this.fb;
     const date = plan.date;
@@ -655,18 +698,14 @@ const sync = {
     try {
       let snap;
       try { snap = await f.getDocFromServer(ref); }
-      catch { snap = await f.getDoc(ref); }   // offline: settle for the cache
+      catch { snap = await f.getDoc(ref); }
       if (snap.exists()) {
         this.adopt(snap.data().ticks || {}, date);
         await this.ensureMeta(snap.data(), date);
       } else {
-        // Create the day even with nothing ticked, so a day you skipped is
-        // distinguishable from a day you never opened.
         await f.setDoc(ref, {
-          ticks: loadTicks(date),
-          ...this.meta(),
-          createdAt: f.serverTimestamp(),
-          updatedAt: f.serverTimestamp()
+          ticks: loadTicks(date), ...this.meta(),
+          createdAt: f.serverTimestamp(), updatedAt: f.serverTimestamp()
         });
       }
     } catch (e) {
@@ -676,8 +715,6 @@ const sync = {
     }
     this.unsub = f.onSnapshot(ref,
       s => {
-        // Our own edits are still queued locally; don't let an older server state
-        // flicker over them before they've been sent.
         if (this.queue.size && this.queueDate === date) return;
         this.adopt(s.exists() ? (s.data().ticks || {}) : {}, date);
       },
@@ -686,10 +723,32 @@ const sync = {
     );
   },
 
-  /* Per-item field writes rather than replacing the whole map, so two devices
-     editing different items in the same day can't clobber each other. Item ids
-     contain hyphens, which are not legal in a dotted field-path string, so the
-     paths are built as FieldPath objects. */
+  /* One bounded query per page load rather than a growing scan. */
+  async loadHistory() {
+    const { f, db } = this.fb;
+    try {
+      const q = f.query(
+        f.collection(db, "users", this.uid, "days"),
+        f.orderBy(f.documentId(), "desc"),
+        f.limit(HISTORY_DAYS)
+      );
+      const snap = await f.getDocs(q);
+      history.clear();
+      snap.forEach(d => {
+        const v = d.data();
+        history.set(d.id, {
+          xpEarned: v.xpEarned || 0,
+          ticked: typeof v.ticked === "number"
+            ? v.ticked
+            : Object.values(v.ticks || {}).filter(Boolean).length
+        });
+      });
+      render();
+    } catch (e) {
+      console.warn("History unavailable:", e);
+    }
+  },
+
   queueTick(date, id, on) {
     if (this.mode !== "signed-in") return;
     if (this.queueDate !== date) { this.queue.clear(); this.queueDate = date; }
@@ -707,10 +766,8 @@ const sync = {
     this.queue.clear();
 
     const args = [];
-    for (const [id, on] of edits) {
-      args.push(new f.FieldPath("ticks", id), on ? true : f.deleteField());
-    }
-    args.push("updatedAt", f.serverTimestamp());
+    for (const [id, on] of edits) args.push(new f.FieldPath("ticks", id), on ? true : f.deleteField());
+    args.push("xpEarned", todayXp(), "ticked", todayTicked(), "updatedAt", f.serverTimestamp());
 
     try {
       await f.updateDoc(this.ref(date), ...args);
@@ -724,7 +781,6 @@ const sync = {
           return;
         } catch (e2) { e = e2; }
       }
-      // Keep the edits so Retry isn't a no-op, without discarding newer ones.
       for (const [id, on] of edits) if (!this.queue.has(id)) this.queue.set(id, on);
       this.queueDate = date;
       this.setUI("err", `Couldn't save to sync (${e.code || e.message}). Saved locally.`,
@@ -732,7 +788,6 @@ const sync = {
     }
   },
 
-  /* Wholesale clear is deliberate, so it replaces the document outright. */
   async clearDay(date) {
     if (this.mode !== "signed-in") return;
     this.queue.clear();
@@ -740,15 +795,12 @@ const sync = {
     const { f } = this.fb;
     try {
       await f.setDoc(this.ref(date), { ticks: {}, ...this.meta(), updatedAt: f.serverTimestamp() });
-    }
-    catch (e) {
+    } catch (e) {
       this.setUI("err", `Couldn't clear on sync (${e.code || e.message}). Cleared locally.`,
         "Retry", () => this.clearDay(date));
     }
   },
 
-  /* Mobile browsers freeze background tabs, which kills the listener. Flush before
-     the tab is put away, and re-read from the server when it comes back. */
   async resync() {
     if (this.mode !== "signed-in") return;
     await this.flush();
@@ -756,7 +808,7 @@ const sync = {
     try {
       const snap = await f.getDocFromServer(this.ref(plan.date));
       this.adopt(snap.exists() ? (snap.data().ticks || {}) : {}, plan.date);
-    } catch { /* offline; the listener will catch up on reconnect */ }
+    } catch { /* offline; the listener catches up on reconnect */ }
   },
 
   watchLifecycle() {
@@ -768,7 +820,6 @@ const sync = {
     window.addEventListener("online", () => this.resync());
   },
 
-  /* The day rolled over, or a fresh list arrived — re-point at the new document. */
   reattach() {
     if (this.mode !== "signed-in") return;
     if (this.unsub) { this.unsub(); this.unsub = null; }
@@ -781,9 +832,9 @@ async function loadPlan({ announce = false } = {}) {
   const prevDate = plan && plan.date;
   let fetched = null;
   try {
-    const res = await fetch(`today.json?t=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(`today.json?t=${Date.now()}`, { cache:"no-store" });
     if (res.ok) fetched = await res.json();
-  } catch { /* file:// or offline — fall back below */ }
+  } catch { /* file:// or offline */ }
 
   plan = fetched || FALLBACK;
   render();
@@ -801,7 +852,7 @@ async function loadPlan({ announce = false } = {}) {
     $("handoffTitle").textContent =
       `This list is from ${prettyDate(plan.date)} — ${gap} day${gap === 1 ? "" : "s"} behind`;
     $("handoffBody").textContent =
-      "Copy the block below and paste it into Claude Code. It'll read your results, write a fresh list for today, and push it here — then hit Refresh again.";
+      "Copy the block below into Claude Code. It'll read your results, write a fresh list for today, and push it here — then hit Refresh again.";
     $("handoffText").textContent = handoffPayload(plan.date);
     if (announce) setStatus("Fetched — but the published list hasn't caught up to today yet.");
   } else {
@@ -816,9 +867,16 @@ $("refreshBtn").addEventListener("click", async e => {
   const was = btn.textContent;
   btn.textContent = "Checking…";
   setStatus("");
-  await loadPlan({ announce: true });
+  await loadPlan({ announce:true });
+  if (sync.mode === "signed-in") await sync.loadHistory();
   btn.textContent = was;
   btn.disabled = false;
+});
+
+$("notesBtn").addEventListener("click", e => {
+  const on = document.body.classList.toggle("notes");
+  e.currentTarget.classList.toggle("on", on);
+  try { localStorage.setItem(LS_NOTES, on ? "1" : "0"); } catch {}
 });
 
 $("copyBtn").addEventListener("click", () =>
@@ -835,7 +893,11 @@ $("resetBtn").addEventListener("click", () => {
   setStatus("Cleared.");
 });
 
-/* Plan first so sync has a date to attach to. */
+if (localStorage.getItem(LS_NOTES) === "1") {
+  document.body.classList.add("notes");
+  $("notesBtn").classList.add("on");
+}
+
 loadPlan().then(() => sync.init()).then(() => sync.watchLifecycle());
 </script>
 </body>

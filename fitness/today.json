@@ -2,56 +2,62 @@
   "date": "2026-07-30",
   "dayOfPlan": 2,
   "week": 1,
-  "sessionLabel": "Day 1 — Upper (push emphasis)",
-  "headline": "First real session. Conservative weights on purpose — today's job is to write down starting numbers, not to find your limit.",
+  "sessionLabel": "Upper — Push",
+  "headline": "Lateral raises are the priority",
+  "note": "First real session. Conservative weights on purpose — today's job is to write down starting numbers, not to find your limit.",
   "groups": [
     {
       "title": "Meds",
+      "emoji": "💊",
       "items": [
-        { "id": "m-stimulants", "text": "Stimulants", "detail": "As prescribed." },
-        { "id": "m-antidepressants", "text": "Antidepressants", "detail": "As prescribed. Consistent time of day." }
+        { "id": "m-stimulants", "emoji": "💊", "text": "Stimulants", "detail": "As prescribed.", "xp": 10 },
+        { "id": "m-antidepressants", "emoji": "💊", "text": "Antidepressants", "detail": "As prescribed. Consistent time of day.", "xp": 10 }
       ]
     },
     {
       "title": "Train",
-      "note": "Rest 2–3 min on the presses, 60–90 s on raises and extensions. Log weight and reps for every set — that logbook is the actual progress data.",
+      "emoji": "🏋️",
+      "note": "Rest 2–3 min on presses, 60–90 s on raises. Log weight and reps for every set.",
       "items": [
-        { "id": "t-incline-press", "text": "Incline press — 4 × 6–8", "detail": "Barbell or dumbbell. Your priority press." },
-        { "id": "t-shoulder-press", "text": "Seated dumbbell shoulder press — 3 × 8–10" },
-        { "id": "t-lateral-raise", "text": "Lateral raise — 4 × 12–15", "detail": "The priority movement of the whole plan. Slow, no swinging.", "emphasis": true },
-        { "id": "t-supported-row", "text": "Chest-supported row — 3 × 8–10" },
-        { "id": "t-tri-extension", "text": "Overhead cable triceps extension — 3 × 10–12" },
-        { "id": "t-logged", "text": "Wrote down weight × reps for every set" }
+        { "id": "t-incline-press", "emoji": "🏋️", "text": "Incline press · 4×6–8", "detail": "Barbell or dumbbell. Your priority press.", "xp": 25 },
+        { "id": "t-shoulder-press", "emoji": "🙌", "text": "Shoulder press · 3×8–10", "xp": 25 },
+        { "id": "t-lateral-raise", "emoji": "💪", "text": "Lateral raise · 4×12–15", "detail": "The priority movement of the whole plan. Slow, no swinging.", "xp": 40, "hero": true },
+        { "id": "t-supported-row", "emoji": "🚣", "text": "Chest-supported row · 3×8–10", "xp": 25 },
+        { "id": "t-tri-extension", "emoji": "🔻", "text": "Overhead triceps ext · 3×10–12", "xp": 20 },
+        { "id": "t-logged", "emoji": "📝", "text": "Logged every set", "detail": "Weight × reps. This is the real progress data.", "xp": 20 }
       ]
     },
     {
       "title": "Eat",
-      "note": "Protein is the non-negotiable. Four anchors of 35–45 g beats trying to rescue the number at dinner.",
+      "emoji": "🍳",
+      "note": "Four anchors of 35–45 g beats rescuing the number at dinner.",
       "items": [
-        { "id": "e-anchor-1", "text": "Breakfast protein anchor", "detail": "Greek yoghurt or skyr + eggs, or a shake with milk" },
-        { "id": "e-anchor-2", "text": "Lunch protein anchor", "detail": "Palm-and-a-half of chicken / fish / beef / tofu" },
-        { "id": "e-anchor-3", "text": "Post-training or afternoon anchor", "detail": "Whey shake or cottage cheese" },
-        { "id": "e-anchor-4", "text": "Dinner protein anchor" },
-        { "id": "e-water", "text": "Water through the day", "detail": "Creatine raises water needs slightly. Pale straw, not clear." },
-        { "id": "e-track", "text": "Logged protein today", "detail": "Day 1 of 3 — just to see where you actually are." },
-        { "id": "e-creatine", "text": "Creatine, 5 g", "detail": "Any time of day works." }
+        { "id": "e-anchor-1", "emoji": "🥣", "text": "Breakfast protein anchor", "detail": "Greek yoghurt or skyr + eggs, or a shake with milk", "xp": 15 },
+        { "id": "e-anchor-2", "emoji": "🥗", "text": "Lunch protein anchor", "detail": "Palm-and-a-half of chicken / fish / beef / tofu", "xp": 15 },
+        { "id": "e-anchor-3", "emoji": "🥤", "text": "Afternoon anchor", "detail": "Whey shake or cottage cheese", "xp": 15 },
+        { "id": "e-anchor-4", "emoji": "🍽️", "text": "Dinner protein anchor", "xp": 15 },
+        { "id": "e-water", "emoji": "💧", "text": "Water through the day", "detail": "Creatine raises water needs slightly. Pale straw, not clear.", "xp": 10 },
+        { "id": "e-track", "emoji": "🔢", "text": "Logged protein today", "detail": "Day 1 of 3 — just to see where you actually are.", "xp": 15 },
+        { "id": "e-creatine", "emoji": "⚡", "text": "Creatine · 5 g", "detail": "Any time of day works.", "xp": 10 }
       ]
     },
     {
       "title": "Recover",
+      "emoji": "🌙",
       "items": [
-        { "id": "r-sleep", "text": "7–9 hours, consistent wake time", "detail": "Short sleep measurably suppresses muscle gain. This is not filler." },
-        { "id": "r-cold-shower", "text": "Cold shower", "detail": "Keep it away from the hour after lifting — cold blunts the training signal." },
-        { "id": "r-meditation", "text": "Meditation" }
+        { "id": "r-sleep", "emoji": "😴", "text": "7–9 hours, consistent wake time", "detail": "Short sleep measurably suppresses muscle gain. This is not filler.", "xp": 20 },
+        { "id": "r-cold-shower", "emoji": "🧊", "text": "Cold shower", "detail": "Keep it away from the hour after lifting — cold blunts the training signal.", "xp": 15 },
+        { "id": "r-meditation", "emoji": "🧘", "text": "Meditation", "xp": 15 }
       ]
     },
     {
-      "title": "Week 1 setup",
-      "note": "One-off items. Clearing these this week is most of what week 1 is for.",
+      "title": "Setup",
+      "emoji": "🎯",
+      "note": "One-off items. Clearing these is most of what week 1 is for.",
       "items": [
-        { "id": "s-measure", "text": "Weigh yourself and measure waist at navel", "detail": "Morning, unflexed. This is your baseline — you only get one shot at it." },
-        { "id": "s-supplements", "text": "Buy creatine monohydrate and whey" },
-        { "id": "s-calendar", "text": "Put the four weekly sessions in your calendar as real appointments" }
+        { "id": "s-measure", "emoji": "📏", "text": "Weigh + measure waist", "detail": "Morning, unflexed. You only get one shot at a baseline.", "xp": 20 },
+        { "id": "s-supplements", "emoji": "🛒", "text": "Buy creatine and whey", "xp": 20 },
+        { "id": "s-calendar", "emoji": "📅", "text": "Four sessions in the calendar", "xp": 20 }
       ]
     }
   ]
