@@ -98,13 +98,19 @@
     transition:border-color .15s, background .15s;
   }
   .chip.complete { background:#1b2a1d; border-color:#3a5c3f; }
+  /* Label on its own line and the emoji beside the count — with five groups the
+     inline "emoji + name" pairing left "Recover" truncated to "Recov". */
   .chip .lab {
-    display:flex; align-items:center; gap:4px; margin-bottom:5px;
-    font-size:10px; font-weight:700; color:var(--soft);
-    white-space:nowrap; overflow:hidden;
+    margin-bottom:4px; font-size:9px; font-weight:700; color:var(--soft);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    letter-spacing:.03em; text-transform:uppercase;
   }
   .chip.complete .lab { color:var(--done); }
-  .chip .cnt { font-size:15px; font-weight:700; margin-bottom:5px; }
+  .chip .cnt {
+    display:flex; align-items:baseline; gap:4px;
+    font-size:15px; font-weight:700; margin-bottom:5px;
+  }
+  .chip .cnt em { font-style:normal; font-size:11px; }
   .chip.complete .cnt { color:var(--done); }
   .chip .mini { height:3px; border-radius:99px; background:#31313a; overflow:hidden; }
   .chip .mini i { display:block; height:100%; border-radius:99px; background:var(--accent); transition:width .35s; }
@@ -324,6 +330,13 @@ let plan = null;
    computed live from the current tick state instead. */
 const history = new Map();
 
+/* Live references into the rendered list, so ticking updates the affected row in
+   place. Rebuilding the whole list on every tap invalidated the checkbox the user
+   was still interacting with and killed the row transitions. */
+const rowEls = new Map();   // item id -> <label class="row">
+const secEls = new Map();   // group title -> count <span>
+let lastRendered = null;    // JSON of the ticks the list was last built from
+
 /* ---------- dates: always local, never UTC ---------- */
 function localISO(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -410,6 +423,9 @@ function render() {
   const ticks = loadTicks(plan.date);
   const list = $("list");
   list.textContent = "";
+  rowEls.clear();
+  secEls.clear();
+  lastRendered = JSON.stringify(ticks);
 
   for (const g of plan.groups || []) {
     const sec = document.createElement("div");
@@ -421,6 +437,7 @@ function render() {
     const cnt = document.createElement("span");
     const gd = (g.items || []).filter(i => ticks[i.id]).length;
     cnt.textContent = `${gd}/${(g.items || []).length}`;
+    secEls.set(g.title, cnt);
     sec.append(name, grow, cnt);
     list.appendChild(sec);
 
@@ -457,10 +474,23 @@ function render() {
       pill.textContent = `+${it.xp || 0}`;
 
       row.append(cb, box, em, txt, pill);
+      rowEls.set(it.id, row);
       list.appendChild(row);
     }
   }
 
+  renderChips(ticks);
+  renderStats(ticks);
+}
+
+/* Everything downstream of a tick that isn't the row itself. */
+function refreshDerived() {
+  const ticks = loadTicks(plan.date);
+  lastRendered = JSON.stringify(ticks);
+  for (const g of plan.groups || []) {
+    const cnt = secEls.get(g.title);
+    if (cnt) cnt.textContent = `${(g.items || []).filter(i => ticks[i.id]).length}/${(g.items || []).length}`;
+  }
   renderChips(ticks);
   renderStats(ticks);
 }
@@ -479,11 +509,13 @@ function renderChips(ticks) {
 
     const lab = document.createElement("div");
     lab.className = "lab";
-    lab.textContent = `${g.emoji || ""} ${g.title}`.trim();
+    lab.textContent = g.title;
 
     const cnt = document.createElement("div");
     cnt.className = "cnt";
-    cnt.textContent = `${done}/${items.length}`;
+    const em = document.createElement("em");
+    em.textContent = g.emoji || "";
+    cnt.append(em, document.createTextNode(`${done}/${items.length}`));
 
     const mini = document.createElement("div");
     mini.className = "mini";
@@ -523,7 +555,9 @@ function setTick(id, on) {
   const t = loadTicks(plan.date);
   if (on) t[id] = true; else delete t[id];
   saveTicks(plan.date, t);
-  render();
+  const row = rowEls.get(id);
+  if (row) row.classList.toggle("done", on);
+  refreshDerived();
   sync.queueTick(plan.date, id, on);
 }
 
@@ -688,7 +722,11 @@ const sync = {
 
   adopt(ticks, date) {
     saveTicks(date, ticks);
-    if (plan.date === date) render();
+    if (plan.date !== date) return;
+    // Our own writes echo back through onSnapshot; rebuilding the list for a
+    // state it already shows would flash the rows for nothing.
+    if (JSON.stringify(ticks) === lastRendered) return;
+    render();
   },
 
   async attach() {
