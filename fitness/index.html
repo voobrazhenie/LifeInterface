@@ -145,6 +145,12 @@
   .row.done .txt { color:var(--faint); text-decoration:line-through; }
   .detail { display:none; font-size:11px; color:var(--faint); margin-top:2px; line-height:1.35; }
   body.notes .detail { display:block; }
+  .secnote, .daynote {
+    display:none; font-size:11.5px; color:var(--soft); line-height:1.4;
+    padding:2px 3px 6px;
+  }
+  .daynote { padding:8px 0 0; border-top:1px solid var(--line); margin-top:10px; }
+  body.notes .secnote, body.notes .daynote { display:block; }
   .pill {
     flex:0 0 auto; padding:3px 7px; border-radius:99px;
     background:#232330; color:var(--xp); font-size:10px; font-weight:700;
@@ -230,6 +236,7 @@
         <h1 id="sessionLabel">Today</h1>
         <div class="sub" id="headline"></div>
       </div>
+
       <div class="ring">
         <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true">
           <circle cx="38" cy="38" r="33" fill="none" stroke="#2c2c34" stroke-width="7"></circle>
@@ -249,6 +256,7 @@
       </div>
       <div class="xptrack"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
     </div>
+    <div class="daynote" id="dayNote"></div>
   </div>
 
   <div class="chips" id="chips"></div>
@@ -314,7 +322,7 @@
 <script>
 "use strict";
 
-const FALLBACK = {"date":"2026-07-30","dayOfPlan":2,"week":1,"sessionLabel":"Upper — Push","headline":"Lateral raises are the priority","groups":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","xp":10}]},{"title":"Train","emoji":"🏋️","items":[{"id":"t-incline-press","emoji":"🏋️","text":"Incline press · 4×6–8","xp":25},{"id":"t-shoulder-press","emoji":"🙌","text":"Shoulder press · 3×8–10","xp":25},{"id":"t-lateral-raise","emoji":"💪","text":"Lateral raise · 4×12–15","xp":40,"hero":true},{"id":"t-supported-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"t-tri-extension","emoji":"🔻","text":"Overhead triceps ext · 3×10–12","xp":20},{"id":"t-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"title":"Eat","emoji":"🍳","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]},{"title":"Setup","emoji":"🎯","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","xp":20},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","xp":20}]}]};
+const FALLBACK = {"date":"2026-07-31","dayOfPlan":3,"week":1,"sessionLabel":"Upper — Push","headline":"Still the first session. Conservative weights.","groups":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","xp":10}]},{"title":"Train","emoji":"🏋️","items":[{"id":"t-incline-press","emoji":"🏋️","text":"Incline press · 4×6–8","xp":25},{"id":"t-shoulder-press","emoji":"🙌","text":"Shoulder press · 3×8–10","xp":25},{"id":"t-lateral-raise","emoji":"💪","text":"Lateral raise · 4×12–15","xp":40},{"id":"t-supported-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"t-tri-extension","emoji":"🔻","text":"Overhead triceps ext · 3×10–12","xp":20},{"id":"t-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"title":"Eat","emoji":"🍳","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]},{"title":"Setup","emoji":"🎯","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","xp":35,"hero":true},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","xp":20}]}]};
 
 const SDK        = "https://www.gstatic.com/firebasejs/12.16.0/";
 const START_DATE = "2026-07-29";
@@ -419,6 +427,9 @@ function render() {
   $("weekLbl").textContent = plan.week ? `Week ${plan.week}` : "";
   $("sessionLabel").textContent = plan.sessionLabel || "Today";
   $("headline").textContent = plan.headline || "";
+  const dn = $("dayNote");
+  dn.textContent = plan.note || "";
+  dn.style.display = plan.note ? "" : "none";
 
   const ticks = loadTicks(plan.date);
   const list = $("list");
@@ -440,6 +451,13 @@ function render() {
     secEls.set(g.title, cnt);
     sec.append(name, grow, cnt);
     list.appendChild(sec);
+
+    if (g.note) {
+      const n = document.createElement("div");
+      n.className = "secnote";
+      n.textContent = g.note;
+      list.appendChild(n);
+    }
 
     for (const it of g.items || []) {
       const on = !!ticks[it.id];
