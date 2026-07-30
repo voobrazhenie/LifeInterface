@@ -4,8 +4,10 @@ rules_version = '2';
 // subtree and nothing else; anything not matched below is denied by default,
 // including every unauthenticated read.
 //
-// Paste this into: Firebase console -> Firestore Database -> Rules -> Publish.
-// It is kept here so the rules are in version control alongside the page.
+// Deployed with:  firebase deploy --only firestore:rules
+// (firebase.json points the firestore target at this file.) Editing the rules in
+// the console instead would put the live rules out of step with this file, and
+// the next deploy would silently overwrite the console edit.
 
 service cloud.firestore {
   match /databases/{database}/documents {

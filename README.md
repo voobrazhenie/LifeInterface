@@ -40,17 +40,33 @@ Progress photos and body measurements stay out of this repo entirely — they li
 
 ## First-time Firebase setup
 
-1. Create a project at <https://console.firebase.google.com> (no billing needed; the free Spark plan covers this by a wide margin).
-2. **Authentication → Sign-in method → Google → Enable.**
-3. **Authentication → Settings → Authorised domains → Add `voobrazhenie.github.io`.** Sign-in fails with `auth/unauthorized-domain` until this is done — it is the most common thing to miss.
-4. **Firestore Database → Create database.** Pick a region near you; start in production mode.
-5. **Firestore → Rules** → paste `firestore.rules` from this repo → Publish.
-6. **Project settings → Your apps → Web app** → register one → copy the config object into `fitness/firebase-config.js`, replacing `export const firebaseConfig = null`.
-7. For Claude Code read access: **Project settings → Service accounts → Generate new private key** → save as `tools/service-account.json`.
+Almost all of this is CLI work, so it does not need doing by hand in the console. The one step that cannot be automated is logging in, because it needs a browser and your consent:
 
-Until step 6 the page runs local-only and says so in its sync row.
+```bash
+npx -y firebase-tools@latest login
+```
 
-## Reading ticks from the command line
+After that, in this directory:
+
+```bash
+firebase projects:create                      # or reuse an existing project id
+firebase deploy --only firestore:rules        # publishes firestore.rules
+firebase deploy --only auth                   # Google sign-in + authorised domains
+firebase apps:create web "Life Interface"
+firebase apps:sdkconfig web                   # prints the config object
+```
+
+The config object from that last command goes into `fitness/firebase-config.js`, replacing `export const firebaseConfig = null`. Until it does, the page runs local-only and says so in its sync row.
+
+`voobrazhenie.github.io` must be an authorised domain or sign-in fails with `auth/unauthorized-domain` — that comes from the `auth` deploy, and it is the most common thing to miss when doing this by hand.
+
+Firestore rules live only in `firestore.rules`. Editing them in the console instead puts the live rules out of step with this file, and the next deploy overwrites the console edit without warning.
+
+## Reading ticks
+
+With the Firebase MCP server connected — `claude mcp add firebase -- npx -y firebase-tools@latest mcp` — Claude Code reads Firestore through the CLI's own logged-in credentials, and **no service-account key is needed at all**.
+
+`tools/read-ticks.mjs` is the fallback for when MCP isn't available. It does need a service-account key, which bypasses every security rule, so prefer the MCP route:
 
 ```bash
 node tools/read-ticks.mjs --uid <UID> --days 14
