@@ -6,19 +6,27 @@ Live: **https://voobrazhenie.github.io/LifeInterface/**
 
 ## How the fitness tracker works
 
-`fitness/index.html` is a single self-contained page. Two moving parts around it:
+`fitness/index.html` is a single self-contained page that **derives today's list itself** — it is never waiting to be told what day it is, and cannot go stale.
 
-- **`fitness/today.json`** — one day's checklist. Claude Code reads `Plan - NOW to WANT.md` (kept locally, outside this repo), writes a fresh `today.json`, and pushes. GitHub Pages redeploys within about a minute and the page picks it up on the next **Refresh for today**. The repo is the transport; no API and no credentials involved.
+- **`fitness/plan.json`** — the whole program: a 4-session rotation, the groups that repeat every day, one-off setup tasks, and the weekly schedule. Holds both a `home` (bodyweight) and a `gym` variant; `activeProgram` picks one.
 - **Firestore** — where ticks live once you sign in, so the phone and the PC agree. Signed out, the page still works and keeps ticks in `localStorage` only.
+- **`fitness/overrides/<YYYY-MM-DD>.json`** — optional, rare. Shallow-merged over the derived day when a particular day needs something the rules can't express.
 
-### The two directions
+### How a day is derived
 
-| | How |
-|---|---|
-| Claude Code → page | Rewrite `today.json`, commit, push |
-| Page → Claude Code | Ticks land in Firestore; `tools/read-ticks.mjs` reads them directly |
+1. **Training or rest?** From `schedule` by weekday.
+2. **Which session?** By **rotation, not calendar**: `completedSessions % 4`. This is the important part — missing a Thursday must not skip that session forever. Because the count comes from history rather than a stored pointer, a missed session carries forward on its own and the rotation can't drift out of sync.
+3. **Groups** = the session (omitted on rest days) + everything in `daily` + any `oneOffs` not yet ticked on a *previous* day.
 
-The page also has a **Copy status for Claude Code** button and a paste-ready block when the published list falls behind the date. That path needs no Firebase at all, and is the fallback if sync is ever down.
+A session counts as done when at least half its items are ticked. That is written to the day document as `sessionDone`, and mirrored into `localStorage` so the rotation still advances when signed out.
+
+Exercises carry a `ladder` of variations and a `rung` index — progression at home is by variation and tempo rather than weight. Rungs advance during the weekly review, not automatically, because reps aren't logged.
+
+Append `?date=YYYY-MM-DD` to the URL to make the page believe it is that day. Useful for stepping through the rotation without waiting a fortnight.
+
+### Switching to the gym
+
+Set `activeProgram` to `"gym"` in `fitness/plan.json`. The gym sessions are already written and parked; nothing else changes.
 
 ## Data model
 
@@ -74,6 +82,12 @@ node tools/read-ticks.mjs --uid <UID> --days 14
 
 The uid appears in the page's copy-for-Claude-Code block once you're signed in, or under **Authentication → Users** in the console.
 
-## Adding a day by hand
+## Editing the program
 
-Edit `fitness/today.json`: set `date` to today (`YYYY-MM-DD`, local time) and give every item a unique stable `id`. The same JSON is also inlined in `index.html` as `FALLBACK`, so the page still renders when opened from a `file://` path where `fetch` is blocked — **both copies need updating**.
+Edit `fitness/plan.json`. Item `id`s must be **unique and stable** across the whole file — tick state is keyed on them, so reusing an id carries its tick history with it, and one-off suppression looks them up by id.
+
+`plan.json` is also inlined in `index.html` as `FALLBACK`, so the page still renders when opened from a `file://` path where `fetch` is blocked. **Both copies need updating**; re-embed with:
+
+```bash
+node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('fitness/plan.json','utf8'));let h=fs.readFileSync('fitness/index.html','utf8');h=h.replace(/const FALLBACK = \{.*?\};\n/s,'const FALLBACK = '+JSON.stringify(p)+';\n');fs.writeFileSync('fitness/index.html',h)"
+```

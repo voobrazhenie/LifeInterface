@@ -138,7 +138,10 @@ async function main() {
     const on = Object.keys(ticks).filter(k => ticks[k]).sort();
     const offered = Array.isArray(d.items) ? d.items.length : null;
     const score = offered === null ? `${on.length} ticked` : `${on.length}/${offered}`;
-    console.log(`${d.date}  ${score}${d.sessionLabel ? `  ${d.sessionLabel}` : ""}`);
+    const session = d.sessionId
+      ? `  ${d.sessionId}${d.sessionLabel ? ` ${d.sessionLabel}` : ""}${d.sessionDone ? " ✓" : " (not completed)"}`
+      : d.sessionLabel ? `  ${d.sessionLabel}` : "";
+    console.log(`${d.date}  ${score}${session}`);
     if (on.length) console.log("  did:     " + on.join(", "));
     if (offered) {
       const missed = d.items.filter(i => !ticks[i]);

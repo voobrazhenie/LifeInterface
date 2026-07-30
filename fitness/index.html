@@ -184,19 +184,6 @@
   .status { font-size:12px; color:var(--soft); margin-top:9px; min-height:1.2em; }
   .status.ok { color:var(--done); }
 
-  /* ---------- handoff ---------- */
-  .handoff {
-    margin-top:14px; padding:13px 14px; border-radius:14px;
-    background:#2a2318; border:1px solid #4d4025;
-  }
-  .handoff h3 { margin:0 0 6px; font-size:14px; font-weight:700; }
-  .handoff p { margin:0 0 10px; font-size:12.5px; color:var(--soft); }
-  .handoff pre {
-    margin:0 0 10px; padding:10px 11px; border-radius:9px;
-    background:var(--bg); border:1px solid var(--line);
-    font:11.5px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
-    white-space:pre-wrap; overflow:auto; max-height:220px; color:var(--ink);
-  }
 
   details.plan { margin-top:20px; border-top:1px solid var(--line); padding-top:14px; }
   details.plan summary {
@@ -277,13 +264,6 @@
   </div>
   <div class="status" id="status"></div>
 
-  <div class="handoff" id="handoff" hidden>
-    <h3 id="handoffTitle">This list is out of date</h3>
-    <p id="handoffBody"></p>
-    <pre id="handoffText"></pre>
-    <button class="primary" id="handoffCopy">Copy for Claude Code</button>
-  </div>
-
   <details class="plan">
     <summary>The plan, at a glance</summary>
     <div class="plan-body">
@@ -322,18 +302,23 @@
 <script>
 "use strict";
 
-const FALLBACK = {"date":"2026-07-31","dayOfPlan":3,"week":1,"sessionLabel":"Upper — Push","headline":"Still the first session. Conservative weights.","groups":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","xp":10}]},{"title":"Train","emoji":"🏋️","items":[{"id":"t-incline-press","emoji":"🏋️","text":"Incline press · 4×6–8","xp":25},{"id":"t-shoulder-press","emoji":"🙌","text":"Shoulder press · 3×8–10","xp":25},{"id":"t-lateral-raise","emoji":"💪","text":"Lateral raise · 4×12–15","xp":40},{"id":"t-supported-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"t-tri-extension","emoji":"🔻","text":"Overhead triceps ext · 3×10–12","xp":20},{"id":"t-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"title":"Eat","emoji":"🍳","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]},{"title":"Setup","emoji":"🎯","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","xp":35,"hero":true},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","xp":20}]}]};
+const FALLBACK = {"startDate":"2026-07-29","levelXp":500,"activeProgram":"home","schedule":{"mon":"train","tue":"train","wed":"rest","thu":"train","fri":"train","sat":"rest","sun":"rest"},"restDay":{"label":"Rest day","headline":"Not a day off — a day the muscle actually grows.","note":"Growth happens between sessions, not during them. Walking is fine and good. Everything else on this list still counts, so a rest day never breaks the streak."},"programs":{"home":{"label":"Bodyweight","note":"No equipment. Progression is by variation and tempo instead of weight: when you hit the top of the rep range on every set, move up a rung and drop back to the bottom of the range.","sessions":[{"id":"h1","label":"Upper — Push","headline":"Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.","items":[{"id":"h1-pushup","emoji":"🤸","ladder":["Incline push-up (hands on desk)","Knee push-up","Push-up","Decline push-up (feet on chair)","Deficit push-up (hands on books)","Archer push-up"],"rung":2,"reps":"4 × 6–12","detail":"Elbows about 45° from your body, not flared. Full range — chest to the floor.","xp":25},{"id":"h1-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.","xp":25,"hero":true},{"id":"h1-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 8–12","detail":"Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.","xp":20},{"id":"h1-diamond","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hands together under the chest. Triceps.","xp":20},{"id":"h1-logged","emoji":"📝","reps":"","text":"Logged the session","detail":"Reps per set, and which rung you're on. Without it, next session has nothing to beat.","xp":20}]},{"id":"h2","label":"Lower","headline":"Legs respond well to bodyweight — this session loses least without a gym.","items":[{"id":"h2-squat","emoji":"🦵","ladder":["Bodyweight squat","3-second tempo squat","Paused squat","Split squat","Bulgarian split squat","Pistol squat progression"],"rung":1,"reps":"4 × 10–20","detail":"Three seconds down, one second pause, up. Tempo is how you load a squat without weight.","xp":25,"hero":true},{"id":"h2-split","emoji":"🚶","ladder":["Reverse lunge","Split squat","Rear-foot-elevated split squat"],"rung":0,"reps":"3 × 8–12 each leg","detail":"Front shin roughly vertical, torso upright.","xp":25},{"id":"h2-hinge","emoji":"🪢","ladder":["Single-leg hip hinge","Single-leg RDL, slow","Single-leg RDL, paused"],"rung":0,"reps":"3 × 10–15 each","detail":"Hamstrings. Hinge at the hip, back flat, free leg straight behind you.","xp":20},{"id":"h2-ham","emoji":"🌉","ladder":["Glute bridge","Single-leg glute bridge","Nordic curl negative"],"rung":0,"reps":"3 × 8–12","detail":"Squeeze at the top, don't arch the lower back.","xp":20},{"id":"h2-calf","emoji":"🦶","ladder":["Calf raise","Single-leg calf raise","Single-leg calf raise off a step"],"rung":0,"reps":"3 × 12–20","detail":"Full stretch at the bottom, pause at the top.","xp":15},{"id":"h2-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h3","label":"Upper — Pull","headline":"The hardest session to do without a bar. Inverted rows are the whole game here.","items":[{"id":"h3-row","emoji":"🚣","ladder":["Inverted row under a table, knees bent","Inverted row under a table","Feet-elevated inverted row"],"rung":0,"reps":"4 × 6–12","detail":"Lie under a sturdy table, grip the edge, pull your chest to it. Check the table takes your weight before you trust it.","xp":25,"hero":true},{"id":"h3-door","emoji":"🚪","ladder":["Towel door row","Single-arm towel door row"],"rung":0,"reps":"3 × 10–15","detail":"Towel around a door handle on both sides, lean back, pull. Use a door that opens away from you and brace it.","xp":20},{"id":"h3-ytw","emoji":"🪽","ladder":["Prone Y-T-W","Prone Y-T-W, paused","Prone Y-T-W, slow eccentric"],"rung":0,"reps":"3 × 8 each shape","detail":"Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.","xp":20},{"id":"h3-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h3-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h4","label":"Arms & shoulders","headline":"Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.","items":[{"id":"h4-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Second exposure this week. Frequency is what you have instead of load.","xp":25,"hero":true},{"id":"h4-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 10–15","detail":"Triceps.","xp":20},{"id":"h4-close","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 8–12","xp":20},{"id":"h4-yraise","emoji":"🪽","ladder":["Prone Y raise","Prone Y raise, paused"],"rung":0,"reps":"3 × 15","detail":"Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.","xp":15},{"id":"h4-wall","emoji":"🧱","reps":"3 × 20–30 s each side","text":"Wall lateral isometric","detail":"Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.","xp":15},{"id":"h4-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]}]},"gym":{"label":"Gym","note":"Parked until you have a subscription. Switch by setting activeProgram to \"gym\" — nothing else needs rewriting.","sessions":[{"id":"g1","label":"Upper — Push","headline":"Lateral raises are the priority movement of the whole plan.","items":[{"id":"g1-incline","emoji":"🏋️","text":"Incline press · 4×6–8","detail":"Barbell or dumbbell. Your priority press.","xp":25},{"id":"g1-ohp","emoji":"🙌","text":"Seated dumbbell shoulder press · 3×8–10","xp":25},{"id":"g1-lateral","emoji":"💪","text":"Cable or dumbbell lateral raise · 4×12–15","detail":"The single biggest visual driver. Slow, no swinging.","xp":40,"hero":true},{"id":"g1-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"g1-tri","emoji":"🔻","text":"Overhead cable triceps extension · 3×10–12","xp":20},{"id":"g1-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g2","label":"Lower","headline":"Keep it honest but don't let it eat your upper-body recovery.","items":[{"id":"g2-squat","emoji":"🦵","text":"Squat · 3×5–8","detail":"Barbell or hack.","xp":25},{"id":"g2-rdl","emoji":"🪢","text":"Romanian deadlift · 3×8–10","xp":25},{"id":"g2-press","emoji":"🦿","text":"Leg press or split squat · 3×10–12","xp":20},{"id":"g2-calf","emoji":"🦶","text":"Standing calf raise · 3×12–15","xp":15},{"id":"g2-legraise","emoji":"🧗","text":"Hanging leg raise · 3×10–15","xp":15},{"id":"g2-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g3","label":"Upper — Pull","headline":"Back width is the other half of the V-taper.","items":[{"id":"g3-pullup","emoji":"🧗","text":"Pull-up or lat pulldown · 4×6–10","detail":"Back width = V-taper.","xp":25},{"id":"g3-row","emoji":"🚣","text":"Barbell or dumbbell row · 3×8–10","xp":25},{"id":"g3-lateral","emoji":"💪","text":"Lateral raise, machine or leaning cable · 4×12–15","detail":"Yes, again. Different angle.","xp":40,"hero":true},{"id":"g3-reardelt","emoji":"🪽","text":"Rear-delt flye or face pull · 3×15","detail":"Shoulder health and width.","xp":20},{"id":"g3-curl","emoji":"💪","text":"Incline dumbbell curl · 3×10–12","xp":15},{"id":"g3-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g4","label":"Arms & delts","headline":"The weak-point day. Third lateral raise exposure of the week.","items":[{"id":"g4-press","emoji":"🏋️","text":"Flat or incline dumbbell press · 3×8–10","xp":25},{"id":"g4-lateral","emoji":"💪","text":"Lateral raise, third variation · 4×12–20","xp":40,"hero":true},{"id":"g4-curl","emoji":"💪","text":"Cable curl · 3×10–12","xp":15},{"id":"g4-pushdown","emoji":"🔻","text":"Cable triceps pushdown · 3×12–15","xp":15},{"id":"g4-shrug","emoji":"🤷","text":"Shrug or upright row · 3×12","xp":15},{"id":"g4-logged","emoji":"📝","text":"Logged every set","xp":20}]}]}},"daily":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","detail":"As prescribed.","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","detail":"As prescribed. Consistent time of day.","xp":10}]},{"title":"Eat","emoji":"🍳","note":"Protein is the non-negotiable — 1.8–2.2 g per kg per day. Four anchors of 35–45 g beats trying to rescue the number at dinner. The failure mode isn't one light day, it's three in a row.","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","detail":"Greek yoghurt or skyr + eggs, or a shake with milk.","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","detail":"Palm-and-a-half of chicken / fish / beef / tofu.","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","detail":"Whey shake or cottage cheese.","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","detail":"The one that usually rescues the day's total.","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","detail":"Pale straw, not clear. Creatine raises water needs slightly.","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","detail":"Only needed for the first 2–3 weeks, to calibrate. After that you'll know your portions by eye.","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","detail":"Any time of day. No loading phase needed.","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","detail":"Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","detail":"Not in the hour after training — cold blunts the growth signal.","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]}],"oneOffs":{"title":"Setup","emoji":"🎯","note":"These disappear for good once ticked.","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","detail":"Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.","xp":35,"hero":true},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","detail":"As real appointments, not intentions. Mon / Tue / Thu / Fri.","xp":20},{"id":"s-space","emoji":"🏠","text":"Clear a training space","detail":"Enough floor for a push-up, a sturdy table you can lie under, and two chairs that take your weight. Check the table before you trust it.","xp":20}]}};
 
 const SDK        = "https://www.gstatic.com/firebasejs/12.16.0/";
-const START_DATE = "2026-07-29";
 const LS_PREFIX  = "lifeinterface.fitness.v1.";
+const LS_META    = "lifeinterface.fitness.meta.";
 const LS_NOTES   = "lifeinterface.fitness.notes";
-const XP_PER_LVL = 500;
 const HISTORY_DAYS = 90;
 const RING_C     = 2 * Math.PI * 33;   // matches r=33 in the svg
+const WEEKDAYS   = ["sun","mon","tue","wed","thu","fri","sat"];
 const $ = id => document.getElementById(id);
 
-let plan = null;
+/* Dev-only: ?date=2026-08-05 pretends it is that day, so the rotation and rest
+   days can be stepped through without waiting a fortnight. */
+const DEV_DATE = new URLSearchParams(location.search).get("date");
+
+let program = null;   // the whole plan.json — the program, both variants
+let plan    = null;   // today, derived from it
 /* date -> { xpEarned, ticked } for days other than today. Today is always
    computed live from the current tick state instead. */
 const history = new Map();
@@ -363,6 +348,11 @@ function shiftDate(iso, delta) {
   const [y,m,d] = iso.split("-").map(Number);
   return localISO(new Date(y, m-1, d + delta));
 }
+function todayISO() { return DEV_DATE || localISO(); }
+function weekdayOf(iso) {
+  const [y,m,d] = iso.split("-").map(Number);
+  return WEEKDAYS[new Date(y, m-1, d).getDay()];
+}
 
 /* ---------- tick storage ---------- */
 function loadTicks(date) {
@@ -379,6 +369,99 @@ function storedDates() {
     if (k && k.startsWith(LS_PREFIX)) out.push(k.slice(LS_PREFIX.length));
   }
   return out.sort();
+}
+
+/* Which session a past day was, and whether it counted. Mirrored locally as well
+   as in Firestore so the rotation still advances correctly when signed out. */
+function loadDayMeta(date) {
+  try { return JSON.parse(localStorage.getItem(LS_META + date) || "null"); }
+  catch { return null; }
+}
+function saveDayMeta(date, m) {
+  try { localStorage.setItem(LS_META + date, JSON.stringify(m)); } catch {}
+}
+
+/* ---------- derivation ----------
+   The page works out what today is rather than being told. A missed session is
+   therefore carried forward automatically: the rotation is driven by how many
+   sessions were actually completed, not by the calendar. */
+
+function itemText(it) {
+  const base = it.text
+    || (it.ladder ? it.ladder[Math.min(it.rung || 0, it.ladder.length - 1)] : "");
+  return it.reps ? `${base} · ${it.reps}` : base;
+}
+
+/* Excludes the day in progress: ticking a one-off shouldn't make it vanish from
+   under your finger, it should just be gone tomorrow. */
+function everTicked(id, exceptDate) {
+  for (const [date, h] of history) {
+    if (date === exceptDate) continue;
+    if (h.ticks && h.ticks[id]) return true;
+  }
+  for (const date of storedDates()) {
+    if (date === exceptDate) continue;
+    if (loadTicks(date)[id]) return true;
+  }
+  return false;
+}
+
+function completedSessions(exceptDate) {
+  const seen = new Set();
+  for (const [date, h] of history) {
+    if (date !== exceptDate && h.sessionDone) seen.add(date);
+  }
+  for (const date of storedDates()) {
+    if (date === exceptDate) continue;
+    const m = loadDayMeta(date);
+    if (m && m.sessionDone) seen.add(date);
+  }
+  return seen.size;
+}
+
+/* At least half the session ticked counts as done — enough to have trained,
+   without demanding a perfect session to advance the rotation. */
+function isSessionDone(date) {
+  const items = (plan && plan.sessionItems) || [];
+  if (!items.length) return false;
+  const t = loadTicks(date);
+  return items.filter(i => t[i.id]).length >= Math.ceil(items.length / 2);
+}
+
+function deriveDay(date) {
+  const prog = program.programs[program.activeProgram];
+  const training = program.schedule[weekdayOf(date)] === "train";
+  const groups = [];
+  let session = null;
+
+  if (training) {
+    session = prog.sessions[completedSessions(date) % prog.sessions.length];
+    groups.push({
+      title: "Train", emoji: "🏋️", note: prog.note,
+      items: session.items.map(i => ({ ...i, text: itemText(i) }))
+    });
+  }
+
+  for (const g of program.daily) {
+    groups.push({ ...g, items: g.items.map(i => ({ ...i, text: itemText(i) })) });
+  }
+
+  const pending = (program.oneOffs?.items || []).filter(i => !everTicked(i.id, date));
+  if (pending.length) {
+    groups.push({ ...program.oneOffs, items: pending.map(i => ({ ...i, text: itemText(i) })) });
+  }
+
+  const dayOfPlan = daysBetween(program.startDate, date) + 1;
+  return {
+    date, dayOfPlan,
+    week: Math.floor((dayOfPlan - 1) / 7) + 1,
+    sessionId:    session ? session.id : null,
+    sessionItems: session ? session.items : [],
+    sessionLabel: session ? session.label    : program.restDay.label,
+    headline:     session ? session.headline : program.restDay.headline,
+    note:         session ? null             : program.restDay.note,
+    groups
+  };
 }
 
 /* ---------- scoring ---------- */
@@ -407,7 +490,7 @@ function activeDates() {
 }
 function computeStreak() {
   const active = activeDates();
-  const today = localISO();
+  const today = todayISO();
   let cur = active.has(today) ? today : shiftDate(today, -1);
   let n = 0;
   while (active.has(cur)) { n++; cur = shiftDate(cur, -1); }
@@ -421,9 +504,7 @@ function totalXp() {
 
 /* ---------- render ---------- */
 function render() {
-  const today = localISO();
-  const n = daysBetween(START_DATE, today) + 1;
-  $("dayChip").textContent = n > 0 ? `DAY ${n}` : "DAY —";
+  $("dayChip").textContent = plan.dayOfPlan > 0 ? `DAY ${plan.dayOfPlan}` : "DAY —";
   $("weekLbl").textContent = plan.week ? `Week ${plan.week}` : "";
   $("sessionLabel").textContent = plan.sessionLabel || "Today";
   $("headline").textContent = plan.headline || "";
@@ -556,12 +637,13 @@ function renderStats(ticks) {
   $("ringArc").setAttribute("stroke-dashoffset", String(RING_C * (1 - pct)));
   $("ringArc").setAttribute("stroke", pct === 1 ? "var(--done)" : "var(--accent)");
 
+  const per = program.levelXp || 500;
   const total = totalXp();
-  const lvl = Math.floor(total / XP_PER_LVL) + 1;
-  const inLvl = total % XP_PER_LVL;
+  const lvl = Math.floor(total / per) + 1;
+  const inLvl = total % per;
   $("lvlLbl").textContent = `LVL ${lvl}`;
-  $("xpLbl").textContent = `${inLvl} / ${XP_PER_LVL} XP`;
-  $("xpFill").style.width = `${(inLvl / XP_PER_LVL) * 100}%`;
+  $("xpLbl").textContent = `${inLvl} / ${per} XP`;
+  $("xpFill").style.width = `${(inLvl / per) * 100}%`;
 
   const s = computeStreak();
   $("streakN").textContent = s;
@@ -575,11 +657,12 @@ function setTick(id, on) {
   saveTicks(plan.date, t);
   const row = rowEls.get(id);
   if (row) row.classList.toggle("done", on);
+  saveDayMeta(plan.date, { sessionId: plan.sessionId, sessionDone: isSessionDone(plan.date) });
   refreshDerived();
   sync.queueTick(plan.date, id, on);
 }
 
-/* ---------- handoff ---------- */
+/* ---------- copy status ---------- */
 function summaryFor(date) {
   const ticks = loadTicks(date);
   const lines = [`Fitness tracker — results for ${date} (${prettyDate(date)})`, ""];
@@ -596,16 +679,6 @@ function summaryFor(date) {
     lines.push(ids.length ? `Ticked: ${ids.join(", ")}` : "Nothing was ticked.");
   }
   return lines.join("\n");
-}
-function handoffPayload(staleDate) {
-  const today = localISO();
-  const others = storedDates().filter(d => d !== staleDate && d !== today);
-  let out = summaryFor(staleDate);
-  out += `\n\nToday is ${today} (${prettyDate(today)}), day ${daysBetween(START_DATE, today) + 1} of the plan.`;
-  out += `\nStreak: ${computeStreak()} days. Please write the next today.json for ${today} and push it.`;
-  if (sync.uid) out += `\n(Ticks also live in Firestore under users/${sync.uid}/days/.)`;
-  if (others.length) out += `\n\nOther days still held in this browser: ${others.join(", ")}`;
-  return out;
 }
 async function copy(text, okMsg) {
   try { await navigator.clipboard.writeText(text); setStatus(okMsg, true); }
@@ -724,7 +797,10 @@ const sync = {
       sessionLabel: plan.sessionLabel ?? null,
       items: allItems().map(i => i.id),
       xpEarned: todayXp(),
-      ticked: todayTicked()
+      ticked: todayTicked(),
+      program: program.activeProgram,
+      sessionId: plan.sessionId,
+      sessionDone: isSessionDone(plan.date)
     };
   },
 
@@ -733,6 +809,7 @@ const sync = {
     const unchanged =
       data.date === m.date && data.dayOfPlan === m.dayOfPlan &&
       data.sessionLabel === m.sessionLabel && data.xpEarned === m.xpEarned &&
+      data.sessionId === m.sessionId && data.sessionDone === m.sessionDone &&
       JSON.stringify(data.items || []) === JSON.stringify(m.items);
     if (unchanged) return;
     try { await this.fb.f.updateDoc(this.ref(date), m); } catch {}
@@ -794,12 +871,17 @@ const sync = {
         const v = d.data();
         history.set(d.id, {
           xpEarned: v.xpEarned || 0,
+          // The ticks map drives one-off suppression and the session rotation,
+          // so it has to be kept, not just counted.
+          ticks: v.ticks || {},
+          sessionId: v.sessionId || null,
+          sessionDone: !!v.sessionDone,
           ticked: typeof v.ticked === "number"
             ? v.ticked
             : Object.values(v.ticks || {}).filter(Boolean).length
         });
       });
-      render();
+      rebuild();
     } catch (e) {
       console.warn("History unavailable:", e);
     }
@@ -883,38 +965,44 @@ const sync = {
   }
 };
 
-/* ---------- load ---------- */
-async function loadPlan({ announce = false } = {}) {
-  const prevDate = plan && plan.date;
+/* ---------- load ----------
+   The page derives the day itself, so it can no longer go stale waiting for
+   someone to publish a new list. An override file is the rare escape hatch for
+   a day that needs something the rules can't express. */
+async function loadProgram({ announce = false } = {}) {
   let fetched = null;
   try {
-    const res = await fetch(`today.json?t=${Date.now()}`, { cache:"no-store" });
+    const res = await fetch(`plan.json?t=${Date.now()}`, { cache:"no-store" });
     if (res.ok) fetched = await res.json();
-  } catch { /* file:// or offline */ }
+  } catch { /* file:// or offline — the embedded copy below covers it */ }
 
-  plan = fetched || FALLBACK;
+  program = fetched || FALLBACK;
+  await rebuild();
+
+  if (announce) {
+    const prog = program.programs[program.activeProgram];
+    setStatus(plan.sessionId
+      ? `Up to date — ${prog.label}, ${plan.sessionLabel}.`
+      : `Up to date — ${plan.sessionLabel}.`, true);
+  }
+}
+
+async function rebuild() {
+  const prevDate = plan && plan.date;
+  plan = deriveDay(todayISO());
+  await applyOverride();
   render();
   if (prevDate && prevDate !== plan.date) sync.reattach();
+}
 
-  const today = localISO();
-  const handoff = $("handoff");
-
-  if (plan.date === today) {
-    handoff.hidden = true;
-    if (announce) setStatus("Already up to date — this list is for today.", true);
-  } else if (plan.date < today) {
-    handoff.hidden = false;
-    const gap = daysBetween(plan.date, today);
-    $("handoffTitle").textContent =
-      `This list is from ${prettyDate(plan.date)} — ${gap} day${gap === 1 ? "" : "s"} behind`;
-    $("handoffBody").textContent =
-      "Copy the block below into Claude Code. It'll read your results, write a fresh list for today, and push it here — then hit Refresh again.";
-    $("handoffText").textContent = handoffPayload(plan.date);
-    if (announce) setStatus("Fetched — but the published list hasn't caught up to today yet.");
-  } else {
-    handoff.hidden = true;
-    if (announce) setStatus(`This list is dated ${prettyDate(plan.date)} — ahead of today.`);
-  }
+async function applyOverride() {
+  try {
+    const res = await fetch(`overrides/${plan.date}.json?t=${Date.now()}`, { cache:"no-store" });
+    if (!res.ok) return;                       // the normal case: no override
+    const o = await res.json();
+    if (o.groups) o.groups = o.groups.map(g => ({ ...g, items: g.items.map(i => ({ ...i, text: itemText(i) })) }));
+    plan = { ...plan, ...o };
+  } catch { /* absent or unparseable — the derived day stands */ }
 }
 
 $("refreshBtn").addEventListener("click", async e => {
@@ -923,8 +1011,8 @@ $("refreshBtn").addEventListener("click", async e => {
   const was = btn.textContent;
   btn.textContent = "Checking…";
   setStatus("");
-  await loadPlan({ announce:true });
   if (sync.mode === "signed-in") await sync.loadHistory();
+  await loadProgram({ announce:true });
   btn.textContent = was;
   btn.disabled = false;
 });
@@ -938,12 +1026,10 @@ $("notesBtn").addEventListener("click", e => {
 $("copyBtn").addEventListener("click", () =>
   copy(summaryFor(plan.date), "Copied — paste it into Claude Code."));
 
-$("handoffCopy").addEventListener("click", () =>
-  copy(handoffPayload(plan.date), "Copied — paste it into Claude Code."));
-
 $("resetBtn").addEventListener("click", () => {
   if (!confirm("Clear every tick for " + plan.date + "?")) return;
   saveTicks(plan.date, {});
+  saveDayMeta(plan.date, { sessionId: plan.sessionId, sessionDone: false });
   render();
   sync.clearDay(plan.date);
   setStatus("Cleared.");
@@ -954,7 +1040,7 @@ if (localStorage.getItem(LS_NOTES) === "1") {
   $("notesBtn").classList.add("on");
 }
 
-loadPlan().then(() => sync.init()).then(() => sync.watchLifecycle());
+loadProgram().then(() => sync.init()).then(() => sync.watchLifecycle());
 </script>
 </body>
 </html>
