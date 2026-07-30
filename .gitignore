@@ -1,3 +1,12 @@
+# --- credentials that must never be committed ---
+# Service-account / Admin SDK keys bypass every Firestore security rule.
+# (fitness/firebase-config.js is NOT secret and IS committed — see the note in it.)
+service-account.json
+*service-account*.json
+*-adminsdk-*.json
+.env
+.env.*
+
 # This repo is public. Never let progress photos or body metrics in here.
 Photos/
 photos/
@@ -7,6 +16,7 @@ photos/
 metrics.json
 measurements.*
 
+node_modules/
 .DS_Store
 Thumbs.db
 .claude/

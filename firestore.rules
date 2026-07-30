@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Everything lives under /users/{uid}/. A signed-in person can touch their own
+// subtree and nothing else; anything not matched below is denied by default,
+// including every unauthenticated read.
+//
+// Paste this into: Firebase console -> Firestore Database -> Rules -> Publish.
+// It is kept here so the rules are in version control alongside the page.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Daily tick documents live at users/{uid}/days/{YYYY-MM-DD}.
+    // The recursive wildcard also covers /users/{uid} itself, and leaves room
+    // for sibling collections later (metrics, session logs) under the same rule.
+    match /users/{uid}/{document=**} {
+      allow read, write: if isOwner(uid);
+    }
+  }
+}
