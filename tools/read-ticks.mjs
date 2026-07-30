@@ -136,8 +136,14 @@ async function main() {
   for (const d of days) {
     const ticks = d.ticks || {};
     const on = Object.keys(ticks).filter(k => ticks[k]).sort();
-    console.log(`${d.date}  ${on.length} ticked${d.updatedAt ? `  (updated ${d.updatedAt})` : ""}`);
-    if (on.length) console.log("  " + on.join(", "));
+    const offered = Array.isArray(d.items) ? d.items.length : null;
+    const score = offered === null ? `${on.length} ticked` : `${on.length}/${offered}`;
+    console.log(`${d.date}  ${score}${d.sessionLabel ? `  ${d.sessionLabel}` : ""}`);
+    if (on.length) console.log("  did:     " + on.join(", "));
+    if (offered) {
+      const missed = d.items.filter(i => !ticks[i]);
+      if (missed.length) console.log("  skipped: " + missed.join(", "));
+    }
   }
 }
 

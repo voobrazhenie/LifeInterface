@@ -6,6 +6,13 @@
   "headline": "First real session. Conservative weights on purpose — today's job is to write down starting numbers, not to find your limit.",
   "groups": [
     {
+      "title": "Meds",
+      "items": [
+        { "id": "m-stimulants", "text": "Stimulants", "detail": "As prescribed." },
+        { "id": "m-antidepressants", "text": "Antidepressants", "detail": "As prescribed. Consistent time of day." }
+      ]
+    },
+    {
       "title": "Train",
       "note": "Rest 2–3 min on the presses, 60–90 s on raises and extensions. Log weight and reps for every set — that logbook is the actual progress data.",
       "items": [
@@ -18,15 +25,6 @@
       ]
     },
     {
-      "title": "Week 1 setup",
-      "note": "One-off items. Clearing these this week is most of what week 1 is for.",
-      "items": [
-        { "id": "s-measure", "text": "Weigh yourself and measure waist at navel", "detail": "Morning, unflexed. This is your baseline — you only get one shot at it." },
-        { "id": "s-supplements", "text": "Buy creatine monohydrate and whey" },
-        { "id": "s-calendar", "text": "Put the four weekly sessions in your calendar as real appointments" }
-      ]
-    },
-    {
       "title": "Eat",
       "note": "Protein is the non-negotiable. Four anchors of 35–45 g beats trying to rescue the number at dinner.",
       "items": [
@@ -34,6 +32,7 @@
         { "id": "e-anchor-2", "text": "Lunch protein anchor", "detail": "Palm-and-a-half of chicken / fish / beef / tofu" },
         { "id": "e-anchor-3", "text": "Post-training or afternoon anchor", "detail": "Whey shake or cottage cheese" },
         { "id": "e-anchor-4", "text": "Dinner protein anchor" },
+        { "id": "e-water", "text": "Water through the day", "detail": "Creatine raises water needs slightly. Pale straw, not clear." },
         { "id": "e-track", "text": "Logged protein today", "detail": "Day 1 of 3 — just to see where you actually are." },
         { "id": "e-creatine", "text": "Creatine, 5 g", "detail": "Any time of day works." }
       ]
@@ -41,7 +40,18 @@
     {
       "title": "Recover",
       "items": [
-        { "id": "r-sleep", "text": "7–9 hours, consistent wake time", "detail": "Short sleep measurably suppresses muscle gain. This is not filler." }
+        { "id": "r-sleep", "text": "7–9 hours, consistent wake time", "detail": "Short sleep measurably suppresses muscle gain. This is not filler." },
+        { "id": "r-cold-shower", "text": "Cold shower", "detail": "Keep it away from the hour after lifting — cold blunts the training signal." },
+        { "id": "r-meditation", "text": "Meditation" }
+      ]
+    },
+    {
+      "title": "Week 1 setup",
+      "note": "One-off items. Clearing these this week is most of what week 1 is for.",
+      "items": [
+        { "id": "s-measure", "text": "Weigh yourself and measure waist at navel", "detail": "Morning, unflexed. This is your baseline — you only get one shot at it." },
+        { "id": "s-supplements", "text": "Buy creatine monohydrate and whey" },
+        { "id": "s-calendar", "text": "Put the four weekly sessions in your calendar as real appointments" }
       ]
     }
   ]

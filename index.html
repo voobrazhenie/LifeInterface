@@ -3,17 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#17171a">
 <title>Life Interface</title>
 <style>
+  /* Dark unconditionally — see the note in fitness/index.html. */
   :root {
-    --bg: #fbfaf8; --panel: #fff; --ink: #1a1a19; --ink-soft: #5f5d58;
-    --ink-faint: #8f8c85; --line: #e6e3dd; --accent: #b4541f;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #17171a; --panel: #1f1f23; --ink: #edeae4; --ink-soft: #a5a19a;
-      --ink-faint: #77736c; --line: #32323a; --accent: #e8834a;
-    }
+    --bg: #17171a; --panel: #1f1f23; --ink: #edeae4; --ink-soft: #a5a19a;
+    --ink-faint: #77736c; --line: #32323a; --accent: #e8834a;
   }
   * { box-sizing: border-box; }
   body {
