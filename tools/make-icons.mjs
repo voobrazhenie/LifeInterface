@@ -15,8 +15,11 @@ import { dirname, join } from "node:path";
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "fitness");
 
-const BG     = [0x17, 0x17, 0x1a];
-const ACCENT = [0xe8, 0x83, 0x4a];
+/* Neo-brutalist: solid yellow block, thick black arrow, heavy black border.
+   High contrast so it still reads at 60px on a home screen. */
+const BG     = [0xff, 0xd5, 0x3d];
+const ACCENT = [0x11, 0x11, 0x11];
+const BORDER = 0.055;   // fraction of the icon size
 
 /* node >= 20.15 exposes zlib.crc32; keep a fallback so this stays runnable. */
 const crc32 = zlibCrc32 || (() => {
@@ -67,18 +70,21 @@ function png(size, pixel) {
   ]);
 }
 
-/* Arrow: a shaft, then a head whose half-height tapers to a point. */
+/* A heavy black border, then the arrow: a thick shaft and a tapering head. */
 function arrow(x, y, S) {
+  const b = BORDER * S;
+  if (x < b || y < b || x > S - b || y > S - b) return ACCENT;
+
   const cy = S / 2;
   const dy = Math.abs(y - cy);
 
-  const shaft = x >= 0.20 * S && x <= 0.60 * S && dy <= 0.045 * S;
+  const shaft = x >= 0.22 * S && x <= 0.58 * S && dy <= 0.075 * S;
 
   let head = false;
-  const hx0 = 0.55 * S, hx1 = 0.82 * S;
+  const hx0 = 0.52 * S, hx1 = 0.80 * S;
   if (x >= hx0 && x <= hx1) {
     const t = (x - hx0) / (hx1 - hx0);
-    head = dy <= 0.20 * S * (1 - t);
+    head = dy <= 0.24 * S * (1 - t);
   }
 
   return shaft || head ? ACCENT : BG;

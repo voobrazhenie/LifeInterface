@@ -160,6 +160,7 @@
       "emoji": "🌙",
       "items": [
         { "id": "r-sleep", "emoji": "😴", "text": "7–9 hours, consistent wake time", "detail": "Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.", "xp": 20 },
+        { "id": "r-no-weed", "emoji": "🚫", "text": "No weed today", "detail": "Tick it on the days you didn't. Worth tracking next to sleep — it changes sleep architecture, and sleep is the recovery lever the plan leans on hardest.", "xp": 20 },
         { "id": "r-cold-shower", "emoji": "🧊", "text": "Cold shower", "detail": "Not in the hour after training — cold blunts the growth signal.", "xp": 15 },
         { "id": "r-meditation", "emoji": "🧘", "text": "Meditation", "xp": 15 }
       ]

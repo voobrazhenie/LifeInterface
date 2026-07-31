@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#141416">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F2EDE0">
 <title>NOW → WANT</title>
 
 <!-- Add to Home Screen. iOS ignores the manifest's name/display, so the
@@ -15,192 +15,178 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NOW→WANT">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
-  :root {
-    --bg:#141416; --panel:#1e1e23; --raised:#26262d; --line:#33333c;
-    --ink:#efece6; --soft:#a8a49c; --faint:#726e68;
-    --accent:#e8834a; --flame:#ffb020; --xp:#8b7fe8; --done:#7fb185;
+  /* Neo-brutalist character sheet — thick strokes, squared corners, solid accent
+     blocks, hard zero-blur shadows. Light on paper rather than the old dark UI. */
+  :root{
+    --paper:#F2EDE0; --card:#FFFDF7; --sunk:#E8E4D6; --ink:#111111;
+    --yellow:#FFD53D; --teal:#00C2CB; --pink:#FF3D8B; --lime:#B8E62E;
+    --grey:#7A756A; --faint:#A39D91;
+    --stroke:2.5px; --shadow:4px 4px 0 var(--ink);
     --maxw:430px;
   }
-  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body {
-    margin:0;
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
     padding:
-      calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
-      calc(28px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
-    background:var(--bg); color:var(--ink);
-    font:15px/1.45 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+      calc(14px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+      calc(30px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
+    font:15px/1.4 "Archivo","Helvetica Neue",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap { max-width:var(--maxw); margin:0 auto; }
+  .wrap{max-width:var(--maxw);margin:0 auto}
+  .blk{font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;letter-spacing:-.01em}
+  .grow{flex:1}
 
   /* ---------- header ---------- */
-  .topbar { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-  .home {
-    font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-    color:var(--faint); text-decoration:none;
+  .topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .home{
+    font-family:"Arial Black",Impact,sans-serif;font-weight:900;
+    font-size:9px;letter-spacing:.09em;color:var(--ink);text-decoration:none;
   }
-  .home:hover { color:var(--ink); }
-  .grow { flex:1; }
-  .streak {
-    display:inline-flex; align-items:center; gap:5px;
-    padding:5px 11px 5px 9px; border-radius:99px;
-    background:#2a2015; border:1px solid #4a3820;
-    font-size:11px; color:#8a7350;
+  .home:hover{color:var(--pink)}
+  .streak{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);
+    padding:3px 9px;font-family:"Arial Black",Impact,sans-serif;
+    font-size:8.5px;font-weight:900;letter-spacing:.06em;
   }
-  .streak b { font-size:13px; color:var(--flame); }
-  .streak.cold { background:var(--panel); border-color:var(--line); color:var(--faint); }
-  .streak.cold b { color:var(--soft); }
+  .streak b{font-size:12px}
+  .streak.cold{background:var(--sunk);color:var(--grey)}
 
   /* ---------- hero ---------- */
-  .hero {
-    background:var(--panel); border:1px solid var(--line); border-radius:20px;
-    padding:13px 16px 12px; margin-bottom:12px;
+  .hero{
+    background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
+    padding:12px 14px 13px;margin-bottom:16px;
   }
-  .hero-top { display:flex; align-items:center; gap:12px; }
-  .hero-txt { flex:1; min-width:0; }
-  .daychip {
-    display:inline-block; padding:3px 7px; border-radius:6px;
-    background:#2e1d12; color:var(--accent);
-    font-size:9px; font-weight:700; letter-spacing:.08em;
+  .hero-top{display:flex;align-items:center;gap:12px}
+  .hero-txt{flex:1;min-width:0}
+  .kicker{font-size:8.5px;font-weight:900;letter-spacing:.09em;color:var(--grey);
+    font-family:"Arial Black",Impact,sans-serif}
+  .hero h1{margin:2px 0 3px;font-size:26px;line-height:1;
+    font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;letter-spacing:-.01em}
+  .hero .sub{font-size:10px;font-weight:600;color:var(--grey)}
+  .daychip{
+    flex:0 0 auto;text-align:center;background:var(--teal);
+    border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);padding:6px 11px 4px;
+    font-family:"Arial Black",Impact,sans-serif;
   }
-  .week { font-size:11px; color:var(--faint); margin-left:7px; }
-  .hero h1 { margin:5px 0 3px; font-size:23px; font-weight:700; letter-spacing:-.02em; }
-  .hero .sub { font-size:11.5px; color:var(--soft); }
+  .daychip span{display:block;font-size:8px;font-weight:900;letter-spacing:.07em}
+  .daychip strong{display:block;font-size:30px;line-height:.95;font-weight:900}
 
-  .ring { position:relative; width:76px; height:76px; flex:0 0 auto; }
-  .ring svg { transform:rotate(-90deg); display:block; }
-  .ring .val {
-    position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:1px;
-  }
-  .ring .n { font-size:20px; font-weight:700; line-height:1; }
-  .ring .d { font-size:9.5px; color:var(--faint); }
+  .xpblock{margin-top:11px}
+  .xprow{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .lvl{font-size:12px;font-family:"Arial Black",Impact,sans-serif;font-weight:900}
+  .xpnum{font-size:9.5px;font-weight:800;color:var(--grey)}
+  .xptrack{display:flex;border:2px solid var(--ink);height:15px;overflow:hidden}
+  .xptrack i{flex:1;border-right:1px solid var(--ink);background:var(--card);transition:background .2s}
+  .xptrack i:last-child{border-right:0}
+  .xptrack i.on{background:var(--pink)}
+  .count{display:flex;align-items:baseline;gap:6px;margin-top:11px}
+  .count b{font-size:23px;font-family:"Arial Black",Impact,sans-serif;font-weight:900}
+  .count span{font-size:9.5px;font-weight:900;letter-spacing:.05em;color:var(--grey)}
 
-  .xpblock { margin-top:12px; }
-  .xprow { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
-  .lvl { font-size:9.5px; font-weight:700; letter-spacing:.07em; color:var(--xp); }
-  .xpnum { font-size:9.5px; color:var(--faint); }
-  .xptrack { height:7px; border-radius:99px; background:#2c2c34; overflow:hidden; }
-  .xpfill {
-    height:100%; border-radius:99px;
-    background:linear-gradient(90deg, var(--xp), var(--accent));
-    transition:width .45s cubic-bezier(.4,0,.2,1);
-  }
-
-  /* ---------- quest chips ---------- */
-  .chips { display:flex; gap:7px; margin-bottom:12px; }
-  .chip {
-    flex:1; min-width:0; padding:8px 9px 7px; border-radius:13px;
-    background:var(--panel); border:1px solid var(--line);
-    cursor:pointer; text-align:left; font:inherit; color:inherit;
-    transition:border-color .15s, background .15s;
-  }
-  .chip.complete { background:#1b2a1d; border-color:#3a5c3f; }
-  /* Label on its own line and the emoji beside the count — with five groups the
-     inline "emoji + name" pairing left "Recover" truncated to "Recov". */
-  .chip .lab {
-    margin-bottom:4px; font-size:9px; font-weight:700; color:var(--soft);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    letter-spacing:.03em; text-transform:uppercase;
-  }
-  .chip.complete .lab { color:var(--done); }
-  .chip .cnt {
-    display:flex; align-items:baseline; gap:4px;
-    font-size:15px; font-weight:700; margin-bottom:5px;
-  }
-  .chip .cnt em { font-style:normal; font-size:11px; }
-  .chip.complete .cnt { color:var(--done); }
-  .chip .mini { height:3px; border-radius:99px; background:#31313a; overflow:hidden; }
-  .chip .mini i { display:block; height:100%; border-radius:99px; background:var(--accent); transition:width .35s; }
-  .chip.complete .mini i { background:var(--done); }
+  /* ---------- category stat bars ---------- */
+  .chips{margin-bottom:16px}
+  .stat{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .stat .nm{width:64px;flex:0 0 auto;font-size:9px;font-weight:900;letter-spacing:.06em;
+    font-family:"Arial Black",Impact,sans-serif}
+  .stat .cells{flex:1;display:flex;gap:3px}
+  .stat .cells i{flex:1;height:13px;border:2px solid var(--ink);background:var(--card);transition:background .2s}
+  .stat .cells i.on{background:var(--teal)}
+  .stat.full .cells i.on{background:var(--lime)}
+  .stat .vv{width:32px;flex:0 0 auto;text-align:right;font-size:9.5px;font-weight:900}
 
   /* ---------- list ---------- */
-  .sec {
-    display:flex; align-items:center; gap:6px;
-    padding:5px 3px 1px; font-size:9.5px; font-weight:700;
-    letter-spacing:.1em; text-transform:uppercase; color:var(--faint);
+  .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px}
+  .sec .t{font-size:11px;font-weight:900;letter-spacing:.07em;
+    background:var(--ink);color:var(--paper);padding:3px 8px;
+    font-family:"Arial Black",Impact,sans-serif}
+  .sec .r{flex:1;height:2px;background:var(--ink)}
+  .sec .n{font-size:9px;font-weight:900;color:var(--grey)}
+
+  .row{
+    display:flex;align-items:center;gap:11px;
+    background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
+    padding:0 11px;min-height:44px;
+    margin-bottom:9px;cursor:pointer;
+    transition:transform .07s, box-shadow .07s, background .15s;
   }
-  .row {
-    display:flex; align-items:center; gap:10px;
-    padding:8px 12px 8px 11px; margin-bottom:5px;
-    background:var(--panel); border:1px solid var(--line); border-radius:12px;
-    cursor:pointer; transition:background .15s, border-color .15s, opacity .15s;
+  .row:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+  .row.hero-item{background:var(--yellow)}
+  .row.done{background:var(--sunk);box-shadow:2px 2px 0 var(--ink)}
+  .row input{position:absolute;opacity:0;pointer-events:none}
+  .box{
+    flex:0 0 auto;width:20px;height:20px;border:2.5px solid var(--ink);background:var(--card);
+    display:flex;align-items:center;justify-content:center;
   }
-  .row.hero-item { border-color:#5a3a22; border-width:1.5px; padding:7.5px 11.5px 7.5px 10.5px; }
-  .row.done { background:#191d19; border-color:#242f26; }
-  .row input { position:absolute; opacity:0; pointer-events:none; }
-  .box {
-    flex:0 0 auto; width:21px; height:21px; border-radius:7px;
-    border:1.5px solid #4a4a55; display:flex; align-items:center; justify-content:center;
-    transition:background .15s, border-color .15s;
+  .row.done .box{background:var(--ink)}
+  .box svg{width:12px;height:12px;opacity:0}
+  .row.done .box svg{opacity:1}
+  .emoji{flex:0 0 auto;font-size:14px;line-height:1}
+  .txt{flex:1;min-width:0;font-size:13px;font-weight:700}
+  .row.done .txt{color:var(--grey);text-decoration:line-through}
+  .detail{display:none;font-size:10.5px;font-weight:600;color:var(--grey);margin-top:3px;line-height:1.35}
+  body.notes .detail{display:block}
+  body.notes .row{min-height:0;padding-top:9px;padding-bottom:9px}
+  .secnote,.daynote{
+    display:none;font-size:11px;font-weight:600;color:var(--grey);line-height:1.4;padding:0 2px 6px;
   }
-  .row.done .box { background:var(--done); border-color:var(--done); }
-  .box svg { width:12px; height:12px; opacity:0; transition:opacity .12s; }
-  .row.done .box svg { opacity:1; }
-  .emoji { flex:0 0 auto; font-size:13px; line-height:1; }
-  .txt { flex:1; min-width:0; font-size:13.5px; }
-  .row.hero-item .txt { font-weight:600; }
-  .row.done .txt { color:var(--faint); text-decoration:line-through; }
-  .detail { display:none; font-size:11px; color:var(--faint); margin-top:2px; line-height:1.35; }
-  body.notes .detail { display:block; }
-  .secnote, .daynote {
-    display:none; font-size:11.5px; color:var(--soft); line-height:1.4;
-    padding:2px 3px 6px;
+  .daynote{padding:9px 0 0;border-top:2px solid var(--ink);margin-top:11px}
+  body.notes .secnote,body.notes .daynote{display:block}
+  .pill{
+    flex:0 0 auto;font-size:10px;font-weight:900;font-family:"Arial Black",Impact,sans-serif;
+    background:var(--pink);color:var(--ink);border:2px solid var(--ink);padding:2px 6px;
   }
-  .daynote { padding:8px 0 0; border-top:1px solid var(--line); margin-top:10px; }
-  body.notes .secnote, body.notes .daynote { display:block; }
-  .pill {
-    flex:0 0 auto; padding:3px 7px; border-radius:99px;
-    background:#232330; color:var(--xp); font-size:10px; font-weight:700;
-  }
-  .row.done .pill { background:#1f2a20; color:var(--done); }
+  .row.done .pill{background:transparent;border-color:var(--faint);color:var(--faint)}
+  .row.hero-item .pill{background:var(--ink);color:var(--yellow)}
 
   /* ---------- sync + actions ---------- */
-  .sync {
-    display:flex; align-items:center; gap:9px; flex-wrap:wrap;
-    margin:12px 0; padding:8px 11px; border-radius:11px;
-    background:var(--panel); border:1px solid var(--line);
-    font-size:12px; color:var(--soft);
+  .sync{
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:16px 0;
+    padding:9px 11px;background:var(--card);
+    border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);
+    font-size:12px;font-weight:700;color:var(--grey);
   }
-  .sync .dot { flex:0 0 auto; width:6px; height:6px; border-radius:99px; background:var(--faint); }
-  .sync.on .dot { background:var(--done); }
-  .sync.err .dot { background:var(--accent); }
-  .sync .msg { flex:1; min-width:120px; }
+  .sync .dot{flex:0 0 auto;width:9px;height:9px;border:2px solid var(--ink);background:var(--sunk)}
+  .sync.on .dot{background:var(--lime)}
+  .sync.err .dot{background:var(--pink)}
+  .sync .msg{flex:1;min-width:120px}
 
-  .actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
-  button {
-    font:inherit; font-size:12.5px; font-weight:600; cursor:pointer;
-    padding:8px 13px; border-radius:10px;
-    border:1px solid var(--line); background:var(--panel); color:var(--ink);
-    transition:border-color .15s, background .15s;
+  .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  button{
+    font:inherit;font-size:11px;font-weight:900;letter-spacing:.05em;cursor:pointer;
+    font-family:"Arial Black",Impact,sans-serif;
+    padding:9px 13px;background:var(--card);color:var(--ink);
+    border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);
+    transition:transform .07s, box-shadow .07s;
   }
-  button:hover { border-color:var(--faint); }
-  button:active { transform:translateY(1px); }
-  button.primary { background:var(--accent); border-color:var(--accent); color:#17110c; }
-  button.on { border-color:var(--accent); color:var(--accent); }
-  button:disabled { opacity:.5; cursor:default; }
-  .status { font-size:12px; color:var(--soft); margin-top:9px; min-height:1.2em; }
-  .status.ok { color:var(--done); }
+  button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  button.primary{background:var(--yellow)}
+  button.on{background:var(--teal)}
+  button:disabled{opacity:.5;cursor:default;transform:none}
+  .status{font-size:11.5px;font-weight:700;color:var(--grey);margin-top:10px;min-height:1.2em}
+  .status.ok{color:var(--ink)}
 
-
-  details.plan { margin-top:20px; border-top:1px solid var(--line); padding-top:14px; }
-  details.plan summary {
-    cursor:pointer; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--faint); font-weight:700; list-style:none;
+  /* ---------- plan ---------- */
+  details.plan{margin-top:22px;border-top:2px solid var(--ink);padding-top:14px}
+  details.plan summary{
+    cursor:pointer;font-size:10px;letter-spacing:.08em;color:var(--ink);
+    font-family:"Arial Black",Impact,sans-serif;font-weight:900;list-style:none;
   }
-  details.plan summary::-webkit-details-marker { display:none; }
-  details.plan summary::before { content:"▸ "; }
-  details.plan[open] summary::before { content:"▾ "; }
-  .plan-body { margin-top:12px; font-size:13px; color:var(--soft); }
-  .plan-body h4 { margin:14px 0 5px; font-size:12px; color:var(--ink); font-weight:700; }
-  .plan-body ul { list-style:none; padding:0; margin:0; }
-  .plan-body li { padding-left:14px; position:relative; margin-bottom:4px; }
-  .plan-body li::before { content:"—"; position:absolute; left:0; color:var(--faint); }
-  footer {
-    margin-top:22px; padding-top:12px; border-top:1px solid var(--line);
-    font-size:11px; color:var(--faint); line-height:1.55;
+  details.plan summary::-webkit-details-marker{display:none}
+  details.plan summary::before{content:"\25B8 "}
+  details.plan[open] summary::before{content:"\25BE "}
+  .plan-body{margin-top:12px;font-size:12.5px;font-weight:600;color:var(--grey)}
+  .plan-body h4{margin:14px 0 5px;font-size:11px;color:var(--ink);
+    font-family:"Arial Black",Impact,sans-serif;font-weight:900;letter-spacing:.05em}
+  .plan-body ul{list-style:none;padding:0;margin:0}
+  .plan-body li{padding-left:15px;position:relative;margin-bottom:4px}
+  .plan-body li::before{content:"\25A0";position:absolute;left:0;color:var(--ink);font-size:8px;top:3px}
+  footer{
+    margin-top:22px;padding-top:12px;border-top:2px solid var(--ink);
+    font-size:10px;font-weight:700;color:var(--grey);line-height:1.55;
   }
 </style>
 </head>
@@ -208,7 +194,7 @@
 <div class="wrap">
 
   <div class="topbar">
-    <a class="home" href="../">‹ Life Interface</a>
+    <a class="home" href="../">‹ LIFE INTERFACE</a>
     <span class="grow"></span>
     <span class="streak" id="streak"><b id="streakN">0</b><span id="streakLbl">days</span></span>
   </div>
@@ -216,23 +202,12 @@
   <div class="hero">
     <div class="hero-top">
       <div class="hero-txt">
-        <div>
-          <span class="daychip" id="dayChip">DAY —</span>
-          <span class="week" id="weekLbl"></span>
-        </div>
+        <div class="kicker"><span id="weekLbl"></span></div>
         <h1 id="sessionLabel">Today</h1>
         <div class="sub" id="headline"></div>
       </div>
-
-      <div class="ring">
-        <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true">
-          <circle cx="38" cy="38" r="33" fill="none" stroke="#2c2c34" stroke-width="7"></circle>
-          <circle id="ringArc" cx="38" cy="38" r="33" fill="none" stroke="var(--accent)"
-                  stroke-width="7" stroke-linecap="round"
-                  stroke-dasharray="207.3" stroke-dashoffset="207.3"
-                  style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1)"></circle>
-        </svg>
-        <div class="val"><span class="n" id="ringN">0</span><span class="d" id="ringD">of 0</span></div>
+      <div class="daychip">
+        <span>DAY</span><strong id="dayChip">—</strong>
       </div>
     </div>
     <div class="xpblock">
@@ -241,8 +216,9 @@
         <span class="grow"></span>
         <span class="xpnum" id="xpLbl">0 XP</span>
       </div>
-      <div class="xptrack"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
+      <div class="xptrack" id="xpTrack"></div>
     </div>
+    <div class="count"><b id="ringN">0</b><span id="ringD">OF 0 DONE TODAY</span></div>
     <div class="daynote" id="dayNote"></div>
   </div>
 
@@ -292,8 +268,8 @@
   </details>
 
   <footer>
-    Signed out, ticks stay in this browser. Signed in, they sync to your own account
-    — readable only by you.<br>
+    Signed out, ticks stay in this browser. Signed in, they sync to your own
+    account — readable only by you.<br>
     Not medical advice.
   </footer>
 
@@ -302,7 +278,7 @@
 <script>
 "use strict";
 
-const FALLBACK = {"startDate":"2026-07-29","levelXp":500,"activeProgram":"home","schedule":{"mon":"train","tue":"train","wed":"rest","thu":"train","fri":"train","sat":"rest","sun":"rest"},"restDay":{"label":"Rest day","headline":"Not a day off — a day the muscle actually grows.","note":"Growth happens between sessions, not during them. Walking is fine and good. Everything else on this list still counts, so a rest day never breaks the streak."},"programs":{"home":{"label":"Bodyweight","note":"No equipment. Progression is by variation and tempo instead of weight: when you hit the top of the rep range on every set, move up a rung and drop back to the bottom of the range.","sessions":[{"id":"h1","label":"Upper — Push","headline":"Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.","items":[{"id":"h1-pushup","emoji":"🤸","ladder":["Incline push-up (hands on desk)","Knee push-up","Push-up","Decline push-up (feet on chair)","Deficit push-up (hands on books)","Archer push-up"],"rung":2,"reps":"4 × 6–12","detail":"Elbows about 45° from your body, not flared. Full range — chest to the floor.","xp":25},{"id":"h1-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.","xp":25,"hero":true},{"id":"h1-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 8–12","detail":"Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.","xp":20},{"id":"h1-diamond","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hands together under the chest. Triceps.","xp":20},{"id":"h1-logged","emoji":"📝","reps":"","text":"Logged the session","detail":"Reps per set, and which rung you're on. Without it, next session has nothing to beat.","xp":20}]},{"id":"h2","label":"Lower","headline":"Legs respond well to bodyweight — this session loses least without a gym.","items":[{"id":"h2-squat","emoji":"🦵","ladder":["Bodyweight squat","3-second tempo squat","Paused squat","Split squat","Bulgarian split squat","Pistol squat progression"],"rung":1,"reps":"4 × 10–20","detail":"Three seconds down, one second pause, up. Tempo is how you load a squat without weight.","xp":25,"hero":true},{"id":"h2-split","emoji":"🚶","ladder":["Reverse lunge","Split squat","Rear-foot-elevated split squat"],"rung":0,"reps":"3 × 8–12 each leg","detail":"Front shin roughly vertical, torso upright.","xp":25},{"id":"h2-hinge","emoji":"🪢","ladder":["Single-leg hip hinge","Single-leg RDL, slow","Single-leg RDL, paused"],"rung":0,"reps":"3 × 10–15 each","detail":"Hamstrings. Hinge at the hip, back flat, free leg straight behind you.","xp":20},{"id":"h2-ham","emoji":"🌉","ladder":["Glute bridge","Single-leg glute bridge","Nordic curl negative"],"rung":0,"reps":"3 × 8–12","detail":"Squeeze at the top, don't arch the lower back.","xp":20},{"id":"h2-calf","emoji":"🦶","ladder":["Calf raise","Single-leg calf raise","Single-leg calf raise off a step"],"rung":0,"reps":"3 × 12–20","detail":"Full stretch at the bottom, pause at the top.","xp":15},{"id":"h2-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h3","label":"Upper — Pull","headline":"The hardest session to do without a bar. Inverted rows are the whole game here.","items":[{"id":"h3-row","emoji":"🚣","ladder":["Inverted row under a table, knees bent","Inverted row under a table","Feet-elevated inverted row"],"rung":0,"reps":"4 × 6–12","detail":"Lie under a sturdy table, grip the edge, pull your chest to it. Check the table takes your weight before you trust it.","xp":25,"hero":true},{"id":"h3-door","emoji":"🚪","ladder":["Towel door row","Single-arm towel door row"],"rung":0,"reps":"3 × 10–15","detail":"Towel around a door handle on both sides, lean back, pull. Use a door that opens away from you and brace it.","xp":20},{"id":"h3-ytw","emoji":"🪽","ladder":["Prone Y-T-W","Prone Y-T-W, paused","Prone Y-T-W, slow eccentric"],"rung":0,"reps":"3 × 8 each shape","detail":"Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.","xp":20},{"id":"h3-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h3-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h4","label":"Arms & shoulders","headline":"Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.","items":[{"id":"h4-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Second exposure this week. Frequency is what you have instead of load.","xp":25,"hero":true},{"id":"h4-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 10–15","detail":"Triceps.","xp":20},{"id":"h4-close","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 8–12","xp":20},{"id":"h4-yraise","emoji":"🪽","ladder":["Prone Y raise","Prone Y raise, paused"],"rung":0,"reps":"3 × 15","detail":"Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.","xp":15},{"id":"h4-wall","emoji":"🧱","reps":"3 × 20–30 s each side","text":"Wall lateral isometric","detail":"Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.","xp":15},{"id":"h4-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]}]},"gym":{"label":"Gym","note":"Parked until you have a subscription. Switch by setting activeProgram to \"gym\" — nothing else needs rewriting.","sessions":[{"id":"g1","label":"Upper — Push","headline":"Lateral raises are the priority movement of the whole plan.","items":[{"id":"g1-incline","emoji":"🏋️","text":"Incline press · 4×6–8","detail":"Barbell or dumbbell. Your priority press.","xp":25},{"id":"g1-ohp","emoji":"🙌","text":"Seated dumbbell shoulder press · 3×8–10","xp":25},{"id":"g1-lateral","emoji":"💪","text":"Cable or dumbbell lateral raise · 4×12–15","detail":"The single biggest visual driver. Slow, no swinging.","xp":40,"hero":true},{"id":"g1-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"g1-tri","emoji":"🔻","text":"Overhead cable triceps extension · 3×10–12","xp":20},{"id":"g1-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g2","label":"Lower","headline":"Keep it honest but don't let it eat your upper-body recovery.","items":[{"id":"g2-squat","emoji":"🦵","text":"Squat · 3×5–8","detail":"Barbell or hack.","xp":25},{"id":"g2-rdl","emoji":"🪢","text":"Romanian deadlift · 3×8–10","xp":25},{"id":"g2-press","emoji":"🦿","text":"Leg press or split squat · 3×10–12","xp":20},{"id":"g2-calf","emoji":"🦶","text":"Standing calf raise · 3×12–15","xp":15},{"id":"g2-legraise","emoji":"🧗","text":"Hanging leg raise · 3×10–15","xp":15},{"id":"g2-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g3","label":"Upper — Pull","headline":"Back width is the other half of the V-taper.","items":[{"id":"g3-pullup","emoji":"🧗","text":"Pull-up or lat pulldown · 4×6–10","detail":"Back width = V-taper.","xp":25},{"id":"g3-row","emoji":"🚣","text":"Barbell or dumbbell row · 3×8–10","xp":25},{"id":"g3-lateral","emoji":"💪","text":"Lateral raise, machine or leaning cable · 4×12–15","detail":"Yes, again. Different angle.","xp":40,"hero":true},{"id":"g3-reardelt","emoji":"🪽","text":"Rear-delt flye or face pull · 3×15","detail":"Shoulder health and width.","xp":20},{"id":"g3-curl","emoji":"💪","text":"Incline dumbbell curl · 3×10–12","xp":15},{"id":"g3-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g4","label":"Arms & delts","headline":"The weak-point day. Third lateral raise exposure of the week.","items":[{"id":"g4-press","emoji":"🏋️","text":"Flat or incline dumbbell press · 3×8–10","xp":25},{"id":"g4-lateral","emoji":"💪","text":"Lateral raise, third variation · 4×12–20","xp":40,"hero":true},{"id":"g4-curl","emoji":"💪","text":"Cable curl · 3×10–12","xp":15},{"id":"g4-pushdown","emoji":"🔻","text":"Cable triceps pushdown · 3×12–15","xp":15},{"id":"g4-shrug","emoji":"🤷","text":"Shrug or upright row · 3×12","xp":15},{"id":"g4-logged","emoji":"📝","text":"Logged every set","xp":20}]}]}},"daily":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","detail":"As prescribed.","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","detail":"As prescribed. Consistent time of day.","xp":10}]},{"title":"Eat","emoji":"🍳","note":"Protein is the non-negotiable — 1.8–2.2 g per kg per day. Four anchors of 35–45 g beats trying to rescue the number at dinner. The failure mode isn't one light day, it's three in a row.","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","detail":"Greek yoghurt or skyr + eggs, or a shake with milk.","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","detail":"Palm-and-a-half of chicken / fish / beef / tofu.","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","detail":"Whey shake or cottage cheese.","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","detail":"The one that usually rescues the day's total.","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","detail":"Pale straw, not clear. Creatine raises water needs slightly.","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","detail":"Only needed for the first 2–3 weeks, to calibrate. After that you'll know your portions by eye.","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","detail":"Any time of day. No loading phase needed.","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","detail":"Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","detail":"Not in the hour after training — cold blunts the growth signal.","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]}],"oneOffs":{"title":"Setup","emoji":"🎯","note":"These disappear for good once ticked.","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","detail":"Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.","xp":35,"hero":true},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","detail":"As real appointments, not intentions. Mon / Tue / Thu / Fri.","xp":20},{"id":"s-space","emoji":"🏠","text":"Clear a training space","detail":"Enough floor for a push-up, a sturdy table you can lie under, and two chairs that take your weight. Check the table before you trust it.","xp":20}]}};
+const FALLBACK = {"startDate":"2026-07-29","levelXp":500,"activeProgram":"home","schedule":{"mon":"train","tue":"train","wed":"rest","thu":"train","fri":"train","sat":"rest","sun":"rest"},"restDay":{"label":"Rest day","headline":"Not a day off — a day the muscle actually grows.","note":"Growth happens between sessions, not during them. Walking is fine and good. Everything else on this list still counts, so a rest day never breaks the streak."},"programs":{"home":{"label":"Bodyweight","note":"No equipment. Progression is by variation and tempo instead of weight: when you hit the top of the rep range on every set, move up a rung and drop back to the bottom of the range.","sessions":[{"id":"h1","label":"Upper — Push","headline":"Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.","items":[{"id":"h1-pushup","emoji":"🤸","ladder":["Incline push-up (hands on desk)","Knee push-up","Push-up","Decline push-up (feet on chair)","Deficit push-up (hands on books)","Archer push-up"],"rung":2,"reps":"4 × 6–12","detail":"Elbows about 45° from your body, not flared. Full range — chest to the floor.","xp":25},{"id":"h1-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.","xp":25,"hero":true},{"id":"h1-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 8–12","detail":"Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.","xp":20},{"id":"h1-diamond","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hands together under the chest. Triceps.","xp":20},{"id":"h1-logged","emoji":"📝","reps":"","text":"Logged the session","detail":"Reps per set, and which rung you're on. Without it, next session has nothing to beat.","xp":20}]},{"id":"h2","label":"Lower","headline":"Legs respond well to bodyweight — this session loses least without a gym.","items":[{"id":"h2-squat","emoji":"🦵","ladder":["Bodyweight squat","3-second tempo squat","Paused squat","Split squat","Bulgarian split squat","Pistol squat progression"],"rung":1,"reps":"4 × 10–20","detail":"Three seconds down, one second pause, up. Tempo is how you load a squat without weight.","xp":25,"hero":true},{"id":"h2-split","emoji":"🚶","ladder":["Reverse lunge","Split squat","Rear-foot-elevated split squat"],"rung":0,"reps":"3 × 8–12 each leg","detail":"Front shin roughly vertical, torso upright.","xp":25},{"id":"h2-hinge","emoji":"🪢","ladder":["Single-leg hip hinge","Single-leg RDL, slow","Single-leg RDL, paused"],"rung":0,"reps":"3 × 10–15 each","detail":"Hamstrings. Hinge at the hip, back flat, free leg straight behind you.","xp":20},{"id":"h2-ham","emoji":"🌉","ladder":["Glute bridge","Single-leg glute bridge","Nordic curl negative"],"rung":0,"reps":"3 × 8–12","detail":"Squeeze at the top, don't arch the lower back.","xp":20},{"id":"h2-calf","emoji":"🦶","ladder":["Calf raise","Single-leg calf raise","Single-leg calf raise off a step"],"rung":0,"reps":"3 × 12–20","detail":"Full stretch at the bottom, pause at the top.","xp":15},{"id":"h2-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h3","label":"Upper — Pull","headline":"The hardest session to do without a bar. Inverted rows are the whole game here.","items":[{"id":"h3-row","emoji":"🚣","ladder":["Inverted row under a table, knees bent","Inverted row under a table","Feet-elevated inverted row"],"rung":0,"reps":"4 × 6–12","detail":"Lie under a sturdy table, grip the edge, pull your chest to it. Check the table takes your weight before you trust it.","xp":25,"hero":true},{"id":"h3-door","emoji":"🚪","ladder":["Towel door row","Single-arm towel door row"],"rung":0,"reps":"3 × 10–15","detail":"Towel around a door handle on both sides, lean back, pull. Use a door that opens away from you and brace it.","xp":20},{"id":"h3-ytw","emoji":"🪽","ladder":["Prone Y-T-W","Prone Y-T-W, paused","Prone Y-T-W, slow eccentric"],"rung":0,"reps":"3 × 8 each shape","detail":"Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.","xp":20},{"id":"h3-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h3-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h4","label":"Arms & shoulders","headline":"Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.","items":[{"id":"h4-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Second exposure this week. Frequency is what you have instead of load.","xp":25,"hero":true},{"id":"h4-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 10–15","detail":"Triceps.","xp":20},{"id":"h4-close","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 8–12","xp":20},{"id":"h4-yraise","emoji":"🪽","ladder":["Prone Y raise","Prone Y raise, paused"],"rung":0,"reps":"3 × 15","detail":"Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.","xp":15},{"id":"h4-wall","emoji":"🧱","reps":"3 × 20–30 s each side","text":"Wall lateral isometric","detail":"Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.","xp":15},{"id":"h4-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]}]},"gym":{"label":"Gym","note":"Parked until you have a subscription. Switch by setting activeProgram to \"gym\" — nothing else needs rewriting.","sessions":[{"id":"g1","label":"Upper — Push","headline":"Lateral raises are the priority movement of the whole plan.","items":[{"id":"g1-incline","emoji":"🏋️","text":"Incline press · 4×6–8","detail":"Barbell or dumbbell. Your priority press.","xp":25},{"id":"g1-ohp","emoji":"🙌","text":"Seated dumbbell shoulder press · 3×8–10","xp":25},{"id":"g1-lateral","emoji":"💪","text":"Cable or dumbbell lateral raise · 4×12–15","detail":"The single biggest visual driver. Slow, no swinging.","xp":40,"hero":true},{"id":"g1-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"g1-tri","emoji":"🔻","text":"Overhead cable triceps extension · 3×10–12","xp":20},{"id":"g1-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g2","label":"Lower","headline":"Keep it honest but don't let it eat your upper-body recovery.","items":[{"id":"g2-squat","emoji":"🦵","text":"Squat · 3×5–8","detail":"Barbell or hack.","xp":25},{"id":"g2-rdl","emoji":"🪢","text":"Romanian deadlift · 3×8–10","xp":25},{"id":"g2-press","emoji":"🦿","text":"Leg press or split squat · 3×10–12","xp":20},{"id":"g2-calf","emoji":"🦶","text":"Standing calf raise · 3×12–15","xp":15},{"id":"g2-legraise","emoji":"🧗","text":"Hanging leg raise · 3×10–15","xp":15},{"id":"g2-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g3","label":"Upper — Pull","headline":"Back width is the other half of the V-taper.","items":[{"id":"g3-pullup","emoji":"🧗","text":"Pull-up or lat pulldown · 4×6–10","detail":"Back width = V-taper.","xp":25},{"id":"g3-row","emoji":"🚣","text":"Barbell or dumbbell row · 3×8–10","xp":25},{"id":"g3-lateral","emoji":"💪","text":"Lateral raise, machine or leaning cable · 4×12–15","detail":"Yes, again. Different angle.","xp":40,"hero":true},{"id":"g3-reardelt","emoji":"🪽","text":"Rear-delt flye or face pull · 3×15","detail":"Shoulder health and width.","xp":20},{"id":"g3-curl","emoji":"💪","text":"Incline dumbbell curl · 3×10–12","xp":15},{"id":"g3-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g4","label":"Arms & delts","headline":"The weak-point day. Third lateral raise exposure of the week.","items":[{"id":"g4-press","emoji":"🏋️","text":"Flat or incline dumbbell press · 3×8–10","xp":25},{"id":"g4-lateral","emoji":"💪","text":"Lateral raise, third variation · 4×12–20","xp":40,"hero":true},{"id":"g4-curl","emoji":"💪","text":"Cable curl · 3×10–12","xp":15},{"id":"g4-pushdown","emoji":"🔻","text":"Cable triceps pushdown · 3×12–15","xp":15},{"id":"g4-shrug","emoji":"🤷","text":"Shrug or upright row · 3×12","xp":15},{"id":"g4-logged","emoji":"📝","text":"Logged every set","xp":20}]}]}},"daily":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","detail":"As prescribed.","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","detail":"As prescribed. Consistent time of day.","xp":10}]},{"title":"Eat","emoji":"🍳","note":"Protein is the non-negotiable — 1.8–2.2 g per kg per day. Four anchors of 35–45 g beats trying to rescue the number at dinner. The failure mode isn't one light day, it's three in a row.","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","detail":"Greek yoghurt or skyr + eggs, or a shake with milk.","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","detail":"Palm-and-a-half of chicken / fish / beef / tofu.","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","detail":"Whey shake or cottage cheese.","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","detail":"The one that usually rescues the day's total.","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","detail":"Pale straw, not clear. Creatine raises water needs slightly.","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","detail":"Only needed for the first 2–3 weeks, to calibrate. After that you'll know your portions by eye.","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","detail":"Any time of day. No loading phase needed.","xp":10}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","detail":"Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.","xp":20},{"id":"r-no-weed","emoji":"🚫","text":"No weed today","detail":"Tick it on the days you didn't. Worth tracking next to sleep — it changes sleep architecture, and sleep is the recovery lever the plan leans on hardest.","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","detail":"Not in the hour after training — cold blunts the growth signal.","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]}],"oneOffs":{"title":"Setup","emoji":"🎯","note":"These disappear for good once ticked.","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","detail":"Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.","xp":35,"hero":true},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","detail":"As real appointments, not intentions. Mon / Tue / Thu / Fri.","xp":20},{"id":"s-space","emoji":"🏠","text":"Clear a training space","detail":"Enough floor for a push-up, a sturdy table you can lie under, and two chairs that take your weight. Check the table before you trust it.","xp":20}]}};
 
 const SDK        = "https://www.gstatic.com/firebasejs/12.16.0/";
 const LS_PREFIX  = "lifeinterface.fitness.v1.";
@@ -504,8 +480,9 @@ function totalXp() {
 
 /* ---------- render ---------- */
 function render() {
-  $("dayChip").textContent = plan.dayOfPlan > 0 ? `DAY ${plan.dayOfPlan}` : "DAY —";
-  $("weekLbl").textContent = plan.week ? `Week ${plan.week}` : "";
+  $("dayChip").textContent = plan.dayOfPlan > 0 ? String(plan.dayOfPlan).padStart(2, "0") : "—";
+  $("weekLbl").textContent = (plan.week ? `WEEK ${String(plan.week).padStart(2, "0")}` : "")
+    + (plan.sessionId ? `  \u00B7  SESSION ${plan.sessionId.toUpperCase()}` : "");
   $("sessionLabel").textContent = plan.sessionLabel || "Today";
   $("headline").textContent = plan.headline || "";
   const dn = $("dayNote");
@@ -523,14 +500,16 @@ function render() {
     const sec = document.createElement("div");
     sec.className = "sec";
     const name = document.createElement("span");
-    name.textContent = g.title;
-    const grow = document.createElement("span");
-    grow.className = "grow";
+    name.className = "t";
+    name.textContent = g.title.toUpperCase();
+    const rule = document.createElement("span");
+    rule.className = "r";
     const cnt = document.createElement("span");
+    cnt.className = "n";
     const gd = (g.items || []).filter(i => ticks[i.id]).length;
     cnt.textContent = `${gd}/${(g.items || []).length}`;
     secEls.set(g.title, cnt);
-    sec.append(name, grow, cnt);
+    sec.append(name, rule, cnt);
     list.appendChild(sec);
 
     if (g.note) {
@@ -552,7 +531,7 @@ function render() {
 
       const box = document.createElement("span");
       box.className = "box";
-      box.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#141416" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
+      box.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFDF7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
 
       const em = document.createElement("span");
       em.className = "emoji";
@@ -601,41 +580,38 @@ function renderChips(ticks) {
     const items = g.items || [];
     if (!items.length) continue;
     const done = items.filter(i => ticks[i.id]).length;
-    const complete = done === items.length;
 
-    const chip = document.createElement("div");
-    chip.className = "chip" + (complete ? " complete" : "");
+    const row = document.createElement("div");
+    row.className = "stat" + (done === items.length ? " full" : "");
 
-    const lab = document.createElement("div");
-    lab.className = "lab";
-    lab.textContent = g.title;
+    const nm = document.createElement("span");
+    nm.className = "nm";
+    nm.textContent = g.title.toUpperCase();
 
-    const cnt = document.createElement("div");
-    cnt.className = "cnt";
-    const em = document.createElement("em");
-    em.textContent = g.emoji || "";
-    cnt.append(em, document.createTextNode(`${done}/${items.length}`));
+    // one cell per task, so the bar is a literal count rather than a percentage
+    const cells = document.createElement("span");
+    cells.className = "cells";
+    for (let i = 0; i < items.length; i++) {
+      const c = document.createElement("i");
+      if (i < done) c.className = "on";
+      cells.appendChild(c);
+    }
 
-    const mini = document.createElement("div");
-    mini.className = "mini";
-    const bar = document.createElement("i");
-    bar.style.width = `${Math.round((done / items.length) * 100)}%`;
-    mini.appendChild(bar);
+    const vv = document.createElement("span");
+    vv.className = "vv";
+    vv.textContent = `${done}/${items.length}`;
 
-    chip.append(lab, cnt, mini);
-    wrap.appendChild(chip);
+    row.append(nm, cells, vv);
+    wrap.appendChild(row);
   }
 }
 
 function renderStats(ticks) {
   const items = allItems();
   const done = items.filter(i => ticks[i.id]).length;
-  const pct = items.length ? done / items.length : 0;
 
   $("ringN").textContent = done;
-  $("ringD").textContent = `of ${items.length}`;
-  $("ringArc").setAttribute("stroke-dashoffset", String(RING_C * (1 - pct)));
-  $("ringArc").setAttribute("stroke", pct === 1 ? "var(--done)" : "var(--accent)");
+  $("ringD").textContent = `OF ${items.length} DONE TODAY`;
 
   const per = program.levelXp || 500;
   const total = totalXp();
@@ -643,11 +619,20 @@ function renderStats(ticks) {
   const inLvl = total % per;
   $("lvlLbl").textContent = `LVL ${lvl}`;
   $("xpLbl").textContent = `${inLvl} / ${per} XP`;
-  $("xpFill").style.width = `${(inLvl / per) * 100}%`;
+
+  // 20 cells rather than a smooth bar — the reference sheets are all cellular
+  const track = $("xpTrack");
+  const CELLS = 20;
+  const lit = Math.round((inLvl / per) * CELLS);
+  if (track.children.length !== CELLS) {
+    track.textContent = "";
+    for (let i = 0; i < CELLS; i++) track.appendChild(document.createElement("i"));
+  }
+  [...track.children].forEach((c, i) => c.classList.toggle("on", i < lit));
 
   const s = computeStreak();
   $("streakN").textContent = s;
-  $("streakLbl").textContent = s === 1 ? "day" : "days";
+  $("streakLbl").textContent = s === 1 ? "DAY" : "DAYS";
   $("streak").className = "streak" + (s === 0 ? " cold" : "");
 }
 
