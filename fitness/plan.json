@@ -33,14 +33,16 @@
         },
         {
           "id": "h2",
-          "label": "Lower",
-          "headline": "Legs respond well to bodyweight — this session loses least without a gym.",
+          "label": "Core & Back",
+          "headline": "Trunk and mid-back. Two leg moves at the end so they don't vanish entirely.",
           "items": [
-            { "id": "h2-squat", "emoji": "🦵", "ladder": ["Bodyweight squat", "3-second tempo squat", "Paused squat", "Split squat", "Bulgarian split squat", "Pistol squat progression"], "rung": 1, "reps": "4 × 10–20", "detail": "Three seconds down, one second pause, up. Tempo is how you load a squat without weight.", "xp": 25, "hero": true },
-            { "id": "h2-split", "emoji": "🚶", "ladder": ["Reverse lunge", "Split squat", "Rear-foot-elevated split squat"], "rung": 0, "reps": "3 × 8–12 each leg", "detail": "Front shin roughly vertical, torso upright.", "xp": 25 },
-            { "id": "h2-hinge", "emoji": "🪢", "ladder": ["Single-leg hip hinge", "Single-leg RDL, slow", "Single-leg RDL, paused"], "rung": 0, "reps": "3 × 10–15 each", "detail": "Hamstrings. Hinge at the hip, back flat, free leg straight behind you.", "xp": 20 },
-            { "id": "h2-ham", "emoji": "🌉", "ladder": ["Glute bridge", "Single-leg glute bridge", "Nordic curl negative"], "rung": 0, "reps": "3 × 8–12", "detail": "Squeeze at the top, don't arch the lower back.", "xp": 20 },
-            { "id": "h2-calf", "emoji": "🦶", "ladder": ["Calf raise", "Single-leg calf raise", "Single-leg calf raise off a step"], "rung": 0, "reps": "3 × 12–20", "detail": "Full stretch at the bottom, pause at the top.", "xp": 15 },
+            { "id": "h2-row", "emoji": "🚣", "ladder": ["Inverted row under a table, knees bent", "Inverted row under a table", "Feet-elevated inverted row"], "rung": 0, "reps": "4 × 6–12", "detail": "Lie under a sturdy table, grip the edge, pull your chest to it. Back thickness — the other half of looking wide.", "xp": 25, "hero": true },
+            { "id": "h2-hollow", "emoji": "🌙", "ladder": ["Bent-knee hollow hold", "Hollow hold", "Hollow rock"], "rung": 0, "reps": "3 × 20–40 s", "detail": "Lower back pressed flat into the floor the whole time.", "xp": 20 },
+            { "id": "h2-plank", "emoji": "🧱", "ladder": ["Plank", "Long-lever plank", "Plank with shoulder taps"], "rung": 0, "reps": "3 × 30–60 s", "xp": 20 },
+            { "id": "h2-side", "emoji": "📐", "ladder": ["Knee side plank", "Side plank", "Side plank with reach"], "rung": 0, "reps": "3 × 20–40 s each side", "detail": "Builds the waist taper from the side.", "xp": 15 },
+            { "id": "h2-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15 },
+            { "id": "h2-squat", "emoji": "🦵", "ladder": ["Bodyweight squat", "3-second tempo squat", "Split squat"], "rung": 1, "reps": "3 × 12–20", "detail": "Legs kept ticking over, not the focus any more.", "xp": 15 },
+            { "id": "h2-calf", "emoji": "🦶", "ladder": ["Calf raise", "Single-leg calf raise", "Single-leg calf raise off a step"], "rung": 0, "reps": "3 × 15–20", "xp": 10 },
             { "id": "h2-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "xp": 20 }
           ]
         },
