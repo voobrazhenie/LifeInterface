@@ -36,7 +36,7 @@
           "label": "Core & Back",
           "headline": "Trunk and mid-back. Two leg moves at the end so they don't vanish entirely.",
           "items": [
-            { "id": "h2-row", "emoji": "🚣", "ladder": ["Inverted row under a table, knees bent", "Inverted row under a table", "Feet-elevated inverted row"], "rung": 0, "reps": "4 × 6–12", "detail": "Lie under a sturdy table, grip the edge, pull your chest to it. Back thickness — the other half of looking wide.", "xp": 25, "hero": true },
+            { "id": "h2-row", "emoji": "🚪", "ladder": ["Towel door row", "Single-arm towel door row", "Single-arm towel door row, slow"], "rung": 0, "reps": "4 × 10–15", "detail": "Towel round both sides of a door handle, feet close to the door, lean back and pull your chest in. Use a door that opens away from you. Back thickness — the other half of looking wide.", "xp": 25, "hero": true },
             { "id": "h2-hollow", "emoji": "🌙", "ladder": ["Bent-knee hollow hold", "Hollow hold", "Hollow rock"], "rung": 0, "reps": "3 × 20–40 s", "detail": "Lower back pressed flat into the floor the whole time.", "xp": 20 },
             { "id": "h2-plank", "emoji": "🧱", "ladder": ["Plank", "Long-lever plank", "Plank with shoulder taps"], "rung": 0, "reps": "3 × 30–60 s", "xp": 20 },
             { "id": "h2-side", "emoji": "📐", "ladder": ["Knee side plank", "Side plank", "Side plank with reach"], "rung": 0, "reps": "3 × 20–40 s each side", "detail": "Builds the waist taper from the side.", "xp": 15 },
@@ -51,8 +51,8 @@
           "label": "Upper — Pull",
           "headline": "The hardest session to do without a bar. Inverted rows are the whole game here.",
           "items": [
-            { "id": "h3-row", "emoji": "🚣", "ladder": ["Inverted row under a table, knees bent", "Inverted row under a table", "Feet-elevated inverted row"], "rung": 0, "reps": "4 × 6–12", "detail": "Lie under a sturdy table, grip the edge, pull your chest to it. Check the table takes your weight before you trust it.", "xp": 25, "hero": true },
-            { "id": "h3-door", "emoji": "🚪", "ladder": ["Towel door row", "Single-arm towel door row"], "rung": 0, "reps": "3 × 10–15", "detail": "Towel around a door handle on both sides, lean back, pull. Use a door that opens away from you and brace it.", "xp": 20 },
+            { "id": "h3-row", "emoji": "🚪", "ladder": ["Single-arm towel door row", "Single-arm towel door row, paused", "Single-arm towel door row, slow lower"], "rung": 0, "reps": "4 × 8–12 each arm", "detail": "One arm at a time puts roughly double the load through it. Lean back further to make it harder.", "xp": 25, "hero": true },
+            { "id": "h3-door", "emoji": "🧗", "ladder": ["Kneeling towel lat pull-down", "Standing towel lat pull-down"], "rung": 0, "reps": "3 × 12–15", "detail": "Towel held wide overhead. Pull your hands apart hard and drag them down to your chest, fighting yourself the whole way. This is the closest thing to a lat pulldown without a bar.", "xp": 20 },
             { "id": "h3-ytw", "emoji": "🪽", "ladder": ["Prone Y-T-W", "Prone Y-T-W, paused", "Prone Y-T-W, slow eccentric"], "rung": 0, "reps": "3 × 8 each shape", "detail": "Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.", "xp": 20 },
             { "id": "h3-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15 },
             { "id": "h3-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "xp": 20 }
