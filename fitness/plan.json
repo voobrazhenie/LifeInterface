@@ -177,7 +177,7 @@
       { "id": "s-measure", "emoji": "📏", "text": "Weigh + measure waist", "detail": "Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.", "xp": 35, "hero": true },
       { "id": "s-supplements", "emoji": "🛒", "text": "Buy creatine and whey", "xp": 20 },
       { "id": "s-calendar", "emoji": "📅", "text": "Four sessions in the calendar", "detail": "As real appointments, not intentions. Mon / Tue / Thu / Fri.", "xp": 20 },
-      { "id": "s-space", "emoji": "🏠", "text": "Clear a training space", "detail": "Enough floor for a push-up, a sturdy table you can lie under, and two chairs that take your weight. Check the table before you trust it.", "xp": 20 }
+      { "id": "s-space", "emoji": "🏠", "text": "Clear a training space", "detail": "Enough floor for a push-up, two chairs that take your weight, a door that opens away from you, and a towel you don't mind stretching.", "xp": 20 }
     ]
   }
 }
