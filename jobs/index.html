@@ -82,7 +82,14 @@
   .job{background:var(--card);border:var(--stroke) solid var(--ink);
     box-shadow:var(--shadow);padding:15px 17px;margin-bottom:16px}
   .job.done{opacity:.55;box-shadow:2px 2px 0 var(--ink)}
-  .job-h{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px}
+  .chev{flex:0 0 auto;font-size:16px;font-weight:900;line-height:1.4}
+  .digest{width:100%;text-align:left;margin-bottom:20px;padding:11px 13px;font-size:12px}
+  .track-foot{display:flex;align-items:center;gap:10px;margin-top:8px}
+  .rm{background:var(--paper);border:2px solid var(--ink);font-size:10.5px;
+    font-weight:800;padding:5px 9px;letter-spacing:.02em;margin-left:auto;white-space:nowrap}
+  .rm.arm{background:var(--pink);color:#fff}
+  .job-h{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;
+    cursor:pointer;user-select:none}
   .rank{flex:0 0 auto;width:30px;height:30px;background:var(--yellow);
     border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
     font-size:14px}
@@ -146,7 +153,8 @@
 
   <div id="app" class="hide">
     <div class="filters" id="filters"></div>
-    <div id="overview"></div>
+    <button class="btn digest blk" id="digestBtn" aria-expanded="false">DIGEST ▾</button>
+    <div id="overview" class="hide"></div>
     <div id="list"></div>
   </div>
 
@@ -169,6 +177,7 @@ const DONE = new Set(["passed", "closed"]);
 
 const App = {
   fb: null, uid: null, jobs: [], overview: null, filter: "open", unsub: null,
+  open: new Set(), digestOpen: false,
 
   setUI(state, msg, btnLabel, btnAction) {
     $("sync").className = "sync" + (state === "on" ? " on" : state === "err" ? " err" : "");
@@ -284,6 +293,11 @@ const App = {
     }
   },
 
+  async remove(id) {
+    this.open.delete(id);
+    await this.fb.f.deleteDoc(this.ref(id));
+  },
+
   visible() {
     if (this.filter === "all") return this.jobs;
     if (this.filter === "open") return this.jobs.filter(j => !DONE.has(j.status || "todo"));
@@ -305,8 +319,16 @@ const App = {
       $("filters").appendChild(b);
     }
 
-    // overview
+    // digest — the read, this week, ruled out, corrections
     const ov = this.overview;
+    const hasDigest = !!(ov && (ov.strategy || (ov.thisWeek || []).length
+      || (ov.ruledOut || []).length || (ov.corrections || []).length));
+    const dg = $("digestBtn");
+    dg.classList.toggle("hide", !hasDigest);
+    dg.textContent = this.digestOpen ? "DIGEST ▴" : "DIGEST ▾";
+    dg.setAttribute("aria-expanded", String(this.digestOpen));
+    dg.onclick = () => { this.digestOpen = !this.digestOpen; this.render(); };
+    $("overview").classList.toggle("hide", !this.digestOpen);
     $("overview").innerHTML = "";
     if (ov) {
       if (ov.lede) $("lede").textContent = ov.lede;
@@ -351,6 +373,7 @@ const App = {
 
   card(j) {
     const status = j.status || "todo";
+    const isOpen = this.open.has(j.id);
     const el = document.createElement("div");
     el.className = "job" + (DONE.has(status) ? " done" : "");
 
@@ -363,8 +386,19 @@ const App = {
     const co = document.createElement("span"); co.className = "co blk"; co.textContent = j.company || "";
     const ro = document.createElement("span"); ro.className = "ro"; ro.textContent = j.role || "";
     titles.append(co, ro);
-    head.append(rank, titles);
+    const chev = document.createElement("span");
+    chev.className = "chev blk"; chev.textContent = isOpen ? "▴" : "▾";
+    head.append(rank, titles, chev);
+    head.onclick = () => {
+      if (this.open.has(j.id)) this.open.delete(j.id); else this.open.add(j.id);
+      this.render();
+    };
     el.appendChild(head);
+
+    // Everything below the header is hidden until the card is opened, so a
+    // collapsed list reads as just company + role.
+    const body = document.createElement("div");
+    body.className = "jbody" + (isOpen ? "" : " hide");
 
     const meta = document.createElement("div");
     meta.className = "meta";
@@ -378,7 +412,7 @@ const App = {
       s.className = "pill " + cls; s.textContent = text;
       meta.appendChild(s);
     }
-    el.appendChild(meta);
+    body.appendChild(meta);
 
     for (const key of ["what", "why"]) {
       if (!j[key]) continue;
@@ -386,11 +420,11 @@ const App = {
       p.className = "txt";
       if (key === "why") { const b = document.createElement("b"); b.textContent = "Why you: "; p.appendChild(b); }
       p.appendChild(document.createTextNode(j[key]));
-      el.appendChild(p);
+      body.appendChild(p);
     }
     if (j.flag) {
       const f = document.createElement("p"); f.className = "flag"; f.textContent = j.flag;
-      el.appendChild(f);
+      body.appendChild(f);
     }
 
     if (Array.isArray(j.links) && j.links.length) {
@@ -403,7 +437,7 @@ const App = {
         a.textContent = l.label || "Open";
         wrap.appendChild(a);
       });
-      el.appendChild(wrap);
+      body.appendChild(wrap);
     }
 
     // tracking
@@ -437,8 +471,30 @@ const App = {
       saved.textContent = "…";
       t = setTimeout(() => this.patch(j.id, { notes: ta.value }, saved), 700);
     };
-    track.append(ta, saved);
-    el.appendChild(track);
+    const foot = document.createElement("div");
+    foot.className = "track-foot";
+    const rm = document.createElement("button");
+    rm.className = "rm"; rm.textContent = "Remove";
+    let armed = false, armTimer = null;
+    rm.onclick = () => {
+      if (!armed) {                       // two taps, so a stray tap can't delete
+        armed = true;
+        rm.classList.add("arm");
+        rm.textContent = "Tap again to remove";
+        armTimer = setTimeout(() => {
+          armed = false; rm.classList.remove("arm"); rm.textContent = "Remove";
+        }, 4000);
+        return;
+      }
+      clearTimeout(armTimer);
+      rm.textContent = "Removing…";
+      this.remove(j.id).catch(e => { rm.textContent = `Failed (${e.code || e.message})`; });
+    };
+    foot.append(saved, rm);
+
+    track.append(ta, foot);
+    body.appendChild(track);
+    el.appendChild(body);
 
     return el;
   }
