@@ -1,7 +1,29 @@
 {
   "startDate": "2026-07-29",
-  "levelXp": 500,
   "activeProgram": "home",
+
+  "principles": {
+    "title": "Notes for Radical Living",
+    "author": "Tilda Swinton",
+    "source": "from her book Ongoing, 2025",
+    "list": [
+      "Make friends with chaos", "Hold a calm mind", "Let things shake",
+      "Forgive human frailty", "Champion second chances", "Defy kindness",
+      "Reverence fellowship", "Listen to the quiet", "Respect the young",
+      "Seek growth", "Trust in change", "Treasure learning",
+      "Inspire faith in evolution", "Reach beyond the binary", "Be wary of the doubtless",
+      "Honor the bright headed", "Grow plants", "Attend to the weather",
+      "Be electric", "Cherish language", "Celebrate silence",
+      "Dance daily", "Bless the handmade", "Sing into pain",
+      "Challenge assumptions", "Follow the wind", "Look upwards",
+      "Swoon under clouds", "Feel your courage", "Face forward",
+      "Read history", "Open your ears", "Drop your shoulders",
+      "Bend your knees", "Raise the roof", "Keep breathing",
+      "Be trustworthy", "Take care of yourself", "Believe in goodness",
+      "Head for the light"
+    ]
+  },
+
 
   "schedule": {
     "mon": "train", "tue": "train", "wed": "rest",
