@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#F2EDE0">
 <title>Life Interface</title>
 <style>
-  /* Same neo-brutalist system as fitness/ — thick strokes, squared corners,
+  /* Same neo-brutalist system as dailyplan/ — thick strokes, squared corners,
      solid accent blocks, hard zero-blur shadows. */
   :root{
     --paper:#F2EDE0; --card:#FFFDF7; --ink:#111111;
@@ -145,7 +145,7 @@
     </div>
   </div>
 
-  <a class="card" href="fitness/">
+  <a class="card" href="dailyplan/">
     <span class="mark">💪</span>
     <span class="body">
       <span class="name blk">DAILYPLAN</span>
@@ -261,7 +261,7 @@ function paint({ sessions, active }) {
 
 async function boot() {
   try {
-    const r = await fetch(`fitness/plan.json?t=${Date.now()}`, { cache: "no-store" });
+    const r = await fetch(`dailyplan/plan.json?t=${Date.now()}`, { cache: "no-store" });
     if (r.ok) startDate = (await r.json()).startDate || startDate;
   } catch {}
 
@@ -269,7 +269,7 @@ async function boot() {
 
   // Then the cross-device truth, if we're signed in.
   let config = null;
-  try { ({ firebaseConfig: config } = await import("./fitness/firebase-config.js")); } catch {}
+  try { ({ firebaseConfig: config } = await import("./dailyplan/firebase-config.js")); } catch {}
   if (!config || !config.projectId) return;
 
   try {

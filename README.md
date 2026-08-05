@@ -6,11 +6,11 @@ Live: **https://voobrazhenie.github.io/LifeInterface/**
 
 ## How DailyPlan works
 
-`fitness/index.html` — **DailyPlan** — is a single self-contained page that **derives today's list itself** — it is never waiting to be told what day it is, and cannot go stale.
+`dailyplan/index.html` — **DailyPlan** — is a single self-contained page that **derives today's list itself** — it is never waiting to be told what day it is, and cannot go stale.
 
-- **`fitness/plan.json`** — the whole program: a 4-session rotation, the groups that repeat every day, one-off setup tasks, and the weekly schedule. Holds both a `home` (bodyweight) and a `gym` variant; `activeProgram` picks one.
+- **`dailyplan/plan.json`** — the whole program: a 4-session rotation, the groups that repeat every day, one-off setup tasks, and the weekly schedule. Holds both a `home` (bodyweight) and a `gym` variant; `activeProgram` picks one.
 - **Firestore** — where ticks live once you sign in, so the phone and the PC agree. Signed out, the page still works and keeps ticks in `localStorage` only.
-- **`fitness/overrides/<YYYY-MM-DD>.json`** — optional, rare. Shallow-merged over the derived day when a particular day needs something the rules can't express.
+- **`dailyplan/overrides/<YYYY-MM-DD>.json`** — optional, rare. Shallow-merged over the derived day when a particular day needs something the rules can't express.
 
 ### How a day is derived
 
@@ -26,7 +26,7 @@ Append `?date=YYYY-MM-DD` to the URL to make the page believe it is that day. Us
 
 ### Switching to the gym
 
-Set `activeProgram` to `"gym"` in `fitness/plan.json`. The gym sessions are already written and parked; nothing else changes.
+Set `activeProgram` to `"gym"` in `dailyplan/plan.json`. The gym sessions are already written and parked; nothing else changes.
 
 ## Data model
 
@@ -40,7 +40,7 @@ Day documents are written with `setDoc` and no merge, on purpose: a merge would 
 
 ## Security
 
-`fitness/firebase-config.js` is **public by design** and committed. The `apiKey` is an identifier for which project to talk to, not a credential. What actually protects the data is `firestore.rules`, which allows reads and writes only where `request.auth.uid` matches the `{uid}` in the path. Everything else is denied, including all unauthenticated access.
+`dailyplan/firebase-config.js` is **public by design** and committed. The `apiKey` is an identifier for which project to talk to, not a credential. What actually protects the data is `firestore.rules`, which allows reads and writes only where `request.auth.uid` matches the `{uid}` in the path. Everything else is denied, including all unauthenticated access.
 
 The credential that *is* secret is the **service-account key** used by `tools/read-ticks.mjs`. It bypasses every rule. It lives at `tools/service-account.json`, is gitignored, and must never be pasted anywhere public.
 
@@ -64,7 +64,7 @@ firebase apps:create web "Life Interface"
 firebase apps:sdkconfig web                   # prints the config object
 ```
 
-The config object from that last command goes into `fitness/firebase-config.js`, replacing `export const firebaseConfig = null`. Until it does, the page runs local-only and says so in its sync row.
+The config object from that last command goes into `dailyplan/firebase-config.js`, replacing `export const firebaseConfig = null`. Until it does, the page runs local-only and says so in its sync row.
 
 `voobrazhenie.github.io` must be an authorised domain or sign-in fails with `auth/unauthorized-domain` — that comes from the `auth` deploy, and it is the most common thing to miss when doing this by hand.
 
@@ -84,10 +84,10 @@ The uid appears in the page's copy-for-Claude-Code block once you're signed in, 
 
 ## Editing the program
 
-Edit `fitness/plan.json`. Item `id`s must be **unique and stable** across the whole file — tick state is keyed on them, so reusing an id carries its tick history with it, and one-off suppression looks them up by id.
+Edit `dailyplan/plan.json`. Item `id`s must be **unique and stable** across the whole file — tick state is keyed on them, so reusing an id carries its tick history with it, and one-off suppression looks them up by id.
 
 `plan.json` is also inlined in `index.html` as `FALLBACK`, so the page still renders when opened from a `file://` path where `fetch` is blocked. **Both copies need updating**; re-embed with:
 
 ```bash
-node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('fitness/plan.json','utf8'));let h=fs.readFileSync('fitness/index.html','utf8');h=h.replace(/const FALLBACK = \{.*?\};\n/s,'const FALLBACK = '+JSON.stringify(p)+';\n');fs.writeFileSync('fitness/index.html',h)"
+node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('dailyplan/plan.json','utf8'));let h=fs.readFileSync('dailyplan/index.html','utf8');h=h.replace(/const FALLBACK = \{.*?\};\n/s,'const FALLBACK = '+JSON.stringify(p)+';\n');fs.writeFileSync('dailyplan/index.html',h)"
 ```
