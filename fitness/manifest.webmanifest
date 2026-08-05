@@ -1,7 +1,7 @@
 {
-  "name": "NOW → WANT",
-  "short_name": "NOW→WANT",
-  "description": "Today's training, protein and recovery checklist.",
+  "name": "DailyPlan",
+  "short_name": "DailyPlan",
+  "description": "Today's plan — training, food, recovery and whatever else the day needs.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -4,9 +4,9 @@ Small static pages for things worth keeping honest. Hosted on GitHub Pages, with
 
 Live: **https://voobrazhenie.github.io/LifeInterface/**
 
-## How the fitness tracker works
+## How DailyPlan works
 
-`fitness/index.html` is a single self-contained page that **derives today's list itself** — it is never waiting to be told what day it is, and cannot go stale.
+`fitness/index.html` — **DailyPlan** — is a single self-contained page that **derives today's list itself** — it is never waiting to be told what day it is, and cannot go stale.
 
 - **`fitness/plan.json`** — the whole program: a 4-session rotation, the groups that repeat every day, one-off setup tasks, and the weekly schedule. Holds both a `home` (bodyweight) and a `gym` variant; `activeProgram` picks one.
 - **Firestore** — where ticks live once you sign in, so the phone and the PC agree. Signed out, the page still works and keeps ticks in `localStorage` only.
