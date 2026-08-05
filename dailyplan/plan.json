@@ -180,6 +180,15 @@
       ]
     },
     {
+      "title": "Care",
+      "emoji": "🧴",
+      "note": "Minoxidil every evening, except on microneedling days — the skin needs about a day and a half to close up before anything goes on it again.",
+      "items": [
+        { "id": "c-microneedling", "emoji": "🪡", "text": "Microneedling", "detail": "Morning. Every 14 days. No minoxidil this evening — resume tomorrow evening.", "xp": 25, "every": 14, "anchor": "2026-08-05" },
+        { "id": "c-minoxidil", "emoji": "💧", "text": "Minoxidil", "detail": "Evening, on dry scalp. Hides itself automatically on microneedling days.", "xp": 15, "skipWhen": ["c-microneedling"] }
+      ]
+    },
+    {
       "title": "Recover",
       "emoji": "🌙",
       "items": [
