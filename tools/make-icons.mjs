@@ -13,7 +13,7 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "fitness");
+const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "dailyplan");
 
 /* Neo-brutalist: solid yellow block, thick black arrow, heavy black border.
    High contrast so it still reads at 60px on a home screen. */
