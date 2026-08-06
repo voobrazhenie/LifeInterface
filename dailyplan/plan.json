@@ -46,10 +46,34 @@
           "label": "Upper — Push",
           "headline": "Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.",
           "items": [
-            { "id": "h1-pushup", "emoji": "🤸", "ladder": ["Incline push-up (hands on desk)", "Knee push-up", "Push-up", "Decline push-up (feet on chair)", "Deficit push-up (hands on books)", "Archer push-up"], "rung": 2, "reps": "4 × 6–12", "detail": "Elbows about 45° from your body, not flared. Full range — chest to the floor.", "xp": 25 },
-            { "id": "h1-pike", "emoji": "🔺", "ladder": ["Pike push-up", "Elevated pike push-up (feet on chair)", "Wall-supported handstand push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.", "xp": 25, "hero": true },
-            { "id": "h1-dip", "emoji": "💺", "ladder": ["Bent-leg chair dip", "Straight-leg chair dip", "Feet-elevated chair dip"], "rung": 0, "reps": "3 × 8–12", "detail": "Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.", "xp": 20 },
-            { "id": "h1-diamond", "emoji": "💎", "ladder": ["Incline diamond push-up", "Knee diamond push-up", "Diamond push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Hands together under the chest. Triceps.", "xp": 20 },
+            { "id": "h1-pushup", "emoji": "🤸", "ladder": ["Incline push-up (hands on desk)", "Knee push-up", "Push-up", "Decline push-up (feet on chair)", "Deficit push-up (hands on books)", "Archer push-up"], "rung": 2, "reps": "4 × 6–12", "detail": "Elbows about 45° from your body, not flared. Full range — chest to the floor.", "xp": 25,
+              "alternatives": [
+                { "text": "Wide-grip push-up", "emoji": "🖐️", "reps": "4 × 6–12", "detail": "Hands set wider than shoulders, elbows flare a little more than usual. Shifts more of the load onto the chest." },
+                { "text": "Climbing push-up", "emoji": "🧗", "reps": "4 × 6–12", "detail": "As you lower, bring one knee toward the same-side elbow, alternating sides each rep. Chest and triceps with a bit of core." },
+                { "text": "Staggered push-up", "emoji": "🔀", "reps": "4 × 6–12", "detail": "One hand set a fist-length ahead of the other, elbows tucked. Loads the rear arm harder — swap the lead hand each set." }
+              ]
+            },
+            { "id": "h1-pike", "emoji": "🔺", "ladder": ["Pike push-up", "Elevated pike push-up (feet on chair)", "Wall-supported handstand push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.", "xp": 25, "hero": true,
+              "alternatives": [
+                { "text": "Wall walk", "emoji": "🧱", "reps": "3 × 4–6", "detail": "Feet against the wall, walk them up while walking your hands back until you're near vertical, then reverse it. Builds the pressing strength pike work is training toward." },
+                { "text": "Pike hold with shoulder taps", "emoji": "👆", "reps": "3 × 10 each side", "detail": "Hold the top pike position and tap the opposite shoulder without letting your hips sway. Delts and core, no press required." },
+                { "text": "Hindu push-up", "emoji": "🌀", "reps": "3 × 6–10", "detail": "From a pike, dive forward and down, sweep through to a cobra, then reverse back to pike. Shoulders, chest and triceps in one flowing rep." }
+              ]
+            },
+            { "id": "h1-dip", "emoji": "💺", "ladder": ["Bent-leg chair dip", "Straight-leg chair dip", "Feet-elevated chair dip"], "rung": 0, "reps": "3 × 8–12", "detail": "Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.", "xp": 20,
+              "alternatives": [
+                { "text": "Floor dip", "emoji": "🧎", "reps": "3 × 8–12", "detail": "Sit with knees bent, hands on the floor beside your hips, lift your hips and bend the elbows straight back. Same dip pattern, no furniture — just less range." },
+                { "text": "Close-grip push-up", "emoji": "✊", "reps": "3 × 8–12", "detail": "Hands under your shoulders, elbows tucked tight to your ribs as you lower. Zero setup, still triceps-dominant." },
+                { "text": "Step-edge dip", "emoji": "🪜", "reps": "3 × 8–12", "detail": "One sturdy step or a single chair instead of two. Same movement, half the furniture." }
+              ]
+            },
+            { "id": "h1-diamond", "emoji": "💎", "ladder": ["Incline diamond push-up", "Knee diamond push-up", "Diamond push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Hands together under the chest. Triceps.", "xp": 20,
+              "alternatives": [
+                { "text": "Kneeling triceps extension", "emoji": "🔻", "reps": "3 × 8–12", "detail": "Kneeling, hands a little ahead of your knees, body in a straight line to your head. Bend only the elbows to lower your forehead toward the floor and press back — nearly pure triceps." },
+                { "text": "Pseudo planche push-up", "emoji": "📐", "reps": "3 × 6–10", "detail": "Hands by your ribs instead of your shoulders, lean your whole body forward over them before bending the elbows. Triceps and front delts at a steeper angle." },
+                { "text": "Explosive push-up", "emoji": "💥", "reps": "3 × 5–8", "detail": "Push up quickly enough that your hands almost leave the floor, land soft, reset. Trains the same triceps as the diamond, just for power instead of grind." }
+              ]
+            },
             { "id": "h1-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "detail": "Reps per set, and which rung you're on. Without it, next session has nothing to beat.", "xp": 20 }
           ]
         },
@@ -58,13 +82,55 @@
           "label": "Core & Back",
           "headline": "Trunk and mid-back. Two leg moves at the end so they don't vanish entirely.",
           "items": [
-            { "id": "h2-row", "emoji": "🪽", "ladder": ["Reverse snow angel", "Reverse snow angel, paused at the top", "Reverse snow angel, slow"], "rung": 0, "reps": "3 × 12–15", "detail": "Face down, arms out on the floor, palms up. Sweep them from beside your hips up over your head and back, keeping hands lifted the whole time. Burns the mid-back and rear delts.", "xp": 25, "hero": true },
-            { "id": "h2-hollow", "emoji": "🌙", "ladder": ["Bent-knee hollow hold", "Hollow hold", "Hollow rock"], "rung": 0, "reps": "3 × 20–40 s", "detail": "Lower back pressed flat into the floor the whole time.", "xp": 20 },
-            { "id": "h2-plank", "emoji": "🧱", "ladder": ["Plank", "Long-lever plank", "Plank with shoulder taps"], "rung": 0, "reps": "3 × 30–60 s", "xp": 20 },
-            { "id": "h2-side", "emoji": "📐", "ladder": ["Knee side plank", "Side plank", "Side plank with reach"], "rung": 0, "reps": "3 × 20–40 s each side", "detail": "Builds the waist taper from the side.", "xp": 15 },
-            { "id": "h2-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15 },
-            { "id": "h2-squat", "emoji": "🦵", "ladder": ["Bodyweight squat", "3-second tempo squat", "Split squat"], "rung": 1, "reps": "3 × 12–20", "detail": "Legs kept ticking over, not the focus any more.", "xp": 15 },
-            { "id": "h2-calf", "emoji": "🦶", "ladder": ["Calf raise", "Single-leg calf raise", "Single-leg calf raise off a step"], "rung": 0, "reps": "3 × 15–20", "xp": 10 },
+            { "id": "h2-row", "emoji": "🪽", "ladder": ["Reverse snow angel", "Reverse snow angel, paused at the top", "Reverse snow angel, slow"], "rung": 0, "reps": "3 × 12–15", "detail": "Face down, arms out on the floor, palms up. Sweep them from beside your hips up over your head and back, keeping hands lifted the whole time. Burns the mid-back and rear delts.", "xp": 25, "hero": true,
+              "alternatives": [
+                { "text": "Wall slide", "emoji": "🪟", "reps": "3 × 10–15", "detail": "Back, head and arms against a wall, slide your arms from a W up to a Y overhead and back down without losing contact. Rear delts and lower traps, standing instead of on the floor." },
+                { "text": "Superman row", "emoji": "🚣", "reps": "3 × 12–15", "detail": "Lying face down like superman, pull your elbows back past your ribs as you lift your chest higher — rowing while flying. Mid-back and rear delts together." },
+                { "text": "Prone Y-T-W", "emoji": "🕊️", "reps": "3 × 8 each shape", "detail": "Face down, sweep your arms through a Y, then a T, then a W, pausing briefly in each. Hits the rear delts from three angles in one set." }
+              ]
+            },
+            { "id": "h2-hollow", "emoji": "🌙", "ladder": ["Bent-knee hollow hold", "Hollow hold", "Hollow rock"], "rung": 0, "reps": "3 × 20–40 s", "detail": "Lower back pressed flat into the floor the whole time.", "xp": 20,
+              "alternatives": [
+                { "text": "Dead bug", "emoji": "🐛", "reps": "3 × 10–12 each side", "detail": "On your back, arms reaching up, knees bent at 90°. Lower one arm and the opposite leg toward the floor without your lower back arching, then reset." },
+                { "text": "V-up", "emoji": "🔺", "reps": "3 × 10–15", "detail": "Lie flat, then fold at the hips to bring straight legs and arms up to meet over your middle, lower with control. A moving version of the same hollow-body shape." },
+                { "text": "Reverse crunch", "emoji": "🌀", "reps": "3 × 12–15", "detail": "On your back, knees pulled to your chest, curl your hips off the floor in a small lift and lower without your feet touching down. Lower abs, kept under constant tension." }
+              ]
+            },
+            { "id": "h2-plank", "emoji": "🧱", "ladder": ["Plank", "Long-lever plank", "Plank with shoulder taps"], "rung": 0, "reps": "3 × 30–60 s", "xp": 20,
+              "alternatives": [
+                { "text": "Bear hold", "emoji": "🐻", "reps": "3 × 20–40 s", "detail": "Hands and toes on the floor, knees hovering an inch up, back flat. Same brace as the plank, hips a little higher, quads working too." },
+                { "text": "Mountain climber", "emoji": "⛰️", "reps": "3 × 20–30 s", "detail": "Plank position, drive one knee toward your chest at a time, controlled rather than fast. Core with a bit more heart rate." },
+                { "text": "Bird dog", "emoji": "🐕", "reps": "3 × 8–10 each side", "detail": "On hands and knees, extend opposite arm and leg straight out and hold, then switch without your hips rocking. Core stability, easier on the wrists than a plank." }
+              ]
+            },
+            { "id": "h2-side", "emoji": "📐", "ladder": ["Knee side plank", "Side plank", "Side plank with reach"], "rung": 0, "reps": "3 × 20–40 s each side", "detail": "Builds the waist taper from the side.", "xp": 15,
+              "alternatives": [
+                { "text": "Windshield wipers", "emoji": "🌊", "reps": "3 × 10–12 each side", "detail": "On your back, knees bent and lifted, rock them side to side while keeping your shoulders flat on the floor. Obliques, moving instead of held." },
+                { "text": "Standing oblique crunch", "emoji": "🧍", "reps": "3 × 12–15 each side", "detail": "Standing, hand behind your head, lift the same-side knee while crunching your elbow down toward it. Obliques, no floor needed." },
+                { "text": "Side plank hip dip", "emoji": "⬇️", "reps": "3 × 12–15 each side", "detail": "From a side plank, dip your hips toward the floor and lift back up instead of holding still. Same muscles, worked through a range." }
+              ]
+            },
+            { "id": "h2-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15,
+              "alternatives": [
+                { "text": "Superman pulse", "emoji": "⬆️", "reps": "3 × 15–20", "detail": "Same superman position, but lift and lower a couple of inches for reps instead of holding still. Same lower-back work, through a small range." },
+                { "text": "Good morning hold", "emoji": "🙇", "reps": "3 × 20–30 s", "detail": "Standing, soft knees, hinge forward at the hips until your torso is roughly parallel to the floor, then hold. Same lower-back work, standing instead of on the floor." },
+                { "text": "Prone opposite-limb raise", "emoji": "🔀", "reps": "3 × 10–12 each side", "detail": "Face down, lift opposite arm and leg together for a couple of seconds, lower, then switch sides. Same erector work, moving instead of static." }
+              ]
+            },
+            { "id": "h2-squat", "emoji": "🦵", "ladder": ["Bodyweight squat", "3-second tempo squat", "Split squat"], "rung": 1, "reps": "3 × 12–20", "detail": "Legs kept ticking over, not the focus any more.", "xp": 15,
+              "alternatives": [
+                { "text": "Reverse lunge", "emoji": "🚶", "reps": "3 × 10–12 each leg", "detail": "Step one leg back, drop the rear knee toward the floor, push back to standing. Same quads and glutes, one leg at a time." },
+                { "text": "Glute bridge", "emoji": "🌉", "reps": "3 × 15–20", "detail": "On your back, knees bent, drive your hips up until your body forms a straight line, squeeze at the top. Glutes and hamstrings, easier on the knees." },
+                { "text": "Wall sit", "emoji": "🪑", "reps": "3 × 30–45 s", "detail": "Back against a wall, thighs parallel to the floor, hold. Same quads as the squat, held instead of repped." }
+              ]
+            },
+            { "id": "h2-calf", "emoji": "🦶", "ladder": ["Calf raise", "Single-leg calf raise", "Single-leg calf raise off a step"], "rung": 0, "reps": "3 × 15–20", "xp": 10,
+              "alternatives": [
+                { "text": "Seated calf raise", "emoji": "🪑", "reps": "3 × 15–20", "detail": "Sit, hands pressing down on your knees for a little extra resistance, raise your heels as high as you can. Bent-knee calf work — a different part of the calf than the standing version." },
+                { "text": "Calf raise march", "emoji": "🚶", "reps": "3 × 30–40 s", "detail": "Walk in place on your toes, heels never touching down. Same calves, continuous tension instead of discrete reps." },
+                { "text": "Bent-over calf raise", "emoji": "🧱", "reps": "3 × 15–20", "detail": "Hinge forward slightly, hands resting on a wall or your own thighs, raise your heels. A different angle on the same calf muscles." }
+              ]
+            },
             { "id": "h2-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "xp": 20 }
           ]
         },
@@ -73,10 +139,34 @@
           "label": "Upper — Pull",
           "headline": "The hardest session to do without a bar. Inverted rows are the whole game here.",
           "items": [
-            { "id": "h3-row", "emoji": "🤝", "ladder": ["Self-resistance row", "Self-resistance row, slow", "Self-resistance row, paused"], "rung": 0, "reps": "3 × 10 each arm", "detail": "Grip one hand with the other in front of your chest. Pull the working arm back into a row while the other hand fights it. Push hard — you only get out what you put in.", "xp": 25, "hero": true },
-            { "id": "h3-swimmer", "emoji": "🏊", "ladder": ["Prone swimmer", "Prone swimmer, slow", "Prone swimmer, paused"], "rung": 0, "reps": "3 × 30–40 s", "detail": "Face down, arms and legs lifted, flutter opposite arm and leg. Lower back and the whole rear chain.", "xp": 20 },
-            { "id": "h3-ytw", "emoji": "🪽", "ladder": ["Prone Y-T-W", "Prone Y-T-W, paused", "Prone Y-T-W, slow eccentric"], "rung": 0, "reps": "3 × 8 each shape", "detail": "Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.", "xp": 20 },
-            { "id": "h3-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15 },
+            { "id": "h3-row", "emoji": "🤝", "ladder": ["Self-resistance row", "Self-resistance row, slow", "Self-resistance row, paused"], "rung": 0, "reps": "3 × 10 each arm", "detail": "Grip one hand with the other in front of your chest. Pull the working arm back into a row while the other hand fights it. Push hard — you only get out what you put in.", "xp": 25, "hero": true,
+              "alternatives": [
+                { "text": "Reverse snow angel", "emoji": "🪽", "reps": "3 × 12–15", "detail": "Face down, arms out on the floor, palms up, sweep them overhead and back. Mid-back and rear delts, no arm-against-arm tension needed." },
+                { "text": "Table row", "emoji": "🍽️", "reps": "3 × 10–12", "detail": "Sit under a sturdy table, grip the edge, feet braced, pull your chest up toward it. About as close as bodyweight gets to an actual loaded row." },
+                { "text": "Superman row", "emoji": "🚣", "reps": "3 × 12–15", "detail": "Lying face down like superman, pull your elbows back past your ribs as you lift your chest higher — rowing while flying. Mid-back and rear delts together." }
+              ]
+            },
+            { "id": "h3-swimmer", "emoji": "🏊", "ladder": ["Prone swimmer", "Prone swimmer, slow", "Prone swimmer, paused"], "rung": 0, "reps": "3 × 30–40 s", "detail": "Face down, arms and legs lifted, flutter opposite arm and leg. Lower back and the whole rear chain.", "xp": 20,
+              "alternatives": [
+                { "text": "Reverse plank", "emoji": "🌈", "reps": "3 × 20–30 s", "detail": "Sit with legs out, hands behind your hips, press up until your body forms a straight line facing the ceiling. Whole rear chain, from underneath instead of above." },
+                { "text": "Bird dog", "emoji": "🐕", "reps": "3 × 8–10 each side", "detail": "On hands and knees, extend opposite arm and leg straight out and hold, then switch without your hips rocking. Rear chain and balance, easier on the lower back than the swimmer." },
+                { "text": "Glute bridge march", "emoji": "🌉", "reps": "3 × 10–12 each side", "detail": "On your back, hips lifted into a bridge, lift one foot off the floor at a time without dropping your hips. Glutes and lower back, held instead of fluttering." }
+              ]
+            },
+            { "id": "h3-ytw", "emoji": "🪽", "ladder": ["Prone Y-T-W", "Prone Y-T-W, paused", "Prone Y-T-W, slow eccentric"], "rung": 0, "reps": "3 × 8 each shape", "detail": "Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.", "xp": 20,
+              "alternatives": [
+                { "text": "Wall slide", "emoji": "🪟", "reps": "3 × 10–15", "detail": "Back, head and arms against a wall, slide your arms from a W up to a Y overhead and back down without losing contact. Same rear-delt pattern as the Y-T-W, standing instead of prone." },
+                { "text": "Prone arm circles", "emoji": "🌀", "reps": "3 × 20–30 s", "detail": "Face down, arms out to your sides, draw small backward circles with straight arms. Same rear-delt endurance work, continuous instead of held positions." },
+                { "text": "Standing rear-delt flye", "emoji": "🔄", "reps": "3 × 12–15", "detail": "Hinge forward at the hips, soft knees, sweep your arms out to the sides and squeeze your shoulder blades together, then lower with control. Rear delts, standing and moving instead of prone and held." }
+              ]
+            },
+            { "id": "h3-superman", "emoji": "🦸", "ladder": ["Superman hold", "Superman hold, arms extended"], "rung": 0, "reps": "3 × 20–30 s", "detail": "Lower back and spinal erectors.", "xp": 15,
+              "alternatives": [
+                { "text": "Superman pulse", "emoji": "⬆️", "reps": "3 × 15–20", "detail": "Same superman position, but lift and lower a couple of inches for reps instead of holding still. Same lower-back work, through a small range." },
+                { "text": "Good morning hold", "emoji": "🙇", "reps": "3 × 20–30 s", "detail": "Standing, soft knees, hinge forward at the hips until your torso is roughly parallel to the floor, then hold. Same lower-back work, standing instead of on the floor." },
+                { "text": "Prone opposite-limb raise", "emoji": "🔀", "reps": "3 × 10–12 each side", "detail": "Face down, lift opposite arm and leg together for a couple of seconds, lower, then switch sides. Same erector work, moving instead of static." }
+              ]
+            },
             { "id": "h3-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "xp": 20 }
           ]
         },
@@ -85,11 +175,41 @@
           "label": "Arms & shoulders",
           "headline": "Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.",
           "items": [
-            { "id": "h4-pike", "emoji": "🔺", "ladder": ["Pike push-up", "Elevated pike push-up (feet on chair)", "Wall-supported handstand push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Second exposure this week. Frequency is what you have instead of load.", "xp": 25, "hero": true },
-            { "id": "h4-dip", "emoji": "💺", "ladder": ["Bent-leg chair dip", "Straight-leg chair dip", "Feet-elevated chair dip"], "rung": 0, "reps": "3 × 10–15", "detail": "Triceps.", "xp": 20 },
-            { "id": "h4-close", "emoji": "💎", "ladder": ["Incline diamond push-up", "Knee diamond push-up", "Diamond push-up"], "rung": 0, "reps": "3 × 8–12", "xp": 20 },
-            { "id": "h4-yraise", "emoji": "🪽", "ladder": ["Prone Y raise", "Prone Y raise, paused"], "rung": 0, "reps": "3 × 15", "detail": "Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.", "xp": 15 },
-            { "id": "h4-wall", "emoji": "🧱", "reps": "3 × 20–30 s each side", "text": "Wall lateral isometric", "detail": "Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.", "xp": 15 },
+            { "id": "h4-pike", "emoji": "🔺", "ladder": ["Pike push-up", "Elevated pike push-up (feet on chair)", "Wall-supported handstand push-up"], "rung": 0, "reps": "3 × 6–10", "detail": "Second exposure this week. Frequency is what you have instead of load.", "xp": 25, "hero": true,
+              "alternatives": [
+                { "text": "Wall walk", "emoji": "🧱", "reps": "3 × 4–6", "detail": "Feet against the wall, walk them up while walking your hands back until you're near vertical, then reverse it. Builds the pressing strength pike work is training toward." },
+                { "text": "Pike hold with shoulder taps", "emoji": "👆", "reps": "3 × 10 each side", "detail": "Hold the top pike position and tap the opposite shoulder without letting your hips sway. Delts and core, no press required." },
+                { "text": "Hindu push-up", "emoji": "🌀", "reps": "3 × 6–10", "detail": "From a pike, dive forward and down, sweep through to a cobra, then reverse back to pike. Shoulders, chest and triceps in one flowing rep." }
+              ]
+            },
+            { "id": "h4-dip", "emoji": "💺", "ladder": ["Bent-leg chair dip", "Straight-leg chair dip", "Feet-elevated chair dip"], "rung": 0, "reps": "3 × 10–15", "detail": "Triceps.", "xp": 20,
+              "alternatives": [
+                { "text": "Floor dip", "emoji": "🧎", "reps": "3 × 10–15", "detail": "Sit with knees bent, hands on the floor beside your hips, lift your hips and bend the elbows straight back. Same dip pattern, no furniture — just less range." },
+                { "text": "Close-grip push-up", "emoji": "✊", "reps": "3 × 10–15", "detail": "Hands under your shoulders, elbows tucked tight to your ribs as you lower. Zero setup, still triceps-dominant." },
+                { "text": "Step-edge dip", "emoji": "🪜", "reps": "3 × 10–15", "detail": "One sturdy step or a single chair instead of two. Same movement, half the furniture." }
+              ]
+            },
+            { "id": "h4-close", "emoji": "💎", "ladder": ["Incline diamond push-up", "Knee diamond push-up", "Diamond push-up"], "rung": 0, "reps": "3 × 8–12", "xp": 20,
+              "alternatives": [
+                { "text": "Kneeling triceps extension", "emoji": "🔻", "reps": "3 × 8–12", "detail": "Kneeling, hands a little ahead of your knees, body in a straight line to your head. Bend only the elbows to lower your forehead toward the floor and press back — nearly pure triceps." },
+                { "text": "Pseudo planche push-up", "emoji": "📐", "reps": "3 × 8–12", "detail": "Hands by your ribs instead of your shoulders, lean your whole body forward over them before bending the elbows. Triceps and front delts at a steeper angle." },
+                { "text": "Explosive push-up", "emoji": "💥", "reps": "3 × 6–10", "detail": "Push up quickly enough that your hands almost leave the floor, land soft, reset. Trains the same triceps as the diamond, just for power instead of grind." }
+              ]
+            },
+            { "id": "h4-yraise", "emoji": "🪽", "ladder": ["Prone Y raise", "Prone Y raise, paused"], "rung": 0, "reps": "3 × 15", "detail": "Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.", "xp": 15,
+              "alternatives": [
+                { "text": "Wall slide", "emoji": "🪟", "reps": "3 × 10–15", "detail": "Back, head and arms against a wall, slide your arms from a W up to a Y overhead and back down without losing contact. Same rear-delt pattern as the Y raise, with the wall giving you feedback on form." },
+                { "text": "Reverse snow angel", "emoji": "🪽", "reps": "3 × 12–15", "detail": "Face down, arms out on the floor, palms up, sweep them overhead and back. Rear delts and mid-back, moving through a full range instead of held at the top." },
+                { "text": "Prone arm circles", "emoji": "🌀", "reps": "3 × 20–30 s", "detail": "Face down, arms out to your sides, draw small backward circles with straight arms. Same rear-delt endurance work, continuous instead of a discrete raise." }
+              ]
+            },
+            { "id": "h4-wall", "emoji": "🧱", "reps": "3 × 20–30 s each side", "text": "Wall lateral isometric", "detail": "Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.", "xp": 15,
+              "alternatives": [
+                { "text": "Side-lying lateral raise", "emoji": "🛌", "reps": "3 × 12–15 each side", "detail": "Lie on your side, top arm straight, raise it until it's in line with your shoulder, then lower slowly. Real range of motion against gravity, not just a static push — probably your best lateral-delt option without weight." },
+                { "text": "Self-resistance lateral raise", "emoji": "🤝", "reps": "3 × 10–12 each side", "detail": "Raise one arm out to the side; the other hand presses down on the wrist to resist it through the range. Same trick as the self-resistance row, aimed at the side delt." },
+                { "text": "Doorframe press", "emoji": "🚪", "reps": "3 × 20–30 s", "detail": "Stand in a doorway, press the backs of both wrists outward into the frame at shoulder height, hold. Same isometric idea as the wall version, both sides at once." }
+              ]
+            },
             { "id": "h4-logged", "emoji": "📝", "reps": "", "text": "Logged the session", "xp": 20 }
           ]
         }
