@@ -379,6 +379,10 @@
 <div class="scrim" id="scrim" hidden>
   <div class="modal">
     <h3 id="mTitle">ADD TASK</h3>
+    <div id="mAltWrap" style="display:none">
+      <label for="mAlt">TRY ANOTHER</label>
+      <select id="mAlt"></select>
+    </div>
     <label for="mText">TASK</label>
     <input id="mText" type="text" maxlength="70" placeholder="e.g. 10 min walk">
     <div class="rowpair">
@@ -565,12 +569,12 @@ function isSessionDone(date) {
    you add, edit or delete lives here instead and is layered over the derived day.
    Kept in localStorage and mirrored to Firestore so it follows you between
    devices like the ticks do. */
-let custom = { added: [], hidden: {}, edits: {} };
+let custom = { added: [], hidden: {}, edits: {}, variant: {} };
 
 function loadCustom() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS_CUSTOM) || "null");
-    if (raw) custom = { added: [], hidden: {}, edits: {}, ...raw };
+    if (raw) custom = { added: [], hidden: {}, edits: {}, variant: {}, ...raw };
   } catch { /* keep the empty default */ }
 }
 function saveCustom({ push = true } = {}) {
@@ -579,20 +583,33 @@ function saveCustom({ push = true } = {}) {
 }
 const newId = () => "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
-/* Applies hides and text edits, then folds in anything you added. */
+/* Applies today's removals and swapped exercises, then text edits, then folds
+   in anything you added. Hides and swaps are scoped to a single date — from
+   here on, removing or swapping an item only ever changes today, never every
+   future day that item's session comes back around. */
 function applyCustom(groups, date) {
+  const hiddenToday = custom.hidden[date] || {};
   const out = [];
   for (const g of groups) {
     let items = (g.items || [])
-      .filter(i => !custom.hidden[i.id])
+      .filter(i => !hiddenToday[i.id])
       .map(i => {
+        let merged = i;
+        if (i.alternatives && i.alternatives.length) {
+          const idx = custom.variant[i.id];
+          const alt = idx != null ? i.alternatives[idx] : null;
+          const base = { text: i.text, emoji: i.emoji, reps: i.reps, detail: i.detail, xp: i.xp };
+          merged = alt
+            ? { ...i, __altIndex: idx, __base: base, text: alt.text, emoji: alt.emoji ?? i.emoji, reps: alt.reps ?? i.reps, detail: alt.detail ?? i.detail, xp: alt.xp ?? i.xp }
+            : { ...i, __altIndex: -1, __base: base };
+        }
         const e = custom.edits[i.id];
-        return e ? { ...i, text: e.text ?? i.text, xp: e.xp ?? i.xp, emoji: e.emoji ?? i.emoji } : i;
+        return e ? { ...merged, text: e.text ?? merged.text, xp: e.xp ?? merged.xp, emoji: e.emoji ?? merged.emoji } : merged;
       });
 
     const mine = custom.added.filter(a =>
       a.group === g.title &&
-      !custom.hidden[a.id] &&
+      !hiddenToday[a.id] &&
       (a.scope === "daily" || a.scope === date)
     );
     items = items.concat(mine.map(a => ({ ...a, custom: true })));
@@ -605,7 +622,7 @@ function applyCustom(groups, date) {
   const known = new Set(out.map(g => g.title));
   const extra = new Map();
   for (const a of custom.added) {
-    if (known.has(a.group) || custom.hidden[a.id]) continue;
+    if (known.has(a.group) || hiddenToday[a.id]) continue;
     if (a.scope !== "daily" && a.scope !== date) continue;
     if (!extra.has(a.group)) extra.set(a.group, []);
     extra.get(a.group).push({ ...a, custom: true });
@@ -906,6 +923,7 @@ function openAdd(group) {
   $("mText").value = ""; $("mEmoji").value = ""; $("mXp").value = "10";
   $("mScopeWrap").style.display = "";
   $("mScope").value = "daily";
+  $("mAltWrap").style.display = "none";
   $("scrim").hidden = false;
   setTimeout(() => $("mText").focus(), 30);
 }
@@ -920,11 +938,44 @@ function openEdit(item) {
   const own = custom.added.find(a => a.id === item.id);
   $("mScopeWrap").style.display = own ? "" : "none";
   if (own) $("mScope").value = own.scope === "daily" ? "daily" : "today";
+
+  if (item.alternatives && item.alternatives.length) {
+    const sel = $("mAlt");
+    sel.innerHTML = "";
+    const optBase = document.createElement("option");
+    optBase.value = "-1";
+    optBase.textContent = "This exercise";
+    sel.appendChild(optBase);
+    item.alternatives.forEach((alt, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = alt.text;
+      sel.appendChild(opt);
+    });
+    sel.value = String(item.__altIndex ?? -1);
+    $("mAltWrap").style.display = "";
+  } else {
+    $("mAltWrap").style.display = "none";
+  }
+
   $("scrim").hidden = false;
   setTimeout(() => $("mText").focus(), 30);
 }
 
 function closeModal() { $("scrim").hidden = true; editing = null; addGroup = null; }
+
+/* Swapping the "try another" select previews that alternative's fields in the
+   fields below, so what you see is what Save actually commits — it never
+   silently saves a stale text edit alongside a different swapped exercise. */
+function previewAlt() {
+  if (!editing || !editing.__base) return;
+  const idx = parseInt($("mAlt").value, 10);
+  const base = editing.__base;
+  const alt = idx === -1 ? null : editing.alternatives[idx];
+  $("mText").value = (alt ? alt.text : base.text) || "";
+  $("mEmoji").value = (alt ? alt.emoji ?? base.emoji : base.emoji) || "";
+  $("mXp").value = (alt ? alt.xp ?? base.xp : base.xp) ?? 10;
+}
 
 function saveModal() {
   const text = $("mText").value.trim();
@@ -937,6 +988,12 @@ function saveModal() {
     const own = custom.added.find(a => a.id === editing.id);
     if (own) Object.assign(own, { text, emoji, xp, scope });
     else custom.edits[editing.id] = { text, emoji, xp };
+
+    if (editing.alternatives && editing.alternatives.length) {
+      const idx = parseInt($("mAlt").value, 10);
+      if (idx === -1) delete custom.variant[editing.id];
+      else custom.variant[editing.id] = idx;
+    }
   } else {
     custom.added.push({ id: newId(), text, emoji, xp, group: addGroup, scope });
   }
@@ -948,14 +1005,19 @@ function saveModal() {
 function removeItem(item) {
   const own = custom.added.findIndex(a => a.id === item.id);
   const snapshot = own >= 0 ? custom.added[own] : null;
-  if (own >= 0) custom.added.splice(own, 1);
-  else custom.hidden[item.id] = true;
+  const date = plan.date;
+  if (own >= 0) {
+    custom.added.splice(own, 1);
+  } else {
+    custom.hidden[date] = custom.hidden[date] || {};
+    custom.hidden[date][item.id] = true;
+  }
   saveCustom();
   rebuild();
 
-  showToast(`Removed “${item.text}”`, () => {
+  showToast(`Removed “${item.text}” for today`, () => {
     if (snapshot) custom.added.push(snapshot);
-    else delete custom.hidden[item.id];
+    else if (custom.hidden[date]) delete custom.hidden[date][item.id];
     saveCustom();
     rebuild();
   });
@@ -1304,10 +1366,10 @@ const sync = {
       catch { snap = await f.getDoc(this.customRef()); }
       if (snap.exists()) {
         const v = snap.data();
-        custom = { added: v.added || [], hidden: v.hidden || {}, edits: v.edits || {} };
+        custom = { added: v.added || [], hidden: v.hidden || {}, edits: v.edits || {}, variant: v.variant || {} };
         saveCustom({ push: false });
         rebuild();
-      } else if (custom.added.length || Object.keys(custom.hidden).length || Object.keys(custom.edits).length) {
+      } else if (custom.added.length || Object.keys(custom.hidden).length || Object.keys(custom.edits).length || Object.keys(custom.variant).length) {
         await this.pushCustom();   // first sign-in with changes already made here
       }
     } catch { /* offline — the local copy stands */ }
@@ -1498,6 +1560,7 @@ $("dayToday").addEventListener("click", () => goToDay(todayISO()));
 
 $("mCancel").addEventListener("click", closeModal);
 $("mSave").addEventListener("click", saveModal);
+$("mAlt").addEventListener("change", previewAlt);
 $("scrim").addEventListener("click", e => { if (e.target === $("scrim")) closeModal(); });
 $("mText").addEventListener("keydown", e => { if (e.key === "Enter") saveModal(); });
 document.addEventListener("keydown", e => {
