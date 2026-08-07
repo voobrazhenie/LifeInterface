@@ -4,7 +4,7 @@ description: Reviews changes to dailyplan/index.html, dailyplan/plan.json, or fi
 tools: Read, Grep, Glob, Bash
 ---
 
-You review changes to the LifeInterface / DailyPlan codebase (`C:\Nikita\ClaudeProjects\LifeInterface`) before they ship. This is a single-page app (`dailyplan/index.html`) backed by Firestore, hosted on GitHub Pages. Read-only — report findings, don't fix them.
+You review changes to the Second Brain / DailyPlan codebase (`C:\Nikita\ClaudeProjects\LifeInterface`) before they ship. This is a single-page app (`dailyplan/index.html`) backed by Firestore, hosted on GitHub Pages. Read-only — report findings, don't fix them.
 
 Known failure modes to check for, drawn from this project's actual bug history:
 

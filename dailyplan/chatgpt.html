@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F2EDE0">
-<title>DailyPlan</title>
+<title>DailyPlan — ChatGPT Timer</title>
 
 <!-- Add to Home Screen. iOS ignores the manifest's name/display, so the
      apple-* tags below are what actually make it open without Safari chrome. -->
@@ -84,18 +84,52 @@
   }
   .daynav .lbl small{display:block;font-size:8.5px;color:var(--grey);letter-spacing:.06em;margin-top:2px}
   .daynav button[hidden]{display:none}
+  body.past .hero{background:var(--sunk)}
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
+    padding:12px 14px 13px;margin-bottom:16px;
+  }
+  .hero-top{display:flex;align-items:center;gap:12px}
+  .hero-txt{flex:1;min-width:0}
+  .kicker{font-size:8.5px;font-weight:900;letter-spacing:.09em;color:var(--grey);
+    font-family:"Arial Black",Impact,sans-serif}
+  .hero h1{margin:2px 0 3px;font-size:26px;line-height:1;
+    font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;letter-spacing:-.01em}
+  .hero .sub{font-size:10px;font-weight:600;color:var(--grey)}
+  .daychip{
+    flex:0 0 auto;text-align:center;background:var(--teal);
+    border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);padding:6px 11px 4px;
+    font-family:"Arial Black",Impact,sans-serif;
+  }
+  .daychip span{display:block;font-size:8px;font-weight:900;letter-spacing:.07em}
+  .daychip strong{display:block;font-size:30px;line-height:.95;font-weight:900}
+
+  .xpnum{font-size:11px;font-weight:900;color:var(--grey);
+    font-family:"Arial Black",Impact,sans-serif}
+  .count{display:flex;align-items:baseline;gap:6px;margin-top:11px;
+    border-top:2px solid var(--ink);padding-top:10px}
+  .count b{font-size:23px;font-family:"Arial Black",Impact,sans-serif;font-weight:900}
+  .count span{font-size:9.5px;font-weight:900;letter-spacing:.05em;color:var(--grey)}
+
+  /* ---------- category stat bars ---------- */
+  .chips{margin-bottom:16px}
+  .stat{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .stat .nm{width:64px;flex:0 0 auto;font-size:9px;font-weight:900;letter-spacing:.06em;
+    font-family:"Arial Black",Impact,sans-serif}
+  .stat .cells{flex:1;display:flex;gap:3px}
+  .stat .cells i{flex:1;height:13px;border:2px solid var(--ink);background:var(--card);transition:background .2s}
+  .stat .cells i.on{background:var(--teal)}
+  .stat.full .cells i.on{background:var(--lime)}
+  .stat .vv{width:32px;flex:0 0 auto;text-align:right;font-size:9.5px;font-weight:900}
 
   /* ---------- list ---------- */
-  .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px;cursor:pointer;user-select:none}
-  .sec:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-  .sec .chev{flex:0 0 auto;font-size:9px;color:var(--grey)}
-  .sec.collapsed .chev{color:var(--faint)}
+  .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px}
   .sec .t{font-size:11px;font-weight:900;letter-spacing:.07em;
     background:var(--ink);color:var(--paper);padding:3px 8px;
     font-family:"Arial Black",Impact,sans-serif}
-  .sec.collapsed .t{background:var(--faint)}
   .sec .r{flex:1;height:2px;background:var(--ink)}
-  .sec.collapsed .r{background:var(--faint)}
   .sec .n{font-size:9px;font-weight:900;color:var(--grey)}
 
   .row{
@@ -122,10 +156,11 @@
   .detail{display:none;font-size:10.5px;font-weight:600;color:var(--grey);margin-top:3px;line-height:1.35}
   body.notes .detail{display:block}
   body.notes .row{min-height:0;padding-top:9px;padding-bottom:9px}
-  .secnote{
+  .secnote,.daynote{
     display:none;font-size:11px;font-weight:600;color:var(--grey);line-height:1.4;padding:0 2px 6px;
   }
-  body.notes .secnote{display:block}
+  .daynote{padding:9px 0 0;border-top:2px solid var(--ink);margin-top:11px}
+  body.notes .secnote,body.notes .daynote{display:block}
   .pill{
     flex:0 0 auto;font-size:10px;font-weight:900;font-family:"Arial Black",Impact,sans-serif;
     background:var(--pink);color:var(--ink);border:2px solid var(--ink);padding:2px 6px;
@@ -246,84 +281,42 @@
     border:2px solid var(--paper);box-shadow:none;
   }
 
-  /* ---------- main focus ---------- */
-  .focus{
-    background:var(--ink);color:var(--paper);
-    border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
-    padding:14px 16px 16px;margin-bottom:14px;
+  /* ---------- training timer (ChatGPT comparison page only) ---------- */
+  .training-timer{
+    position:sticky;top:10px;z-index:20;
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    margin:0 0 16px;padding:10px 11px;
+    background:var(--teal);border:var(--stroke) solid var(--ink);
+    box-shadow:var(--shadow);
   }
-  .focus .k{font-size:8px;letter-spacing:.1em;color:var(--faint);
-    font-family:"Arial Black",Impact,sans-serif}
-  .focus .p{
-    font-size:22px;line-height:1.05;margin:4px 0 6px;letter-spacing:-.01em;
-    font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;
+  .training-timer .timer-title{
+    font-family:"Arial Black",Impact,sans-serif;font-size:9px;
+    font-weight:900;letter-spacing:.08em;
   }
-  .focus .sub{font-size:11px;font-weight:600;color:var(--faint);margin-bottom:12px}
-  .focus-btn{
-    display:block;width:100%;min-height:52px;font-size:14px;
-    box-shadow:3px 3px 0 var(--paper);
+  .training-timer .timer-display{
+    min-width:56px;font-family:"Arial Black",Impact,sans-serif;
+    font-size:22px;font-weight:900;line-height:1;text-align:center;
   }
-  .focus-btn:active{box-shadow:1px 1px 0 var(--paper)}
-  .focus-timer{
-    font-size:42px;line-height:1;margin:2px 0 6px;
-    font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;
-    font-variant-numeric:tabular-nums;
+  .training-timer .timer-buttons{display:flex;gap:7px;margin-left:auto}
+  .training-timer button{padding:7px 9px;background:var(--card)}
+  .training-timer button.active{background:var(--yellow)}
+  .training-timer.done{background:var(--lime)}
+  @media (max-width:390px){
+    .training-timer .timer-title{width:100%}
+    .training-timer .timer-buttons{margin-left:0;flex:1}
+    .training-timer .timer-buttons button{flex:1}
   }
-  .focus-msg{font-size:12px;font-weight:700;color:var(--paper)}
-  .focus-acts{display:flex;gap:9px;margin-top:14px}
-  .focus-acts button{flex:1;background:var(--paper);box-shadow:2px 2px 0 var(--paper)}
-  .focus-acts button:active{box-shadow:none;transform:translate(2px,2px)}
+
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <div class="topbar">
-    <a class="home" href="../">‹ SECOND BRAIN</a>
+    <a class="home" href="../">‹ LIFE INTERFACE</a>
     <span class="grow"></span>
     <span class="streak" id="streak"><b id="streakN">0</b><span id="streakLbl">days</span></span>
   </div>
-
-  <div class="focus" id="focus">
-    <div id="focusIdle" hidden>
-      <div class="k">MAIN FOCUS</div>
-      <div class="p">NO WEED TODAY</div>
-      <div class="sub">Clearer mornings, better sleep, more control.</div>
-      <button class="primary focus-btn" id="focusHelp">I NEED HELP NOW</button>
-    </div>
-    <div id="focusActive" hidden>
-      <div class="k">STAY WITH IT</div>
-      <div class="focus-timer" id="focusTime">10:00</div>
-      <div class="focus-msg">Leave the room and take a walk until the timer ends.</div>
-      <div class="focus-acts">
-        <button id="focusStop">STOP</button>
-        <button id="focusReset">RESET</button>
-      </div>
-    </div>
-    <div id="focusDone" hidden>
-      <div class="k">TIME'S UP</div>
-      <div class="p">You made it through.</div>
-      <button class="primary focus-btn" id="focusOk">OK</button>
-    </div>
-  </div>
-  <script>
-    // Runs immediately, before the rest of the page parses, so a reload mid-
-    // countdown (or after completion) never flashes the idle state first.
-    // Key is duplicated from LS_FOCUS below on purpose — this has to run
-    // before that script block exists. Checks the pre-rename key too, since
-    // the migration in that later script hasn't had a chance to run yet.
-    (function () {
-      var el = "focusIdle";
-      try {
-        var raw = localStorage.getItem("secondbrain.fitness.focus")
-          || localStorage.getItem("lifeinterface.fitness.focus");
-        var s = JSON.parse(raw || "null");
-        if (s && s.endAt - Date.now() > 0) el = "focusActive";
-        else if (s) el = "focusDone";
-      } catch (e) {}
-      document.getElementById(el).hidden = false;
-    })();
-  </script>
 
   <div class="principle" id="principle" hidden>
     <div class="k" id="prTitle">NOTES FOR RADICAL LIVING</div>
@@ -337,6 +330,39 @@
     <button id="dayToday" hidden>TODAY</button>
     <button id="dayNext" title="Next day">›</button>
   </div>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-txt">
+        <div class="kicker"><span id="weekLbl"></span></div>
+        <h1 id="sessionLabel">Today</h1>
+        <div class="sub" id="headline"></div>
+      </div>
+      <div class="daychip">
+        <span>DAY</span><strong id="dayChip">—</strong>
+      </div>
+    </div>
+    <div class="count">
+      <b id="ringN">0</b><span id="ringD">OF 0 DONE</span>
+      <span class="grow"></span>
+      <span class="xpnum" id="xpLbl">0 XP</span>
+    </div>
+    <div class="daynote" id="dayNote"></div>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+
+  <section class="training-timer" id="trainingTimer" aria-label="Training timer">
+    <span class="timer-title">TRAINING TIMER</span>
+    <strong class="timer-display" id="timerDisplay" role="timer" aria-live="polite">0:30</strong>
+    <div class="timer-buttons">
+      <button type="button" data-timer-seconds="30">30 SEC</button>
+      <button type="button" data-timer-seconds="60">1 MIN</button>
+      <button type="button" id="timerStop" hidden>STOP</button>
+    </div>
+  </section>
+
 
   <main id="list"></main>
 
@@ -426,134 +452,17 @@
 <script>
 "use strict";
 
-const FALLBACK = {"startDate":"2026-07-29","activeProgram":"home","principles":{"title":"Notes for Radical Living","author":"Tilda Swinton","source":"from her book Ongoing, 2025","list":["Make friends with chaos","Hold a calm mind","Let things shake","Forgive human frailty","Champion second chances","Defy kindness","Reverence fellowship","Listen to the quiet","Respect the young","Seek growth","Trust in change","Treasure learning","Inspire faith in evolution","Reach beyond the binary","Be wary of the doubtless","Honor the bright headed","Grow plants","Attend to the weather","Be electric","Cherish language","Celebrate silence","Dance daily","Bless the handmade","Sing into pain","Challenge assumptions","Follow the wind","Look upwards","Swoon under clouds","Feel your courage","Face forward","Read history","Open your ears","Drop your shoulders","Bend your knees","Raise the roof","Keep breathing","Be trustworthy","Take care of yourself","Believe in goodness","Head for the light"]},"schedule":{"mon":"train","tue":"train","wed":"rest","thu":"train","fri":"train","sat":"rest","sun":"rest"},"restDay":{"label":"Rest day","headline":"Not a day off — a day the muscle actually grows.","note":"Growth happens between sessions, not during them. Walking is fine and good. Everything else on this list still counts, so a rest day never breaks the streak."},"programs":{"home":{"label":"Bodyweight","note":"No equipment. Progression is by variation and tempo instead of weight: when you hit the top of the rep range on every set, move up a rung and drop back to the bottom of the range.","sessions":[{"id":"h1","label":"Upper — Push","headline":"Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.","items":[{"id":"h1-pushup","emoji":"🤸","ladder":["Incline push-up (hands on desk)","Knee push-up","Push-up","Decline push-up (feet on chair)","Deficit push-up (hands on books)","Archer push-up"],"rung":2,"reps":"4 × 6–12","detail":"Elbows about 45° from your body, not flared. Full range — chest to the floor.","xp":25},{"id":"h1-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.","xp":25,"hero":true},{"id":"h1-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 8–12","detail":"Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.","xp":20},{"id":"h1-diamond","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hands together under the chest. Triceps.","xp":20},{"id":"h1-logged","emoji":"📝","reps":"","text":"Logged the session","detail":"Reps per set, and which rung you're on. Without it, next session has nothing to beat.","xp":20}]},{"id":"h2","label":"Core & Back","headline":"Trunk and mid-back. Two leg moves at the end so they don't vanish entirely.","items":[{"id":"h2-row","emoji":"🪽","ladder":["Reverse snow angel","Reverse snow angel, paused at the top","Reverse snow angel, slow"],"rung":0,"reps":"3 × 12–15","detail":"Face down, arms out on the floor, palms up. Sweep them from beside your hips up over your head and back, keeping hands lifted the whole time. Burns the mid-back and rear delts.","xp":25,"hero":true},{"id":"h2-hollow","emoji":"🌙","ladder":["Bent-knee hollow hold","Hollow hold","Hollow rock"],"rung":0,"reps":"3 × 20–40 s","detail":"Lower back pressed flat into the floor the whole time.","xp":20},{"id":"h2-plank","emoji":"🧱","ladder":["Plank","Long-lever plank","Plank with shoulder taps"],"rung":0,"reps":"3 × 30–60 s","xp":20},{"id":"h2-side","emoji":"📐","ladder":["Knee side plank","Side plank","Side plank with reach"],"rung":0,"reps":"3 × 20–40 s each side","detail":"Builds the waist taper from the side.","xp":15},{"id":"h2-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h2-squat","emoji":"🦵","ladder":["Bodyweight squat","3-second tempo squat","Split squat"],"rung":1,"reps":"3 × 12–20","detail":"Legs kept ticking over, not the focus any more.","xp":15},{"id":"h2-calf","emoji":"🦶","ladder":["Calf raise","Single-leg calf raise","Single-leg calf raise off a step"],"rung":0,"reps":"3 × 15–20","xp":10},{"id":"h2-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h3","label":"Upper — Pull","headline":"The hardest session to do without a bar. Inverted rows are the whole game here.","items":[{"id":"h3-row","emoji":"🤝","ladder":["Self-resistance row","Self-resistance row, slow","Self-resistance row, paused"],"rung":0,"reps":"3 × 10 each arm","detail":"Grip one hand with the other in front of your chest. Pull the working arm back into a row while the other hand fights it. Push hard — you only get out what you put in.","xp":25,"hero":true},{"id":"h3-swimmer","emoji":"🏊","ladder":["Prone swimmer","Prone swimmer, slow","Prone swimmer, paused"],"rung":0,"reps":"3 × 30–40 s","detail":"Face down, arms and legs lifted, flutter opposite arm and leg. Lower back and the whole rear chain.","xp":20},{"id":"h3-ytw","emoji":"🪽","ladder":["Prone Y-T-W","Prone Y-T-W, paused","Prone Y-T-W, slow eccentric"],"rung":0,"reps":"3 × 8 each shape","detail":"Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.","xp":20},{"id":"h3-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h3-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h4","label":"Arms & shoulders","headline":"Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.","items":[{"id":"h4-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Second exposure this week. Frequency is what you have instead of load.","xp":25,"hero":true},{"id":"h4-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 10–15","detail":"Triceps.","xp":20},{"id":"h4-close","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 8–12","xp":20},{"id":"h4-yraise","emoji":"🪽","ladder":["Prone Y raise","Prone Y raise, paused"],"rung":0,"reps":"3 × 15","detail":"Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.","xp":15},{"id":"h4-wall","emoji":"🧱","reps":"3 × 20–30 s each side","text":"Wall lateral isometric","detail":"Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.","xp":15},{"id":"h4-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]}]},"gym":{"label":"Gym","note":"Parked until you have a subscription. Switch by setting activeProgram to \"gym\" — nothing else needs rewriting.","sessions":[{"id":"g1","label":"Upper — Push","headline":"Lateral raises are the priority movement of the whole plan.","items":[{"id":"g1-incline","emoji":"🏋️","text":"Incline press · 4×6–8","detail":"Barbell or dumbbell. Your priority press.","xp":25},{"id":"g1-ohp","emoji":"🙌","text":"Seated dumbbell shoulder press · 3×8–10","xp":25},{"id":"g1-lateral","emoji":"💪","text":"Cable or dumbbell lateral raise · 4×12–15","detail":"The single biggest visual driver. Slow, no swinging.","xp":40,"hero":true},{"id":"g1-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"g1-tri","emoji":"🔻","text":"Overhead cable triceps extension · 3×10–12","xp":20},{"id":"g1-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g2","label":"Lower","headline":"Keep it honest but don't let it eat your upper-body recovery.","items":[{"id":"g2-squat","emoji":"🦵","text":"Squat · 3×5–8","detail":"Barbell or hack.","xp":25},{"id":"g2-rdl","emoji":"🪢","text":"Romanian deadlift · 3×8–10","xp":25},{"id":"g2-press","emoji":"🦿","text":"Leg press or split squat · 3×10–12","xp":20},{"id":"g2-calf","emoji":"🦶","text":"Standing calf raise · 3×12–15","xp":15},{"id":"g2-legraise","emoji":"🧗","text":"Hanging leg raise · 3×10–15","xp":15},{"id":"g2-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g3","label":"Upper — Pull","headline":"Back width is the other half of the V-taper.","items":[{"id":"g3-pullup","emoji":"🧗","text":"Pull-up or lat pulldown · 4×6–10","detail":"Back width = V-taper.","xp":25},{"id":"g3-row","emoji":"🚣","text":"Barbell or dumbbell row · 3×8–10","xp":25},{"id":"g3-lateral","emoji":"💪","text":"Lateral raise, machine or leaning cable · 4×12–15","detail":"Yes, again. Different angle.","xp":40,"hero":true},{"id":"g3-reardelt","emoji":"🪽","text":"Rear-delt flye or face pull · 3×15","detail":"Shoulder health and width.","xp":20},{"id":"g3-curl","emoji":"💪","text":"Incline dumbbell curl · 3×10–12","xp":15},{"id":"g3-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g4","label":"Arms & delts","headline":"The weak-point day. Third lateral raise exposure of the week.","items":[{"id":"g4-press","emoji":"🏋️","text":"Flat or incline dumbbell press · 3×8–10","xp":25},{"id":"g4-lateral","emoji":"💪","text":"Lateral raise, third variation · 4×12–20","xp":40,"hero":true},{"id":"g4-curl","emoji":"💪","text":"Cable curl · 3×10–12","xp":15},{"id":"g4-pushdown","emoji":"🔻","text":"Cable triceps pushdown · 3×12–15","xp":15},{"id":"g4-shrug","emoji":"🤷","text":"Shrug or upright row · 3×12","xp":15},{"id":"g4-logged","emoji":"📝","text":"Logged every set","xp":20}]}]}},"daily":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","detail":"As prescribed.","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","detail":"As prescribed. Consistent time of day.","xp":10}]},{"title":"Eat","emoji":"🍳","note":"Protein is the non-negotiable — 1.8–2.2 g per kg per day. Four anchors of 35–45 g beats trying to rescue the number at dinner. The failure mode isn't one light day, it's three in a row.","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","detail":"Greek yoghurt or skyr + eggs, or a shake with milk.","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","detail":"Palm-and-a-half of chicken / fish / beef / tofu.","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","detail":"Whey shake or cottage cheese.","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","detail":"The one that usually rescues the day's total.","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","detail":"Pale straw, not clear. Creatine raises water needs slightly.","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","detail":"Only needed for the first 2–3 weeks, to calibrate. After that you'll know your portions by eye.","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","detail":"Any time of day. No loading phase needed.","xp":10}]},{"title":"Care","emoji":"🧴","note":"Minoxidil every evening, except on microneedling days — the skin needs about a day and a half to close up before anything goes on it again.","items":[{"id":"c-microneedling","emoji":"🪡","text":"Microneedling","detail":"Morning. Every 14 days. No minoxidil this evening — resume tomorrow evening.","xp":25,"every":14,"anchor":"2026-08-05"},{"id":"c-minoxidil","emoji":"💧","text":"Minoxidil","detail":"Evening, on dry scalp. Hides itself automatically on microneedling days.","xp":15,"skipWhen":["c-microneedling"]}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","detail":"Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.","xp":20},{"id":"r-no-weed","emoji":"🚫","text":"No weed today","detail":"Tick it on the days you didn't. Worth tracking next to sleep — it changes sleep architecture, and sleep is the recovery lever the plan leans on hardest.","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","detail":"Not in the hour after training — cold blunts the growth signal.","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]},{"title":"Home","emoji":"🏠","items":[{"id":"home-water-flowers","emoji":"🪴","text":"Water flowers","detail":"Every three days.","xp":10,"every":3,"anchor":"2026-08-07"}]}],"oneOffs":{"title":"Setup","emoji":"🎯","note":"These disappear for good once ticked.","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","detail":"Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.","xp":35,"hero":true},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","detail":"As real appointments, not intentions. Mon / Tue / Thu / Fri.","xp":20},{"id":"s-space","emoji":"🏠","text":"Clear a training space","detail":"Enough floor to lie flat with your arms out, and two chairs that take your weight for dips. That's the whole kit list.","xp":20}]}};
+const FALLBACK = {"startDate":"2026-07-29","activeProgram":"home","principles":{"title":"Notes for Radical Living","author":"Tilda Swinton","source":"from her book Ongoing, 2025","list":["Make friends with chaos","Hold a calm mind","Let things shake","Forgive human frailty","Champion second chances","Defy kindness","Reverence fellowship","Listen to the quiet","Respect the young","Seek growth","Trust in change","Treasure learning","Inspire faith in evolution","Reach beyond the binary","Be wary of the doubtless","Honor the bright headed","Grow plants","Attend to the weather","Be electric","Cherish language","Celebrate silence","Dance daily","Bless the handmade","Sing into pain","Challenge assumptions","Follow the wind","Look upwards","Swoon under clouds","Feel your courage","Face forward","Read history","Open your ears","Drop your shoulders","Bend your knees","Raise the roof","Keep breathing","Be trustworthy","Take care of yourself","Believe in goodness","Head for the light"]},"schedule":{"mon":"train","tue":"train","wed":"rest","thu":"train","fri":"train","sat":"rest","sun":"rest"},"restDay":{"label":"Rest day","headline":"Not a day off — a day the muscle actually grows.","note":"Growth happens between sessions, not during them. Walking is fine and good. Everything else on this list still counts, so a rest day never breaks the streak."},"programs":{"home":{"label":"Bodyweight","note":"No equipment. Progression is by variation and tempo instead of weight: when you hit the top of the rep range on every set, move up a rung and drop back to the bottom of the range.","sessions":[{"id":"h1","label":"Upper — Push","headline":"Chest and triceps. Pike push-ups are the closest thing to shoulder work you have.","items":[{"id":"h1-pushup","emoji":"🤸","ladder":["Incline push-up (hands on desk)","Knee push-up","Push-up","Decline push-up (feet on chair)","Deficit push-up (hands on books)","Archer push-up"],"rung":2,"reps":"4 × 6–12","detail":"Elbows about 45° from your body, not flared. Full range — chest to the floor.","xp":25},{"id":"h1-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hips high, head travels toward the floor between your hands. The best delt work available without weights — treat it as the priority movement of this session.","xp":25,"hero":true},{"id":"h1-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 8–12","detail":"Two stable chairs or the edge of a sofa. Shoulders down, don't sink into the shrug.","xp":20},{"id":"h1-diamond","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 6–10","detail":"Hands together under the chest. Triceps.","xp":20},{"id":"h1-logged","emoji":"📝","reps":"","text":"Logged the session","detail":"Reps per set, and which rung you're on. Without it, next session has nothing to beat.","xp":20}]},{"id":"h2","label":"Core & Back","headline":"Trunk and mid-back. Two leg moves at the end so they don't vanish entirely.","items":[{"id":"h2-row","emoji":"🪽","ladder":["Reverse snow angel","Reverse snow angel, paused at the top","Reverse snow angel, slow"],"rung":0,"reps":"3 × 12–15","detail":"Face down, arms out on the floor, palms up. Sweep them from beside your hips up over your head and back, keeping hands lifted the whole time. Burns the mid-back and rear delts.","xp":25,"hero":true},{"id":"h2-hollow","emoji":"🌙","ladder":["Bent-knee hollow hold","Hollow hold","Hollow rock"],"rung":0,"reps":"3 × 20–40 s","detail":"Lower back pressed flat into the floor the whole time.","xp":20},{"id":"h2-plank","emoji":"🧱","ladder":["Plank","Long-lever plank","Plank with shoulder taps"],"rung":0,"reps":"3 × 30–60 s","xp":20},{"id":"h2-side","emoji":"📐","ladder":["Knee side plank","Side plank","Side plank with reach"],"rung":0,"reps":"3 × 20–40 s each side","detail":"Builds the waist taper from the side.","xp":15},{"id":"h2-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h2-squat","emoji":"🦵","ladder":["Bodyweight squat","3-second tempo squat","Split squat"],"rung":1,"reps":"3 × 12–20","detail":"Legs kept ticking over, not the focus any more.","xp":15},{"id":"h2-calf","emoji":"🦶","ladder":["Calf raise","Single-leg calf raise","Single-leg calf raise off a step"],"rung":0,"reps":"3 × 15–20","xp":10},{"id":"h2-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h3","label":"Upper — Pull","headline":"The hardest session to do without a bar. Inverted rows are the whole game here.","items":[{"id":"h3-row","emoji":"🤝","ladder":["Self-resistance row","Self-resistance row, slow","Self-resistance row, paused"],"rung":0,"reps":"3 × 10 each arm","detail":"Grip one hand with the other in front of your chest. Pull the working arm back into a row while the other hand fights it. Push hard — you only get out what you put in.","xp":25,"hero":true},{"id":"h3-swimmer","emoji":"🏊","ladder":["Prone swimmer","Prone swimmer, slow","Prone swimmer, paused"],"rung":0,"reps":"3 × 30–40 s","detail":"Face down, arms and legs lifted, flutter opposite arm and leg. Lower back and the whole rear chain.","xp":20},{"id":"h3-ytw","emoji":"🪽","ladder":["Prone Y-T-W","Prone Y-T-W, paused","Prone Y-T-W, slow eccentric"],"rung":0,"reps":"3 × 8 each shape","detail":"Face down, arms making a Y then T then W. Rear delts and mid-back — this is genuinely useful equipment-free work and it protects your shoulders for the gym later.","xp":20},{"id":"h3-superman","emoji":"🦸","ladder":["Superman hold","Superman hold, arms extended"],"rung":0,"reps":"3 × 20–30 s","detail":"Lower back and spinal erectors.","xp":15},{"id":"h3-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]},{"id":"h4","label":"Arms & shoulders","headline":"Second shoulder exposure of the week. Do these when you're fresh, not tacked on tired.","items":[{"id":"h4-pike","emoji":"🔺","ladder":["Pike push-up","Elevated pike push-up (feet on chair)","Wall-supported handstand push-up"],"rung":0,"reps":"3 × 6–10","detail":"Second exposure this week. Frequency is what you have instead of load.","xp":25,"hero":true},{"id":"h4-dip","emoji":"💺","ladder":["Bent-leg chair dip","Straight-leg chair dip","Feet-elevated chair dip"],"rung":0,"reps":"3 × 10–15","detail":"Triceps.","xp":20},{"id":"h4-close","emoji":"💎","ladder":["Incline diamond push-up","Knee diamond push-up","Diamond push-up"],"rung":0,"reps":"3 × 8–12","xp":20},{"id":"h4-yraise","emoji":"🪽","ladder":["Prone Y raise","Prone Y raise, paused"],"rung":0,"reps":"3 × 15","detail":"Rear and medial delts. Slow — there's no weight, so time under tension is all you've got.","xp":15},{"id":"h4-wall","emoji":"🧱","reps":"3 × 20–30 s each side","text":"Wall lateral isometric","detail":"Stand side-on, press the back of your hand into the wall as if raising the arm, and hold. Being straight with you: this is a poor substitute for a loaded lateral raise and won't build much width. It's here to keep the movement pattern alive until you have dumbbells.","xp":15},{"id":"h4-logged","emoji":"📝","reps":"","text":"Logged the session","xp":20}]}]},"gym":{"label":"Gym","note":"Parked until you have a subscription. Switch by setting activeProgram to \"gym\" — nothing else needs rewriting.","sessions":[{"id":"g1","label":"Upper — Push","headline":"Lateral raises are the priority movement of the whole plan.","items":[{"id":"g1-incline","emoji":"🏋️","text":"Incline press · 4×6–8","detail":"Barbell or dumbbell. Your priority press.","xp":25},{"id":"g1-ohp","emoji":"🙌","text":"Seated dumbbell shoulder press · 3×8–10","xp":25},{"id":"g1-lateral","emoji":"💪","text":"Cable or dumbbell lateral raise · 4×12–15","detail":"The single biggest visual driver. Slow, no swinging.","xp":40,"hero":true},{"id":"g1-row","emoji":"🚣","text":"Chest-supported row · 3×8–10","xp":25},{"id":"g1-tri","emoji":"🔻","text":"Overhead cable triceps extension · 3×10–12","xp":20},{"id":"g1-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g2","label":"Lower","headline":"Keep it honest but don't let it eat your upper-body recovery.","items":[{"id":"g2-squat","emoji":"🦵","text":"Squat · 3×5–8","detail":"Barbell or hack.","xp":25},{"id":"g2-rdl","emoji":"🪢","text":"Romanian deadlift · 3×8–10","xp":25},{"id":"g2-press","emoji":"🦿","text":"Leg press or split squat · 3×10–12","xp":20},{"id":"g2-calf","emoji":"🦶","text":"Standing calf raise · 3×12–15","xp":15},{"id":"g2-legraise","emoji":"🧗","text":"Hanging leg raise · 3×10–15","xp":15},{"id":"g2-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g3","label":"Upper — Pull","headline":"Back width is the other half of the V-taper.","items":[{"id":"g3-pullup","emoji":"🧗","text":"Pull-up or lat pulldown · 4×6–10","detail":"Back width = V-taper.","xp":25},{"id":"g3-row","emoji":"🚣","text":"Barbell or dumbbell row · 3×8–10","xp":25},{"id":"g3-lateral","emoji":"💪","text":"Lateral raise, machine or leaning cable · 4×12–15","detail":"Yes, again. Different angle.","xp":40,"hero":true},{"id":"g3-reardelt","emoji":"🪽","text":"Rear-delt flye or face pull · 3×15","detail":"Shoulder health and width.","xp":20},{"id":"g3-curl","emoji":"💪","text":"Incline dumbbell curl · 3×10–12","xp":15},{"id":"g3-logged","emoji":"📝","text":"Logged every set","xp":20}]},{"id":"g4","label":"Arms & delts","headline":"The weak-point day. Third lateral raise exposure of the week.","items":[{"id":"g4-press","emoji":"🏋️","text":"Flat or incline dumbbell press · 3×8–10","xp":25},{"id":"g4-lateral","emoji":"💪","text":"Lateral raise, third variation · 4×12–20","xp":40,"hero":true},{"id":"g4-curl","emoji":"💪","text":"Cable curl · 3×10–12","xp":15},{"id":"g4-pushdown","emoji":"🔻","text":"Cable triceps pushdown · 3×12–15","xp":15},{"id":"g4-shrug","emoji":"🤷","text":"Shrug or upright row · 3×12","xp":15},{"id":"g4-logged","emoji":"📝","text":"Logged every set","xp":20}]}]}},"daily":[{"title":"Meds","emoji":"💊","items":[{"id":"m-stimulants","emoji":"💊","text":"Stimulants","detail":"As prescribed.","xp":10},{"id":"m-antidepressants","emoji":"💊","text":"Antidepressants","detail":"As prescribed. Consistent time of day.","xp":10}]},{"title":"Eat","emoji":"🍳","note":"Protein is the non-negotiable — 1.8–2.2 g per kg per day. Four anchors of 35–45 g beats trying to rescue the number at dinner. The failure mode isn't one light day, it's three in a row.","items":[{"id":"e-anchor-1","emoji":"🥣","text":"Breakfast protein anchor","detail":"Greek yoghurt or skyr + eggs, or a shake with milk.","xp":15},{"id":"e-anchor-2","emoji":"🥗","text":"Lunch protein anchor","detail":"Palm-and-a-half of chicken / fish / beef / tofu.","xp":15},{"id":"e-anchor-3","emoji":"🥤","text":"Afternoon anchor","detail":"Whey shake or cottage cheese.","xp":15},{"id":"e-anchor-4","emoji":"🍽️","text":"Dinner protein anchor","detail":"The one that usually rescues the day's total.","xp":15},{"id":"e-water","emoji":"💧","text":"Water through the day","detail":"Pale straw, not clear. Creatine raises water needs slightly.","xp":10},{"id":"e-track","emoji":"🔢","text":"Logged protein today","detail":"Only needed for the first 2–3 weeks, to calibrate. After that you'll know your portions by eye.","xp":15},{"id":"e-creatine","emoji":"⚡","text":"Creatine · 5 g","detail":"Any time of day. No loading phase needed.","xp":10}]},{"title":"Care","emoji":"🧴","note":"Minoxidil every evening, except on microneedling days — the skin needs about a day and a half to close up before anything goes on it again.","items":[{"id":"c-microneedling","emoji":"🪡","text":"Microneedling","detail":"Morning. Every 14 days. No minoxidil this evening — resume tomorrow evening.","xp":25,"every":14,"anchor":"2026-08-05"},{"id":"c-minoxidil","emoji":"💧","text":"Minoxidil","detail":"Evening, on dry scalp. Hides itself automatically on microneedling days.","xp":15,"skipWhen":["c-microneedling"]}]},{"title":"Recover","emoji":"🌙","items":[{"id":"r-sleep","emoji":"😴","text":"7–9 hours, consistent wake time","detail":"Short sleep measurably suppresses muscle gain and raises appetite. Consistent wake time matters more than consistent bedtime.","xp":20},{"id":"r-no-weed","emoji":"🚫","text":"No weed today","detail":"Tick it on the days you didn't. Worth tracking next to sleep — it changes sleep architecture, and sleep is the recovery lever the plan leans on hardest.","xp":20},{"id":"r-cold-shower","emoji":"🧊","text":"Cold shower","detail":"Not in the hour after training — cold blunts the growth signal.","xp":15},{"id":"r-meditation","emoji":"🧘","text":"Meditation","xp":15}]}],"oneOffs":{"title":"Setup","emoji":"🎯","note":"These disappear for good once ticked.","items":[{"id":"s-measure","emoji":"📏","text":"Weigh + measure waist","detail":"Morning, unflexed, before eating. This is the one thing here that gets worse by waiting — a starting number taken next week isn't a starting number.","xp":35,"hero":true},{"id":"s-supplements","emoji":"🛒","text":"Buy creatine and whey","xp":20},{"id":"s-calendar","emoji":"📅","text":"Four sessions in the calendar","detail":"As real appointments, not intentions. Mon / Tue / Thu / Fri.","xp":20},{"id":"s-space","emoji":"🏠","text":"Clear a training space","detail":"Enough floor to lie flat with your arms out, and two chairs that take your weight for dips. That's the whole kit list.","xp":20}]}};
 
 const SDK        = "https://www.gstatic.com/firebasejs/12.16.0/";
-const LS_PREFIX  = "secondbrain.fitness.v1.";
-const LS_META    = "secondbrain.fitness.meta.";
-const LS_NOTES   = "secondbrain.fitness.notes";
-const LS_CUSTOM  = "secondbrain.fitness.custom";
-const LS_FOCUS   = "secondbrain.fitness.focus";
-const LS_COLLAPSED = "secondbrain.fitness.collapsed";
-
-/* One-time: the app was renamed from Life Interface to Second Brain. Carry
-   existing local data over to the new key prefix so it isn't orphaned. */
-(function migrateStorage() {
-  const OLD = "lifeinterface.fitness.", NEW = "secondbrain.fitness.";
-  try {
-    if (localStorage.getItem(NEW + "migrated")) return;
-    const keys = [];
-    for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
-    for (const k of keys) {
-      if (k && k.startsWith(OLD) && localStorage.getItem(NEW + k.slice(OLD.length)) === null) {
-        localStorage.setItem(NEW + k.slice(OLD.length), localStorage.getItem(k));
-      }
-    }
-    localStorage.setItem(NEW + "migrated", "1");
-  } catch {}
-})();
+const LS_PREFIX  = "lifeinterface.fitness.v1.";
+const LS_META    = "lifeinterface.fitness.meta.";
+const LS_NOTES   = "lifeinterface.fitness.notes";
+const LS_CUSTOM  = "lifeinterface.fitness.custom";
 const HISTORY_DAYS = 90;
 const RING_C     = 2 * Math.PI * 33;   // matches r=33 in the svg
 const WEEKDAYS   = ["sun","mon","tue","wed","thu","fri","sat"];
 const $ = id => document.getElementById(id);
-
-/* ---------- main focus: craving-interrupt timer ----------
-   Deliberately separate from the day/session model above — one ongoing timer,
-   local only. Nothing here is worth syncing across devices, so it never
-   touches Firestore or `custom`; localStorage is the whole story. */
-const FOCUS_MS = 10 * 60 * 1000;
-let focusInterval = null;
-let focusAudioCtx = null;
-let focusAnnounced = false;   // true once this completion has already beeped
-
-function loadFocus() {
-  try { return JSON.parse(localStorage.getItem(LS_FOCUS) || "null"); }
-  catch { return null; }
-}
-function saveFocus(state) {
-  try {
-    if (state) localStorage.setItem(LS_FOCUS, JSON.stringify(state));
-    else localStorage.removeItem(LS_FOCUS);
-  } catch {}
-}
-
-// Three short tones — noticeable without being harsh. Needs an AudioContext
-// that was created (or resumed) during a user gesture, or autoplay rules
-// mute it — see focusStart().
-function focusBeep() {
-  try {
-    if (!focusAudioCtx) return;
-    const ctx = focusAudioCtx, t0 = ctx.currentTime;
-    [0, 0.35, 0.7].forEach(offset => {
-      const osc = ctx.createOscillator(), gain = ctx.createGain();
-      osc.frequency.value = 880;
-      gain.gain.setValueAtTime(0.0001, t0 + offset);
-      gain.gain.exponentialRampToValueAtTime(0.3, t0 + offset + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + offset + 0.25);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0 + offset);
-      osc.stop(t0 + offset + 0.3);
-    });
-  } catch {}
-}
-
-function focusEnsureAudio() {
-  try {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (Ctx && !focusAudioCtx) focusAudioCtx = new Ctx();
-    else if (focusAudioCtx && focusAudioCtx.state === "suspended") focusAudioCtx.resume();
-  } catch {}
-}
-
-function focusShow(id) {
-  $("focusIdle").hidden = id !== "focusIdle";
-  $("focusActive").hidden = id !== "focusActive";
-  $("focusDone").hidden = id !== "focusDone";
-}
-
-/* The single source of truth is the stored endAt timestamp, not an elapsed
-   count — so a backgrounded or throttled tab is never off by the drift a
-   naive setInterval countdown would accumulate. announce controls whether a
-   completion seen right now plays the sound/vibration: true for a live tick
-   or a tab regaining visibility, false for the check on page load, so
-   reopening the app hours later doesn't retroactively buzz. */
-function focusTick(announce) {
-  const state = loadFocus();
-  if (!state) { clearInterval(focusInterval); focusInterval = null; focusShow("focusIdle"); return; }
-
-  const remain = state.endAt - Date.now();
-  if (remain <= 0) {
-    clearInterval(focusInterval); focusInterval = null;
-    // Guard against re-announcing: visibilitychange fires focusTick(true)
-    // every time the tab regains focus, which without this would re-beep on
-    // each return visit to an already-finished, not-yet-acknowledged timer.
-    if (announce && !focusAnnounced) {
-      focusAnnounced = true;
-      focusBeep();
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
-    }
-    focusShow("focusDone");
-    return;
-  }
-
-  focusAnnounced = false;   // still counting down — arm for the next completion
-  const s = Math.ceil(remain / 1000);
-  $("focusTime").textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-  focusShow("focusActive");
-  if (!focusInterval) focusInterval = setInterval(() => focusTick(true), 250);
-}
-
-function focusStart() {
-  focusEnsureAudio();
-  focusAnnounced = false;
-  saveFocus({ endAt: Date.now() + FOCUS_MS });
-  focusTick(true);
-}
-function focusStop() {
-  saveFocus(null);
-  focusShow("focusIdle");
-  clearInterval(focusInterval); focusInterval = null;
-}
 
 /* Dev-only: ?date=2026-08-05 pretends it is that day, so the rotation and rest
    days can be stepped through without waiting a fortnight. */
@@ -832,25 +741,17 @@ function totalXp() {
   return sum;
 }
 
-/* ---------- category collapse ----------
-   Display-only: never filters plan.groups itself, so counts, XP, streak and
-   sync all keep computing from the full data regardless of what's collapsed. */
-let collapsedGroups = new Set();
-function loadCollapsed() {
-  try { collapsedGroups = new Set(JSON.parse(localStorage.getItem(LS_COLLAPSED) || "[]")); }
-  catch { collapsedGroups = new Set(); }
-}
-function saveCollapsed() {
-  try { localStorage.setItem(LS_COLLAPSED, JSON.stringify([...collapsedGroups])); } catch {}
-}
-function toggleGroup(title) {
-  if (collapsedGroups.has(title)) collapsedGroups.delete(title); else collapsedGroups.add(title);
-  saveCollapsed();
-  render();
-}
-
 /* ---------- render ---------- */
 function render() {
+  $("dayChip").textContent = plan.dayOfPlan > 0 ? String(plan.dayOfPlan).padStart(2, "0") : "—";
+  $("weekLbl").textContent = (plan.week ? `WEEK ${String(plan.week).padStart(2, "0")}` : "")
+    + (plan.sessionId ? `  \u00B7  SESSION ${plan.sessionId.toUpperCase()}` : "");
+  $("sessionLabel").textContent = plan.sessionLabel || "Today";
+  $("headline").textContent = plan.headline || "";
+  const dn = $("dayNote");
+  dn.textContent = plan.note || "";
+  dn.style.display = plan.note ? "" : "none";
+
   const ticks = loadTicks(plan.date);
   const list = $("list");
   list.textContent = "";
@@ -859,17 +760,8 @@ function render() {
   lastRendered = JSON.stringify(ticks);
 
   for (const g of plan.groups || []) {
-    const collapsed = collapsedGroups.has(g.title);
-
     const sec = document.createElement("div");
-    sec.className = "sec" + (collapsed ? " collapsed" : "");
-    sec.tabIndex = 0;
-    sec.setAttribute("role", "button");
-    sec.setAttribute("aria-expanded", String(!collapsed));
-    const chev = document.createElement("span");
-    chev.className = "chev";
-    chev.setAttribute("aria-hidden", "true");
-    chev.textContent = collapsed ? "▸" : "▾";
+    sec.className = "sec";
     const name = document.createElement("span");
     name.className = "t";
     name.textContent = g.title.toUpperCase();
@@ -880,25 +772,16 @@ function render() {
     const gd = (g.items || []).filter(i => ticks[i.id]).length;
     cnt.textContent = `${gd}/${(g.items || []).length}`;
     secEls.set(g.title, cnt);
-    sec.append(chev, name, rule, cnt);
+    sec.append(name, rule, cnt);
     if (!g.fixed) {
       const add = document.createElement("button");
       add.className = "add";
       add.textContent = "+";
       add.title = `Add a task to ${g.title}`;
-      add.addEventListener("click", e => { e.stopPropagation(); openAdd(g.title); });
+      add.addEventListener("click", () => openAdd(g.title));
       sec.appendChild(add);
     }
-    const toggle = e => { if (e.target.closest(".add")) return; toggleGroup(g.title); };
-    sec.addEventListener("click", toggle);
-    sec.addEventListener("keydown", e => {
-      if (e.key !== "Enter" && e.key !== " ") return;
-      e.preventDefault();
-      toggle(e);
-    });
     list.appendChild(sec);
-
-    if (collapsed) continue;
 
     if (g.note) {
       const n = document.createElement("div");
@@ -970,7 +853,8 @@ function render() {
     }
   }
 
-  renderStreak();
+  renderChips(ticks);
+  renderStats(ticks);
   renderPrinciple();
   renderDayNav();
 }
@@ -1133,10 +1017,51 @@ function refreshDerived() {
     const cnt = secEls.get(g.title);
     if (cnt) cnt.textContent = `${(g.items || []).filter(i => ticks[i.id]).length}/${(g.items || []).length}`;
   }
-  renderStreak();
+  renderChips(ticks);
+  renderStats(ticks);
 }
 
-function renderStreak() {
+function renderChips(ticks) {
+  const wrap = $("chips");
+  wrap.textContent = "";
+  for (const g of plan.groups || []) {
+    const items = g.items || [];
+    if (!items.length) continue;
+    const done = items.filter(i => ticks[i.id]).length;
+
+    const row = document.createElement("div");
+    row.className = "stat" + (done === items.length ? " full" : "");
+
+    const nm = document.createElement("span");
+    nm.className = "nm";
+    nm.textContent = g.title.toUpperCase();
+
+    // one cell per task, so the bar is a literal count rather than a percentage
+    const cells = document.createElement("span");
+    cells.className = "cells";
+    for (let i = 0; i < items.length; i++) {
+      const c = document.createElement("i");
+      if (i < done) c.className = "on";
+      cells.appendChild(c);
+    }
+
+    const vv = document.createElement("span");
+    vv.className = "vv";
+    vv.textContent = `${done}/${items.length}`;
+
+    row.append(nm, cells, vv);
+    wrap.appendChild(row);
+  }
+}
+
+function renderStats(ticks) {
+  const items = allItems();
+  const done = items.filter(i => ticks[i.id]).length;
+
+  $("ringN").textContent = done;
+  $("ringD").textContent = `OF ${items.length} DONE`;
+  $("xpLbl").textContent = `${todayXp()} XP`;
+
   const s = computeStreak();
   $("streakN").textContent = s;
   $("streakLbl").textContent = s === 1 ? "DAY" : "DAYS";
@@ -1177,6 +1102,7 @@ function renderDayNav() {
   lbl.appendChild(small);
 
   $("dayToday").hidden = diff === 0;
+  document.body.classList.toggle("past", diff !== 0);
 }
 
 async function goToDay(date) {
@@ -1617,17 +1543,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("scrim").hidden) closeModal();
 });
 
-$("focusHelp").addEventListener("click", focusStart);
-$("focusReset").addEventListener("click", focusStart);
-$("focusStop").addEventListener("click", focusStop);
-$("focusOk").addEventListener("click", focusStop);
-// A backgrounded tab throttles setInterval, so catch up the instant it's
-// looked at again rather than waiting for the next (possibly late) tick.
-document.addEventListener("visibilitychange", () => { if (!document.hidden) focusTick(true); });
-focusTick(false);
-
 loadCustom();
-loadCollapsed();
 
 if (localStorage.getItem(LS_NOTES) === "1") {
   document.body.classList.add("notes");
@@ -1636,5 +1552,90 @@ if (localStorage.getItem(LS_NOTES) === "1") {
 
 loadProgram().then(() => sync.init()).then(() => sync.watchLifecycle());
 </script>
+
+<script>
+(() => {
+  "use strict";
+
+  const panel = document.getElementById("trainingTimer");
+  const display = document.getElementById("timerDisplay");
+  const stopButton = document.getElementById("timerStop");
+  const presetButtons = [...panel.querySelectorAll("[data-timer-seconds]")];
+
+  let intervalId = null;
+  let endsAt = 0;
+  let audioContext = null;
+
+  const format = seconds => {
+    const whole = Math.max(0, Math.ceil(seconds));
+    return Math.floor(whole / 60) + ":" + String(whole % 60).padStart(2, "0");
+  };
+
+  const sound = () => {
+    audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === "suspended") audioContext.resume();
+    const now = audioContext.currentTime;
+    [0, 0.16].forEach(offset => {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(880, now + offset);
+      gain.gain.setValueAtTime(0.0001, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + offset + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.13);
+      oscillator.connect(gain).connect(audioContext.destination);
+      oscillator.start(now + offset);
+      oscillator.stop(now + offset + 0.14);
+    });
+  };
+
+  const finish = () => {
+    clearInterval(intervalId);
+    intervalId = null;
+    display.textContent = "DONE";
+    panel.classList.add("done");
+    presetButtons.forEach(button => button.classList.remove("active"));
+    stopButton.hidden = true;
+    sound();
+    if ("vibrate" in navigator) navigator.vibrate([120, 80, 120]);
+  };
+
+  const tick = () => {
+    const remaining = (endsAt - Date.now()) / 1000;
+    if (remaining <= 0) finish();
+    else display.textContent = format(remaining);
+  };
+
+  const stop = () => {
+    clearInterval(intervalId);
+    intervalId = null;
+    endsAt = 0;
+    display.textContent = "0:30";
+    panel.classList.remove("done");
+    presetButtons.forEach(button => button.classList.remove("active"));
+    stopButton.hidden = true;
+  };
+
+  const start = seconds => {
+    clearInterval(intervalId);
+    audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === "suspended") audioContext.resume();
+    endsAt = Date.now() + seconds * 1000;
+    panel.classList.remove("done");
+    presetButtons.forEach(button =>
+      button.classList.toggle("active", Number(button.dataset.timerSeconds) === seconds)
+    );
+    stopButton.hidden = false;
+    display.textContent = format(seconds);
+    intervalId = setInterval(tick, 200);
+  };
+
+  presetButtons.forEach(button => {
+    button.addEventListener("click", () => start(Number(button.dataset.timerSeconds)));
+  });
+  stopButton.addEventListener("click", stop);
+})();
+</script>
+
 </body>
 </html>

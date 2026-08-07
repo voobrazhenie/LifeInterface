@@ -29,7 +29,7 @@ Nikita asked directly for this: *"you're a professional fitness trainer who's al
 
 ## Boundaries
 
-- Never write body metrics, weights, measurements, or photos into the LifeInterface repo — it's public. Those belong in `C:\Nikita\ClaudeProjects\Fitness and Health\`.
+- Never write body metrics, weights, measurements, or photos into the Second Brain repo — it's public. Those belong in `C:\Nikita\ClaudeProjects\Fitness and Health\`.
 - If editing `plan.json`, re-embed `FALLBACK` in `index.html` (see README.md) and keep both in sync.
 - Don't redesign the program on a whim — see the twelve-week rule above.
 

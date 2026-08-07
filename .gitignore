@@ -27,8 +27,11 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# .claude/ is local tool config by default, except the project subagents,
-# which are meant to be part of the repo — see .claude/agents/*.md.
+# .claude/ is local tool config by default, except the project subagents and
+# custom commands, which are meant to be part of the repo — see
+# .claude/agents/*.md and .claude/commands/*.md.
 .claude/*
 !.claude/agents/
 !.claude/agents/*.md
+!.claude/commands/
+!.claude/commands/*.md

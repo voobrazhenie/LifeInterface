@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F2EDE0">
-<title>Life Interface</title>
+<title>Second Brain</title>
 <style>
   /* Same neo-brutalist system as dailyplan/ — thick strokes, squared corners,
      solid accent blocks, hard zero-blur shadows. */
@@ -114,7 +114,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow blk">LIFE INTERFACE</div>
+  <div class="eyebrow blk">SECOND BRAIN</div>
   <h1 class="blk">A place for the things<br>I'm <em>tracking</em>.</h1>
   <p class="lede">Small pages, each one pointed at a single thing worth keeping honest.</p>
 
@@ -163,6 +163,24 @@
     <span class="go blk">→</span>
   </a>
 
+  <a class="card" href="streams/">
+    <span class="mark" style="background:var(--lime)">🌊</span>
+    <span class="body">
+      <span class="name blk">STREAMS</span>
+      <span class="desc">What's actually moving — focus now, maintain, or parked. Titles only.</span>
+    </span>
+    <span class="go blk">→</span>
+  </a>
+
+  <a class="card" href="ideas/">
+    <span class="mark" style="background:var(--yellow)">💡</span>
+    <span class="body">
+      <span class="name blk">STARTUP-UP IDEAS</span>
+      <span class="desc">A place to put ideas before they're anything more than that.</span>
+    </span>
+    <span class="go blk">→</span>
+  </a>
+
   <div class="soon">Room here for the next one.</div>
 
   <footer>Static pages on GitHub Pages. Data syncs to your own account and is readable only by you — the job module ships no content in the repo at all.</footer>
@@ -179,8 +197,25 @@
    then refines from Firestore, which is the cross-device truth. */
 
 const SDK = "https://www.gstatic.com/firebasejs/12.16.0/";
-const LS_TICKS = "lifeinterface.fitness.v1.";
-const LS_META  = "lifeinterface.fitness.meta.";
+const LS_TICKS = "secondbrain.fitness.v1.";
+const LS_META  = "secondbrain.fitness.meta.";
+
+/* One-time: the app was renamed from Life Interface to Second Brain. Carry
+   existing local data over to the new key prefix so it isn't orphaned. */
+(function migrateStorage() {
+  const OLD = "lifeinterface.fitness.", NEW = "secondbrain.fitness.";
+  try {
+    if (localStorage.getItem(NEW + "migrated")) return;
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+    for (const k of keys) {
+      if (k && k.startsWith(OLD) && localStorage.getItem(NEW + k.slice(OLD.length)) === null) {
+        localStorage.setItem(NEW + k.slice(OLD.length), localStorage.getItem(k));
+      }
+    }
+    localStorage.setItem(NEW + "migrated", "1");
+  } catch {}
+})();
 
 // 4 sessions a week across the plan's realistic 9-month horizon.
 const TARGET_SESSIONS = 156;
