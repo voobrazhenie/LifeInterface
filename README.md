@@ -1,8 +1,8 @@
-# Life Interface
+# Second Brain
 
 Small static pages for things worth keeping honest. Hosted on GitHub Pages, with Firebase for cross-device state — no server to run, nothing to pay for at this scale.
 
-Live: **https://voobrazhenie.github.io/LifeInterface/**
+Live: **https://voobrazhenie.github.io/secondbrain/**
 
 ## How DailyPlan works
 
@@ -60,7 +60,7 @@ After that, in this directory:
 firebase projects:create                      # or reuse an existing project id
 firebase deploy --only firestore:rules        # publishes firestore.rules
 firebase deploy --only auth                   # Google sign-in + authorised domains
-firebase apps:create web "Life Interface"
+firebase apps:create web "Second Brain"
 firebase apps:sdkconfig web                   # prints the config object
 ```
 
