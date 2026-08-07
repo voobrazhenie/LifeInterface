@@ -33,9 +33,20 @@ resolving, search Trello boards for "Second Brain" as a fallback).
       design judgement, the implementation, and the review yourself, inline,
       unless the user asks otherwise for a specific card.
    d. Commit with a message that says why, not what. Push to whatever branch
-      this session is already working on — don't invent a new one, and don't
-      push to `main` unless the user has explicitly authorized that for this
-      session, same bar as any other push to a shared branch.
+      this session is already working on — don't invent a new one. Then
+      merge straight to `main` and push that too, so the card is actually
+      live once it's marked done, not just sitting on a branch — Nikita
+      wants to see the result in production after this command runs, so
+      this is a standing exception to the usual "don't push to main without
+      asking" rule, scoped to this command only:
+        git fetch origin main
+        git checkout main && git merge --ff-only origin/main
+        git merge --no-edit <working-branch>   # falls back to a real merge
+                                                # commit if not a fast-forward
+        git push origin main
+        git checkout <working-branch>          # back to it for the next card
+      If the merge hits a real conflict (not just "needs a merge commit"),
+      stop and say so rather than guessing at a resolution.
    e. Append a short "## Validation" section to the card's description
       summarizing what you actually verified, plus the commit and branch.
       Trello card descriptions cap at 2048 characters total, so keep it
