@@ -29,16 +29,13 @@
   a.back{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;
     text-decoration:none;color:var(--ink);border-bottom:2px solid var(--ink);margin-bottom:16px}
   .eyebrow{display:inline-block;background:var(--ink);color:var(--paper);
-    font-size:10px;letter-spacing:.1em;padding:4px 9px;margin-bottom:14px}
-  h1{font-size:clamp(26px,7vw,34px);margin:0 0 10px;line-height:1.05;letter-spacing:-.02em}
-  h1 em{font-style:normal;background:var(--yellow);border:var(--stroke) solid var(--ink);
-    padding:0 8px;box-shadow:4px 4px 0 var(--ink);display:inline-block}
-  .lede{color:var(--grey);font-weight:600;margin:0 0 20px;font-size:13.5px}
+    font-size:10px;letter-spacing:.1em;padding:4px 9px;margin-bottom:20px}
 
-  /* ---------- sync bar (same contract as dailyplan/ and jobs/) ---------- */
+  /* ---------- sync bar (same contract as dailyplan/ and jobs/) — lives at the
+     bottom now, streams are the point of this page ---------- */
   .sync{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
     border:2px solid var(--ink);background:var(--card);box-shadow:3px 3px 0 var(--ink);
-    padding:9px 11px;margin-bottom:22px;font-size:12px;font-weight:700;color:var(--grey)}
+    padding:9px 11px;margin:0 0 20px;font-size:12px;font-weight:700;color:var(--grey)}
   .sync.on{background:var(--card)}
   .sync .dot{flex:0 0 auto;width:9px;height:9px;border:2px solid var(--ink);background:var(--sunk)}
   .sync.on .dot{background:var(--lime)}
@@ -56,6 +53,7 @@
   .group-h .t{font-size:11px;font-weight:900;letter-spacing:.07em;
     background:var(--ink);color:var(--paper);padding:3px 8px;
     font-family:"Arial Black",Impact,sans-serif}
+  .group-h .t.hot{background:var(--yellow);color:var(--ink)}
   .group-h .r{flex:1;height:2px;background:var(--ink)}
   .group-h .cap{font-size:9.5px;font-weight:900;color:var(--grey);white-space:nowrap}
   .group-h .cap.full{color:var(--ink)}
@@ -65,13 +63,23 @@
     background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
     padding:10px 11px;margin-bottom:9px;
   }
-  .stream .title{display:block;min-width:0;font-size:15px;font-weight:700;
-    margin-bottom:8px;overflow-wrap:break-word;cursor:text}
+  .stream.hot{border-left-width:7px;border-left-color:var(--yellow)}
+  .stream .row1{display:flex;align-items:center;gap:8px}
+  .stream .title{flex:1;min-width:0;font-size:15px;font-weight:700;
+    overflow-wrap:break-word;cursor:text}
   .stream input.rename{
     display:block;width:100%;font:inherit;font-size:15px;font-weight:700;
-    border:2px solid var(--ink);background:var(--paper);padding:6px 7px;margin-bottom:8px;
+    border:2px solid var(--ink);background:var(--paper);padding:6px 7px;
   }
-  .stream .acts{display:flex;gap:5px;flex-wrap:wrap}
+  .stream .more{
+    flex:0 0 auto;width:28px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;
+    background:var(--card);color:var(--ink);border:2px solid var(--ink);
+    font-size:16px;font-weight:900;line-height:1;letter-spacing:.06em;
+  }
+  .stream .more:active{transform:translate(2px,2px)}
+  .stream .more.open{background:var(--ink);color:var(--paper)}
+  .stream .acts{display:flex;gap:5px;flex-wrap:wrap;
+    margin-top:9px;padding-top:9px;border-top:2px dashed var(--sunk)}
   .stream .acts button{
     padding:5px 7px;font-size:11px;line-height:1;
     background:var(--card);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);
@@ -107,16 +115,14 @@
 
   <a class="back" href="../">&larr; SECOND BRAIN</a>
   <span class="eyebrow">LIFE STREAMS</span>
-  <h1 class="blk">What's <em>actually</em> moving.</h1>
-  <p class="lede">Titles only, on purpose. Three groups: what you're pushing on, what you're maintaining, and what's parked but not forgotten.</p>
+
+  <div id="groups"></div>
 
   <div class="sync" id="sync">
     <span class="dot"></span>
     <span class="msg" id="syncMsg">Checking sync&hellip;</span>
     <button class="btn" id="authBtn" hidden></button>
   </div>
-
-  <div id="groups"></div>
 
   <footer id="foot">Signed out, streams stay in this browser. Signed in, they sync to your own account — readable only by you.</footer>
 </div>
@@ -140,6 +146,7 @@ const GROUP_LABEL = Object.fromEntries(GROUPS.map(([k, label]) => [k, label]));
 let streams = [];     // [{ id, title, group }], array order = within-group display order
 let editingId = null; // stream currently showing a rename input instead of its title
 let armedId = null;   // stream currently in "tap again to remove" state
+let openId = null;    // stream currently showing its actions panel (rename/reorder/move/remove)
 
 function loadLocal() {
   try { streams = JSON.parse(localStorage.getItem(LS_STREAMS) || "[]"); }
@@ -228,6 +235,7 @@ function render() {
     const rule = document.createElement("span");
     rule.className = "r";
     h.append(t, rule);
+    if (key === "focus") t.classList.add("hot");
     if (cap != null) {
       const capEl = document.createElement("span");
       capEl.className = "cap" + (items.length >= cap ? " full" : "");
@@ -252,9 +260,11 @@ function render() {
 
 function streamRow(s, group) {
   const row = document.createElement("div");
-  row.className = "stream";
+  row.className = "stream" + (group === "focus" ? " hot" : "");
 
-  if (editingId === s.id) {
+  const editing = editingId === s.id;
+
+  if (editing) {
     const input = document.createElement("input");
     input.className = "rename";
     input.value = s.title;
@@ -271,26 +281,43 @@ function streamRow(s, group) {
     input.addEventListener("blur", commit);
     row.appendChild(input);
     setTimeout(() => { input.focus(); input.select(); }, 0);
-  } else {
-    const title = document.createElement("span");
-    title.className = "title";
-    title.textContent = s.title;
-    title.title = "Click to rename";
-    title.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
-    row.appendChild(title);
+    return row;
   }
+
+  const row1 = document.createElement("div");
+  row1.className = "row1";
+
+  const title = document.createElement("span");
+  title.className = "title";
+  title.textContent = s.title;
+  title.title = "Click to rename";
+  title.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
+  row1.appendChild(title);
+
+  // Reorder/move/remove stay tucked away by default so a stream is just its
+  // name at a glance — this toggle is the one always-visible way in.
+  const open = openId === s.id;
+  const more = document.createElement("button");
+  more.className = "more" + (open ? " open" : "");
+  more.textContent = "⋯";
+  more.title = "More actions";
+  more.setAttribute("aria-label", `Actions for ${s.title}`);
+  more.setAttribute("aria-expanded", open ? "true" : "false");
+  more.addEventListener("click", () => { openId = open ? null : s.id; armedId = null; render(); });
+  row1.appendChild(more);
+
+  row.appendChild(row1);
+  if (!open) return row;
 
   const acts = document.createElement("div");
   acts.className = "acts";
 
   // A clickable title is a nice shortcut for mouse/touch, but it isn't
   // reachable by keyboard alone — this button is the real entry point.
-  if (editingId !== s.id) {
-    const edit = document.createElement("button");
-    edit.textContent = "✎"; edit.title = "Rename";
-    edit.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
-    acts.appendChild(edit);
-  }
+  const edit = document.createElement("button");
+  edit.textContent = "✎"; edit.title = "Rename";
+  edit.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
+  acts.appendChild(edit);
 
   const items = streams.filter(x => x.group === group);
   const pos = items.findIndex(x => x.id === s.id);
