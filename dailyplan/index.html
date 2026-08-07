@@ -84,45 +84,6 @@
   }
   .daynav .lbl small{display:block;font-size:8.5px;color:var(--grey);letter-spacing:.06em;margin-top:2px}
   .daynav button[hidden]{display:none}
-  body.past .hero{background:var(--sunk)}
-
-  /* ---------- hero ---------- */
-  .hero{
-    background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
-    padding:12px 14px 13px;margin-bottom:16px;
-  }
-  .hero-top{display:flex;align-items:center;gap:12px}
-  .hero-txt{flex:1;min-width:0}
-  .kicker{font-size:8.5px;font-weight:900;letter-spacing:.09em;color:var(--grey);
-    font-family:"Arial Black",Impact,sans-serif}
-  .hero h1{margin:2px 0 3px;font-size:26px;line-height:1;
-    font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900;letter-spacing:-.01em}
-  .hero .sub{font-size:10px;font-weight:600;color:var(--grey)}
-  .daychip{
-    flex:0 0 auto;text-align:center;background:var(--teal);
-    border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);padding:6px 11px 4px;
-    font-family:"Arial Black",Impact,sans-serif;
-  }
-  .daychip span{display:block;font-size:8px;font-weight:900;letter-spacing:.07em}
-  .daychip strong{display:block;font-size:30px;line-height:.95;font-weight:900}
-
-  .xpnum{font-size:11px;font-weight:900;color:var(--grey);
-    font-family:"Arial Black",Impact,sans-serif}
-  .count{display:flex;align-items:baseline;gap:6px;margin-top:11px;
-    border-top:2px solid var(--ink);padding-top:10px}
-  .count b{font-size:23px;font-family:"Arial Black",Impact,sans-serif;font-weight:900}
-  .count span{font-size:9.5px;font-weight:900;letter-spacing:.05em;color:var(--grey)}
-
-  /* ---------- category stat bars ---------- */
-  .chips{margin-bottom:16px}
-  .stat{display:flex;align-items:center;gap:9px;margin-bottom:6px}
-  .stat .nm{width:64px;flex:0 0 auto;font-size:9px;font-weight:900;letter-spacing:.06em;
-    font-family:"Arial Black",Impact,sans-serif}
-  .stat .cells{flex:1;display:flex;gap:3px}
-  .stat .cells i{flex:1;height:13px;border:2px solid var(--ink);background:var(--card);transition:background .2s}
-  .stat .cells i.on{background:var(--teal)}
-  .stat.full .cells i.on{background:var(--lime)}
-  .stat .vv{width:32px;flex:0 0 auto;text-align:right;font-size:9.5px;font-weight:900}
 
   /* ---------- list ---------- */
   .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px;cursor:pointer;user-select:none}
@@ -161,11 +122,10 @@
   .detail{display:none;font-size:10.5px;font-weight:600;color:var(--grey);margin-top:3px;line-height:1.35}
   body.notes .detail{display:block}
   body.notes .row{min-height:0;padding-top:9px;padding-bottom:9px}
-  .secnote,.daynote{
+  .secnote{
     display:none;font-size:11px;font-weight:600;color:var(--grey);line-height:1.4;padding:0 2px 6px;
   }
-  .daynote{padding:9px 0 0;border-top:2px solid var(--ink);margin-top:11px}
-  body.notes .secnote,body.notes .daynote{display:block}
+  body.notes .secnote{display:block}
   .pill{
     flex:0 0 auto;font-size:10px;font-weight:900;font-family:"Arial Black",Impact,sans-serif;
     background:var(--pink);color:var(--ink);border:2px solid var(--ink);padding:2px 6px;
@@ -374,27 +334,6 @@
     <button id="dayToday" hidden>TODAY</button>
     <button id="dayNext" title="Next day">›</button>
   </div>
-
-  <div class="hero">
-    <div class="hero-top">
-      <div class="hero-txt">
-        <div class="kicker"><span id="weekLbl"></span></div>
-        <h1 id="sessionLabel">Today</h1>
-        <div class="sub" id="headline"></div>
-      </div>
-      <div class="daychip">
-        <span>DAY</span><strong id="dayChip">—</strong>
-      </div>
-    </div>
-    <div class="count">
-      <b id="ringN">0</b><span id="ringD">OF 0 DONE</span>
-      <span class="grow"></span>
-      <span class="xpnum" id="xpLbl">0 XP</span>
-    </div>
-    <div class="daynote" id="dayNote"></div>
-  </div>
-
-  <div class="chips" id="chips"></div>
 
   <main id="list"></main>
 
@@ -892,15 +831,6 @@ function toggleGroup(title) {
 
 /* ---------- render ---------- */
 function render() {
-  $("dayChip").textContent = plan.dayOfPlan > 0 ? String(plan.dayOfPlan).padStart(2, "0") : "—";
-  $("weekLbl").textContent = (plan.week ? `WEEK ${String(plan.week).padStart(2, "0")}` : "")
-    + (plan.sessionId ? `  \u00B7  SESSION ${plan.sessionId.toUpperCase()}` : "");
-  $("sessionLabel").textContent = plan.sessionLabel || "Today";
-  $("headline").textContent = plan.headline || "";
-  const dn = $("dayNote");
-  dn.textContent = plan.note || "";
-  dn.style.display = plan.note ? "" : "none";
-
   const ticks = loadTicks(plan.date);
   const list = $("list");
   list.textContent = "";
@@ -1020,8 +950,7 @@ function render() {
     }
   }
 
-  renderChips(ticks);
-  renderStats(ticks);
+  renderStreak();
   renderPrinciple();
   renderDayNav();
 }
@@ -1184,51 +1113,10 @@ function refreshDerived() {
     const cnt = secEls.get(g.title);
     if (cnt) cnt.textContent = `${(g.items || []).filter(i => ticks[i.id]).length}/${(g.items || []).length}`;
   }
-  renderChips(ticks);
-  renderStats(ticks);
+  renderStreak();
 }
 
-function renderChips(ticks) {
-  const wrap = $("chips");
-  wrap.textContent = "";
-  for (const g of plan.groups || []) {
-    const items = g.items || [];
-    if (!items.length) continue;
-    const done = items.filter(i => ticks[i.id]).length;
-
-    const row = document.createElement("div");
-    row.className = "stat" + (done === items.length ? " full" : "");
-
-    const nm = document.createElement("span");
-    nm.className = "nm";
-    nm.textContent = g.title.toUpperCase();
-
-    // one cell per task, so the bar is a literal count rather than a percentage
-    const cells = document.createElement("span");
-    cells.className = "cells";
-    for (let i = 0; i < items.length; i++) {
-      const c = document.createElement("i");
-      if (i < done) c.className = "on";
-      cells.appendChild(c);
-    }
-
-    const vv = document.createElement("span");
-    vv.className = "vv";
-    vv.textContent = `${done}/${items.length}`;
-
-    row.append(nm, cells, vv);
-    wrap.appendChild(row);
-  }
-}
-
-function renderStats(ticks) {
-  const items = allItems();
-  const done = items.filter(i => ticks[i.id]).length;
-
-  $("ringN").textContent = done;
-  $("ringD").textContent = `OF ${items.length} DONE`;
-  $("xpLbl").textContent = `${todayXp()} XP`;
-
+function renderStreak() {
   const s = computeStreak();
   $("streakN").textContent = s;
   $("streakLbl").textContent = s === 1 ? "DAY" : "DAYS";
@@ -1269,7 +1157,6 @@ function renderDayNav() {
   lbl.appendChild(small);
 
   $("dayToday").hidden = diff === 0;
-  document.body.classList.toggle("past", diff !== 0);
 }
 
 async function goToDay(date) {
