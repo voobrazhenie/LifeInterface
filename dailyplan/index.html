@@ -125,11 +125,16 @@
   .stat .vv{width:32px;flex:0 0 auto;text-align:right;font-size:9.5px;font-weight:900}
 
   /* ---------- list ---------- */
-  .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px}
+  .sec{display:flex;align-items:center;gap:8px;margin:16px 0 7px;cursor:pointer;user-select:none}
+  .sec:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .sec .chev{flex:0 0 auto;font-size:9px;color:var(--grey)}
+  .sec.collapsed .chev{color:var(--faint)}
   .sec .t{font-size:11px;font-weight:900;letter-spacing:.07em;
     background:var(--ink);color:var(--paper);padding:3px 8px;
     font-family:"Arial Black",Impact,sans-serif}
+  .sec.collapsed .t{background:var(--faint)}
   .sec .r{flex:1;height:2px;background:var(--ink)}
+  .sec.collapsed .r{background:var(--faint)}
   .sec .n{font-size:9px;font-weight:900;color:var(--grey)}
 
   .row{
@@ -487,6 +492,7 @@ const LS_META    = "lifeinterface.fitness.meta.";
 const LS_NOTES   = "lifeinterface.fitness.notes";
 const LS_CUSTOM  = "lifeinterface.fitness.custom";
 const LS_FOCUS   = "lifeinterface.fitness.focus";
+const LS_COLLAPSED = "lifeinterface.fitness.collapsed";
 const HISTORY_DAYS = 90;
 const RING_C     = 2 * Math.PI * 33;   // matches r=33 in the svg
 const WEEKDAYS   = ["sun","mon","tue","wed","thu","fri","sat"];
@@ -867,6 +873,23 @@ function totalXp() {
   return sum;
 }
 
+/* ---------- category collapse ----------
+   Display-only: never filters plan.groups itself, so counts, XP, streak and
+   sync all keep computing from the full data regardless of what's collapsed. */
+let collapsedGroups = new Set();
+function loadCollapsed() {
+  try { collapsedGroups = new Set(JSON.parse(localStorage.getItem(LS_COLLAPSED) || "[]")); }
+  catch { collapsedGroups = new Set(); }
+}
+function saveCollapsed() {
+  try { localStorage.setItem(LS_COLLAPSED, JSON.stringify([...collapsedGroups])); } catch {}
+}
+function toggleGroup(title) {
+  if (collapsedGroups.has(title)) collapsedGroups.delete(title); else collapsedGroups.add(title);
+  saveCollapsed();
+  render();
+}
+
 /* ---------- render ---------- */
 function render() {
   $("dayChip").textContent = plan.dayOfPlan > 0 ? String(plan.dayOfPlan).padStart(2, "0") : "—";
@@ -886,8 +909,17 @@ function render() {
   lastRendered = JSON.stringify(ticks);
 
   for (const g of plan.groups || []) {
+    const collapsed = collapsedGroups.has(g.title);
+
     const sec = document.createElement("div");
-    sec.className = "sec";
+    sec.className = "sec" + (collapsed ? " collapsed" : "");
+    sec.tabIndex = 0;
+    sec.setAttribute("role", "button");
+    sec.setAttribute("aria-expanded", String(!collapsed));
+    const chev = document.createElement("span");
+    chev.className = "chev";
+    chev.setAttribute("aria-hidden", "true");
+    chev.textContent = collapsed ? "▸" : "▾";
     const name = document.createElement("span");
     name.className = "t";
     name.textContent = g.title.toUpperCase();
@@ -898,16 +930,25 @@ function render() {
     const gd = (g.items || []).filter(i => ticks[i.id]).length;
     cnt.textContent = `${gd}/${(g.items || []).length}`;
     secEls.set(g.title, cnt);
-    sec.append(name, rule, cnt);
+    sec.append(chev, name, rule, cnt);
     if (!g.fixed) {
       const add = document.createElement("button");
       add.className = "add";
       add.textContent = "+";
       add.title = `Add a task to ${g.title}`;
-      add.addEventListener("click", () => openAdd(g.title));
+      add.addEventListener("click", e => { e.stopPropagation(); openAdd(g.title); });
       sec.appendChild(add);
     }
+    const toggle = e => { if (e.target.closest(".add")) return; toggleGroup(g.title); };
+    sec.addEventListener("click", toggle);
+    sec.addEventListener("keydown", e => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      toggle(e);
+    });
     list.appendChild(sec);
+
+    if (collapsed) continue;
 
     if (g.note) {
       const n = document.createElement("div");
@@ -1679,6 +1720,7 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) focu
 focusTick(false);
 
 loadCustom();
+loadCollapsed();
 
 if (localStorage.getItem(LS_NOTES) === "1") {
   document.body.classList.add("notes");
