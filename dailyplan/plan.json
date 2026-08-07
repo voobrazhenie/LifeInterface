@@ -197,6 +197,13 @@
         { "id": "r-cold-shower", "emoji": "🧊", "text": "Cold shower", "detail": "Not in the hour after training — cold blunts the growth signal.", "xp": 15 },
         { "id": "r-meditation", "emoji": "🧘", "text": "Meditation", "xp": 15 }
       ]
+    },
+    {
+      "title": "Home",
+      "emoji": "🏠",
+      "items": [
+        { "id": "home-water-flowers", "emoji": "🪴", "text": "Water flowers", "detail": "Every three days.", "xp": 10, "every": 3, "anchor": "2026-08-07" }
+      ]
     }
   ],
 
