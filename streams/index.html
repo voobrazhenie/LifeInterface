@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F2EDE0">
+<title>Streams — Second Brain</title>
+<style>
+  /* Same neo-brutalist system as / and dailyplan/. */
+  :root{
+    --paper:#F2EDE0; --card:#FFFDF7; --sunk:#E8E4D6; --ink:#111111;
+    --yellow:#FFD53D; --teal:#00C2CB; --pink:#FF3D8B; --lime:#B8E62E;
+    --grey:#7A756A; --faint:#A39D91;
+    --stroke:2.5px; --shadow:4px 4px 0 var(--ink);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    padding:
+      calc(5vh + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+      calc(60px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+    font:15px/1.5 "Archivo","Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .blk{font-family:"Arial Black","Archivo Black",Impact,sans-serif;font-weight:900}
+  .wrap{max-width:520px;margin:0 auto}
+
+  a.back{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;
+    text-decoration:none;color:var(--ink);border-bottom:2px solid var(--ink);margin-bottom:16px}
+  .eyebrow{display:inline-block;background:var(--ink);color:var(--paper);
+    font-size:10px;letter-spacing:.1em;padding:4px 9px;margin-bottom:14px}
+  h1{font-size:clamp(26px,7vw,34px);margin:0 0 10px;line-height:1.05;letter-spacing:-.02em}
+  h1 em{font-style:normal;background:var(--yellow);border:var(--stroke) solid var(--ink);
+    padding:0 8px;box-shadow:4px 4px 0 var(--ink);display:inline-block}
+  .lede{color:var(--grey);font-weight:600;margin:0 0 20px;font-size:13.5px}
+
+  /* ---------- sync bar (same contract as dailyplan/ and jobs/) ---------- */
+  .sync{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    border:2px solid var(--ink);background:var(--card);box-shadow:3px 3px 0 var(--ink);
+    padding:9px 11px;margin-bottom:22px;font-size:12px;font-weight:700;color:var(--grey)}
+  .sync.on{background:var(--card)}
+  .sync .dot{flex:0 0 auto;width:9px;height:9px;border:2px solid var(--ink);background:var(--sunk)}
+  .sync.on .dot{background:var(--lime)}
+  .sync.err .dot{background:var(--pink)}
+  .sync .msg{flex:1;min-width:150px}
+  button{font:inherit;cursor:pointer}
+  .btn{background:var(--card);color:var(--ink);border:2px solid var(--ink);
+    font-size:11px;font-weight:800;padding:6px 11px;letter-spacing:.03em;
+    box-shadow:2px 2px 0 var(--ink)}
+  .btn:active{transform:translate(2px,2px);box-shadow:none}
+
+  /* ---------- groups ---------- */
+  .group{margin-bottom:24px}
+  .group-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+  .group-h .t{font-size:11px;font-weight:900;letter-spacing:.07em;
+    background:var(--ink);color:var(--paper);padding:3px 8px;
+    font-family:"Arial Black",Impact,sans-serif}
+  .group-h .r{flex:1;height:2px;background:var(--ink)}
+  .group-h .cap{font-size:9.5px;font-weight:900;color:var(--grey);white-space:nowrap}
+  .group-h .cap.full{color:var(--ink)}
+  .group-note{font-size:11px;font-weight:600;color:var(--grey);margin:-5px 0 10px}
+
+  .stream{
+    background:var(--card);border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
+    padding:10px 11px;margin-bottom:9px;
+  }
+  .stream .title{display:block;min-width:0;font-size:15px;font-weight:700;
+    margin-bottom:8px;overflow-wrap:break-word;cursor:text}
+  .stream input.rename{
+    display:block;width:100%;font:inherit;font-size:15px;font-weight:700;
+    border:2px solid var(--ink);background:var(--paper);padding:6px 7px;margin-bottom:8px;
+  }
+  .stream .acts{display:flex;gap:5px;flex-wrap:wrap}
+  .stream .acts button{
+    padding:5px 7px;font-size:11px;line-height:1;
+    background:var(--card);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);
+    font-family:"Arial Black",Impact,sans-serif;
+  }
+  .stream .acts button:active{transform:translate(2px,2px);box-shadow:none}
+  .stream .acts button:disabled{opacity:.35;cursor:default;transform:none;box-shadow:2px 2px 0 var(--faint)}
+  .stream .acts button.rm{background:var(--paper)}
+  .stream .acts button.rm.arm{background:var(--pink);color:#fff}
+
+  .empty{font-size:12px;font-weight:600;color:var(--grey);padding:2px 2px 10px}
+
+  .add-row{display:flex;gap:8px;margin-top:2px}
+  .add-row input{
+    flex:1;min-width:0;font:inherit;font-size:16px;font-weight:700;padding:9px 10px;
+    background:var(--card);color:var(--ink);border:2px solid var(--ink);
+  }
+  .add-row button{
+    flex:0 0 auto;padding:9px 14px;font-size:11px;font-weight:900;letter-spacing:.04em;
+    background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);
+    font-family:"Arial Black",Impact,sans-serif;
+  }
+  .add-row button:active{transform:translate(2px,2px);box-shadow:none}
+  .add-row button:disabled{opacity:.4;cursor:default;transform:none;box-shadow:3px 3px 0 var(--faint)}
+  .add-row input:disabled{opacity:.5}
+
+  footer{margin-top:30px;padding-top:14px;border-top:2px solid var(--ink);
+    font-size:11px;font-weight:700;color:var(--grey);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../">&larr; SECOND BRAIN</a>
+  <span class="eyebrow">LIFE STREAMS</span>
+  <h1 class="blk">What's <em>actually</em> moving.</h1>
+  <p class="lede">Titles only, on purpose. Three groups: what you're pushing on, what you're maintaining, and what's parked but not forgotten.</p>
+
+  <div class="sync" id="sync">
+    <span class="dot"></span>
+    <span class="msg" id="syncMsg">Checking sync&hellip;</span>
+    <button class="btn" id="authBtn" hidden></button>
+  </div>
+
+  <div id="groups"></div>
+
+  <footer id="foot">Signed out, streams stay in this browser. Signed in, they sync to your own account — readable only by you.</footer>
+</div>
+
+<script type="module">
+"use strict";
+
+const SDK = "https://www.gstatic.com/firebasejs/12.16.0/";
+const LS_STREAMS = "secondbrain.streams.v1";
+const $ = id => document.getElementById(id);
+const newId = () => "s-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+// [key, label, cap] — cap is null for no limit. Order here is display order.
+const GROUPS = [
+  ["focus",    "FOCUS NOW",              3],
+  ["maintain", "MAINTAIN",               null],
+  ["parked",   "PARKED, NOT FORGOTTEN",  null]
+];
+const GROUP_LABEL = Object.fromEntries(GROUPS.map(([k, label]) => [k, label]));
+
+let streams = [];     // [{ id, title, group }], array order = within-group display order
+let editingId = null; // stream currently showing a rename input instead of its title
+let armedId = null;   // stream currently in "tap again to remove" state
+
+function loadLocal() {
+  try { streams = JSON.parse(localStorage.getItem(LS_STREAMS) || "[]"); }
+  catch { streams = []; }
+}
+/* Written whole, no merge — same contract as dailyplan's `custom` doc. push
+   defaults on; sync.pull() passes push:false so a pull doesn't immediately
+   write the same data straight back. */
+function saveLocal({ push = true } = {}) {
+  try { localStorage.setItem(LS_STREAMS, JSON.stringify(streams)); } catch {}
+  if (push) sync.push();
+}
+
+const countIn  = group => streams.filter(s => s.group === group).length;
+const capOf    = group => GROUPS.find(g => g[0] === group)[2];
+const isFull   = group => { const c = capOf(group); return c != null && countIn(group) >= c; };
+
+function addStream(group, title) {
+  title = (title || "").trim();
+  if (!title || isFull(group)) return false;
+  streams.push({ id: newId(), title, group });
+  saveLocal();
+  render();
+  return true;
+}
+
+function renameStream(id, title) {
+  title = (title || "").trim();
+  const s = streams.find(x => x.id === id);
+  if (!s || !title) { editingId = null; render(); return; }
+  s.title = title;
+  editingId = null;
+  saveLocal();
+  render();
+}
+
+/* Moved items land at the end of the array, which — since display order is
+   just "this group's items in array order" — puts them at the end of the
+   target group's list too. */
+function moveStream(id, toGroup) {
+  if (isFull(toGroup)) return;
+  const s = streams.find(x => x.id === id);
+  if (!s || s.group === toGroup) return;
+  s.group = toGroup;
+  streams = streams.filter(x => x.id !== id).concat(s);
+  saveLocal();
+  render();
+}
+
+/* Swaps with the nearest same-group neighbour in the underlying flat array —
+   correct regardless of how the three groups are interleaved in it. */
+function reorderStream(id, dir) {
+  const i = streams.findIndex(x => x.id === id);
+  if (i < 0) return;
+  const group = streams[i].group;
+  let j = i + dir;
+  while (j >= 0 && j < streams.length && streams[j].group !== group) j += dir;
+  if (j < 0 || j >= streams.length) return;
+  [streams[i], streams[j]] = [streams[j], streams[i]];
+  saveLocal();
+  render();
+}
+
+function removeStream(id) {
+  streams = streams.filter(x => x.id !== id);
+  armedId = null;
+  saveLocal();
+  render();
+}
+
+/* ---------- render ---------- */
+function render() {
+  const wrap = $("groups");
+  wrap.textContent = "";
+
+  for (const [key, label, cap] of GROUPS) {
+    const items = streams.filter(s => s.group === key);
+
+    const sec = document.createElement("div");
+    sec.className = "group";
+
+    const h = document.createElement("div");
+    h.className = "group-h";
+    const t = document.createElement("span");
+    t.className = "t"; t.textContent = label;
+    const rule = document.createElement("span");
+    rule.className = "r";
+    h.append(t, rule);
+    if (cap != null) {
+      const capEl = document.createElement("span");
+      capEl.className = "cap" + (items.length >= cap ? " full" : "");
+      capEl.textContent = items.length >= cap ? `${items.length}/${cap} · FULL` : `${items.length}/${cap}`;
+      h.appendChild(capEl);
+    }
+    sec.appendChild(h);
+
+    if (!items.length) {
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "Nothing here.";
+      sec.appendChild(e);
+    }
+
+    for (const s of items) sec.appendChild(streamRow(s, key));
+
+    sec.appendChild(addRow(key, cap, items.length));
+    wrap.appendChild(sec);
+  }
+}
+
+function streamRow(s, group) {
+  const row = document.createElement("div");
+  row.className = "stream";
+
+  if (editingId === s.id) {
+    const input = document.createElement("input");
+    input.className = "rename";
+    input.value = s.title;
+    input.maxLength = 80;
+    // Escape re-renders to cancel, which removes this (still-focused) input
+    // from the DOM — that alone fires a native blur on it, so the blur
+    // handler needs to know not to treat that as a save.
+    let cancelled = false;
+    const commit = () => { if (!cancelled) renameStream(s.id, input.value); };
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") commit();
+      else if (e.key === "Escape") { cancelled = true; editingId = null; render(); }
+    });
+    input.addEventListener("blur", commit);
+    row.appendChild(input);
+    setTimeout(() => { input.focus(); input.select(); }, 0);
+  } else {
+    const title = document.createElement("span");
+    title.className = "title";
+    title.textContent = s.title;
+    title.title = "Click to rename";
+    title.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
+    row.appendChild(title);
+  }
+
+  const acts = document.createElement("div");
+  acts.className = "acts";
+
+  // A clickable title is a nice shortcut for mouse/touch, but it isn't
+  // reachable by keyboard alone — this button is the real entry point.
+  if (editingId !== s.id) {
+    const edit = document.createElement("button");
+    edit.textContent = "✎"; edit.title = "Rename";
+    edit.addEventListener("click", () => { editingId = s.id; armedId = null; render(); });
+    acts.appendChild(edit);
+  }
+
+  const items = streams.filter(x => x.group === group);
+  const pos = items.findIndex(x => x.id === s.id);
+
+  const up = document.createElement("button");
+  up.textContent = "↑"; up.title = "Move up";
+  up.disabled = pos <= 0;
+  up.addEventListener("click", () => reorderStream(s.id, -1));
+
+  const down = document.createElement("button");
+  down.textContent = "↓"; down.title = "Move down";
+  down.disabled = pos >= items.length - 1;
+  down.addEventListener("click", () => reorderStream(s.id, 1));
+
+  acts.append(up, down);
+
+  for (const [key, label] of GROUPS) {
+    if (key === group) continue;
+    const b = document.createElement("button");
+    b.textContent = `→ ${label.split(",")[0]}`;
+    b.title = `Move to ${label}`;
+    b.disabled = isFull(key);
+    b.addEventListener("click", () => moveStream(s.id, key));
+    acts.appendChild(b);
+  }
+
+  const rm = document.createElement("button");
+  rm.className = "rm" + (armedId === s.id ? " arm" : "");
+  rm.textContent = armedId === s.id ? "Sure?" : "✕";
+  rm.title = armedId === s.id ? "Tap again to remove" : "Remove";
+  rm.addEventListener("click", () => {
+    if (armedId !== s.id) { armedId = s.id; render(); return; }
+    removeStream(s.id);
+  });
+  acts.appendChild(rm);
+
+  row.appendChild(acts);
+  return row;
+}
+
+function addRow(group, cap, count) {
+  const wrap = document.createElement("div");
+  wrap.className = "add-row";
+  const full = cap != null && count >= cap;
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.maxLength = 80;
+  input.placeholder = full ? "Focus now is full — move one out first" : "New stream…";
+  input.disabled = full;
+
+  const btn = document.createElement("button");
+  btn.textContent = "ADD";
+  btn.disabled = full;
+
+  const submit = () => {
+    if (addStream(group, input.value)) input.value = "";
+  };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+  btn.addEventListener("click", submit);
+
+  wrap.append(input, btn);
+  return wrap;
+}
+
+/* ---------- sync ---------- */
+const sync = {
+  fb: null, uid: null, mode: "checking",
+
+  setUI(state, msg, btnLabel, btnAction) {
+    $("sync").className = "sync" + (state === "on" ? " on" : state === "err" ? " err" : "");
+    $("syncMsg").textContent = msg;
+    const btn = $("authBtn");
+    if (btnLabel) { btn.hidden = false; btn.textContent = btnLabel; btn.onclick = btnAction; }
+    else { btn.hidden = true; btn.onclick = null; }
+  },
+
+  async init() {
+    let config = null;
+    try { ({ firebaseConfig: config } = await import("./firebase-config.js")); }
+    catch { /* file:// origin, or the file is missing — stay local */ }
+    if (!config || !config.projectId) {
+      this.mode = "local";
+      this.setUI("off", "Local only — no Firebase config.");
+      return;
+    }
+    try {
+      const [{ initializeApp }, authMod, fsMod] = await Promise.all([
+        import(SDK + "firebase-app.js"),
+        import(SDK + "firebase-auth.js"),
+        import(SDK + "firebase-firestore.js")
+      ]);
+      const app = initializeApp(config);
+      const db = fsMod.initializeFirestore(app, {
+        localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() })
+      });
+      this.fb = { auth: authMod.getAuth(app), db, a: authMod, f: fsMod };
+      this.mode = "signed-out";
+      authMod.getRedirectResult(this.fb.auth).catch(() => {});
+      authMod.onAuthStateChanged(this.fb.auth, u => this.onAuth(u));
+    } catch (e) {
+      console.warn("Firebase unavailable, staying local:", e);
+      this.setUI("err", "Couldn't reach Firebase. Local only.", "Retry", () => location.reload());
+    }
+  },
+
+  onAuth(user) {
+    if (!user) {
+      this.mode = "signed-out";
+      this.uid = null;
+      this.setUI("off", "Not syncing — streams stay in this browser.",
+        "Sign in with Google", () => this.signIn());
+      return;
+    }
+    this.uid = user.uid;
+    this.mode = "signed-in";
+    this.setUI("on", `Synced — signed in as ${user.email || "your account"}`,
+      "Sign out", () => this.signOut());
+    this.pull();
+  },
+
+  async signIn() {
+    const { a, auth } = this.fb;
+    try {
+      this.setUI("off", "Opening Google sign-in…");
+      await a.signInWithPopup(auth, new a.GoogleAuthProvider());
+    } catch (e) {
+      const code = (e && e.code) || "";
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+        try { await a.signInWithRedirect(auth, new a.GoogleAuthProvider()); return; }
+        catch (e2) { e = e2; }
+      }
+      const msg =
+        code === "auth/unauthorized-domain" ? "This domain isn't authorised in Firebase Auth yet."
+      : code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" ? "Sign-in was cancelled."
+      : `Sign-in failed (${e.code || e.message}).`;
+      this.setUI("err", msg, "Try again", () => this.signIn());
+    }
+  },
+
+  async signOut() {
+    try { await this.fb.a.signOut(this.fb.auth); }
+    catch (e) { this.setUI("err", `Couldn't sign out (${e.message}).`, "Try again", () => this.signOut()); }
+  },
+
+  ref() {
+    const { f, db } = this.fb;
+    return f.doc(db, "users", this.uid, "config", "streams");
+  },
+
+  async push() {
+    if (this.mode !== "signed-in") return;
+    const { f } = this.fb;
+    try {
+      await f.setDoc(this.ref(), { streams, updatedAt: f.serverTimestamp() });
+    } catch (e) {
+      this.setUI("err", `Couldn't save to sync (${e.code || e.message}). Saved on this device.`,
+        "Retry", () => this.push());
+    }
+  },
+
+  async pull() {
+    const { f } = this.fb;
+    try {
+      let snap;
+      try { snap = await f.getDocFromServer(this.ref()); }
+      catch { snap = await f.getDoc(this.ref()); }
+      if (snap.exists()) {
+        streams = snap.data().streams || [];
+        saveLocal({ push: false });
+        render();
+      } else if (streams.length) {
+        await this.push();   // first sign-in with streams already added locally
+      }
+    } catch { /* offline — the local copy stands */ }
+  }
+};
+
+loadLocal();
+render();
+sync.init();
+</script>
+</body>
+</html>
